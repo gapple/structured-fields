@@ -1,0 +1,30 @@
+{
+    "name": "gapple/structured-headers",
+    "description": "Parser for Structured Headers for HTTP",
+    "type": "library",
+    "license": [
+        "MIT",
+        "GPL-2.0-or-later"
+    ],
+    "authors": [
+        {
+            "name": "Geoff Appleby"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/gapple/structured-headers",
+        "issues": "https://github.com/gapple/structured-headers/issues"
+    },
+    "autoload": {
+        "psr-4": {
+            "gapple\\StructuredHeaders\\": "src/",
+            "gapple\\Tests\\StructuredHeaders\\": "test/"
+        }
+    },
+    "require": {
+        "php": "^7.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    }
+}
