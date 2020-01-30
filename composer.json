@@ -25,6 +25,25 @@
         "php": "^7.2"
     },
     "require-dev": {
+        "httpwg/structured-header-tests": "*@dev",
         "phpunit/phpunit": "^8.5"
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "httpwg/structured-header-tests",
+                "version": "dev-master",
+                "dist": {
+                    "url": "https://github.com/httpwg/structured-header-tests/archive/master.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "git@github.com:httpwg/structured-header-tests.git",
+                    "type": "git",
+                    "reference": "master"
+                }
+            }
+        }
+    ]
 }
