@@ -4,7 +4,7 @@ namespace gapple\Tests\StructuredHeaders;
 
 use gapple\StructuredHeaders\ParseException;
 use gapple\StructuredHeaders\Parser;
-use PHPUnit\Framework\AssertionFailedError;
+use gapple\StructuredHeaders\Token;
 use PHPUnit\Framework\TestCase;
 
 abstract class RulesetTest extends TestCase
@@ -41,7 +41,21 @@ abstract class RulesetTest extends TestCase
 
         foreach ($record->raw as $value) {
             try {
-                $parsedValue = Parser::parseItem($value);
+                if ($record->header_type == 'item') {
+                    $parsedValue = Parser::parseItem($value);
+
+                    if ($record->expected[0] instanceof \stdClass) {
+                        if ($record->expected[0]->__type == 'token') {
+                            $record->expected[0] = new Token($record->expected[0]->value);
+                        }
+                    }
+                } elseif ($record->header_type == 'list') {
+                    $parsedValue = Parser::parseList($value);
+                    $this->markTestIncomplete("List parsing is not implemented");
+                } elseif ($record->header_type == 'dictionary') {
+                    $parsedValue = Parser::parseDictionary($value);
+                    $this->markTestIncomplete("Dictionary parsing is not implemented");
+                }
             } catch (ParseException $e) {
                 if ($record->must_fail) {
                     $this->addToAssertionCount(1);

@@ -5,12 +5,14 @@ namespace gapple\StructuredHeaders;
 class Parser
 {
 
-    public static function parseDictionary(string $string)
+    public static function parseDictionary(string $string): array
     {
+        return [];
     }
 
-    public static function parseList(string $string)
+    public static function parseList(string $string): array
     {
+        return [];
     }
 
     /**
@@ -115,5 +117,17 @@ class Parser
 
     private static function parseToken(string &$string): string
     {
+        // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
+        // 3.2.6. Field Value Components
+        // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
+        $tchar = preg_quote("!#$%&'*+-.^_`|~");
+
+        if (preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']+)/i', $string, $matches)) {
+            $string = substr($string, strlen($matches[1]));
+        } else {
+            throw new ParseException();
+        }
+
+        return new Token($matches[1]);
     }
 }
