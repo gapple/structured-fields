@@ -45,6 +45,8 @@ class Parser
             $value = self::parseNumber($string);
         } elseif ($string[0] == '"') {
             $value = self::parseString($string);
+        } elseif ($string[0] == ':') {
+            $value = self::parseByteSequence($string);
         } elseif ($string[0] == '?') {
             $value = self::parseBoolean($string);
         } elseif (preg_match('/^(\*|[a-z])/i', $string)) {
@@ -147,10 +149,19 @@ class Parser
 
         if (preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']+)/i', $string, $matches)) {
             $string = substr($string, strlen($matches[1]));
-        } else {
-            throw new ParseException();
+            return new Token($matches[1]);
         }
 
-        return new Token($matches[1]);
+        throw new ParseException();
+    }
+
+    private static function parseByteSequence(string &$string): Bytes
+    {
+        if (preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
+            $string = substr($string, strlen($matches[1]) + 2);
+            return new Bytes(base64_decode($matches[1]));
+        }
+
+        throw new ParseException();
     }
 }

@@ -6,6 +6,7 @@ use gapple\StructuredHeaders\Bytes;
 use gapple\StructuredHeaders\ParseException;
 use gapple\StructuredHeaders\Parser;
 use gapple\StructuredHeaders\Token;
+use ParagonIE\ConstantTime\Base32;
 use PHPUnit\Framework\TestCase;
 
 abstract class RulesetTest extends TestCase
@@ -91,7 +92,7 @@ abstract class RulesetTest extends TestCase
         if ($value[0]->__type == 'token') {
             $value[0] = new Token($value[0]->value);
         } elseif ($value[0]->__type == 'binary') {
-            $value[0] = new Bytes($value[0]->value);
+            $value[0] = new Bytes(Base32::decodeUpper($value[0]->value));
         }
     }
 
