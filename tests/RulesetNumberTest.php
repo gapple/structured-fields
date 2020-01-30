@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredHeaders;
 
-class RulesetNumberTest extends RulesetTest
+class RulesetStringTest extends RulesetTest
 {
-    protected $ruleset = 'number';
+    protected $ruleset = 'string';
 }

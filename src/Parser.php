@@ -113,6 +113,29 @@ class Parser
 
     private static function parseString(string &$string): string
     {
+        if (preg_match('/^"([\x00-\x7F]*)"/i', $string, $matches)) {
+            $string = substr($string, strlen($matches[1]) + 2);
+
+            // Newlines and Tabs are not allowed; string cannot end in escape character.
+            if (preg_match('/(?<!\\\)\\\([nt]|$)/', $matches[1])) {
+                throw new ParseException();
+            }
+            // Only quotes and backslashes should be escaped.
+            if (preg_match_all('/(?<!\\\)\\\./', $matches[1], $quoted_matches, PREG_PATTERN_ORDER)) {
+                foreach ($quoted_matches[0] as $quoted_match) {
+                    if (!in_array($quoted_match, ['\\"', '\\\\'])) {
+                        throw new ParseException();
+                    }
+                }
+            }
+
+            // Unescape quotes and backslashes.
+            $output_string = preg_replace('/\\\(["\\\])/', '$1', $matches[1]);
+        } else {
+            throw new ParseException();
+        }
+
+        return $output_string;
     }
 
     private static function parseToken(string &$string): string

@@ -44,7 +44,7 @@ abstract class RulesetTest extends TestCase
                 if ($record->header_type == 'item') {
                     $parsedValue = Parser::parseItem($value);
 
-                    if ($record->expected[0] instanceof \stdClass) {
+                    if (isset($record->expected) && $record->expected[0] instanceof \stdClass) {
                         if ($record->expected[0]->__type == 'token') {
                             $record->expected[0] = new Token($record->expected[0]->value);
                         }
