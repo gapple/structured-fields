@@ -18,11 +18,12 @@
     "autoload": {
         "psr-4": {
             "gapple\\StructuredHeaders\\": "src/",
-            "gapple\\Tests\\StructuredHeaders\\": "test/"
+            "gapple\\Tests\\StructuredHeaders\\": "tests/"
         }
     },
     "scripts": {
-        "phpcs": "phpcs"
+        "phpcs": "phpcs",
+        "phpunit": "phpunit"
     },
     "require": {
         "php": "^7.2"
