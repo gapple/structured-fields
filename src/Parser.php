@@ -12,7 +12,38 @@ class Parser
 
     public static function parseList(string $string): array
     {
-        return [];
+        $value = [];
+
+        while (!empty($string)) {
+            if ($string[0] === '(') {
+                $value[] = self::parseInnerList($string);
+            } else {
+                $value[] = self::parseItem($string);
+            }
+
+            $string = ltrim($string, ' ');
+
+            if (empty($string)) {
+                return $value;
+            }
+
+            if (!preg_match('/^( *, *)/', $string, $comma_matches)) {
+                throw new ParseException();
+            }
+
+            $string = substr($string, strlen($comma_matches[1]));
+
+            if (empty($string)) {
+                throw new ParseException();
+            }
+        }
+
+        return $value;
+    }
+
+    private static function parseInnerList(string &$string): array
+    {
+        throw new ParseException();
     }
 
     /**
@@ -21,7 +52,7 @@ class Parser
      * @return array
      *  A [value, parameters] tuple.
      */
-    public static function parseItem(string $string): array
+    public static function parseItem(string &$string): array
     {
         return [
             self::parseBareItem($string),
@@ -52,12 +83,6 @@ class Parser
         } elseif (preg_match('/^(\*|[a-z])/i', $string)) {
             $value = self::parseToken($string);
         } else {
-            throw new ParseException();
-        }
-
-        $string = ltrim($string);
-
-        if (!empty($string)) {
             throw new ParseException();
         }
 
