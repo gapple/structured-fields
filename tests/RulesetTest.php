@@ -2,6 +2,7 @@
 
 namespace gapple\Tests\StructuredHeaders;
 
+use gapple\StructuredHeaders\Bytes;
 use gapple\StructuredHeaders\ParseException;
 use gapple\StructuredHeaders\Parser;
 use gapple\StructuredHeaders\Token;
@@ -22,6 +23,16 @@ abstract class RulesetTest extends TestCase
 
         $dataset = [];
         foreach ($rules as $rule) {
+            if (isset($rule->expected)) {
+                if ($rule->header_type == 'item') {
+                    self::convertItemValue($rule->expected);
+                } elseif ($rule->header_type == 'list') {
+                    self::convertListValues($rule->expected);
+                } elseif ($rule->header_type == 'dictionary') {
+                    self::convertDictionaryValues($rule->expected);
+                }
+            }
+
             $dataset[$rule->name] = [$rule];
         }
 
@@ -43,12 +54,6 @@ abstract class RulesetTest extends TestCase
             try {
                 if ($record->header_type == 'item') {
                     $parsedValue = Parser::parseItem($value);
-
-                    if (isset($record->expected) && $record->expected[0] instanceof \stdClass) {
-                        if ($record->expected[0]->__type == 'token') {
-                            $record->expected[0] = new Token($record->expected[0]->value);
-                        }
-                    }
                 } elseif ($record->header_type == 'list') {
                     $parsedValue = Parser::parseList($value);
                     $this->markTestIncomplete("List parsing is not implemented");
@@ -74,6 +79,41 @@ abstract class RulesetTest extends TestCase
                 $parsedValue,
                 '"' . $record->name . '" was not parsed to expected value'
             );
+        }
+    }
+
+    private static function convertItemValue(&$value)
+    {
+        if (!($value[0] instanceof \stdClass)) {
+            return;
+        }
+
+        if ($value[0]->__type == 'token') {
+            $value[0] = new Token($value[0]->value);
+        } elseif ($value[0]->__type == 'binary') {
+            $value[0] = new Bytes($value[0]->value);
+        }
+    }
+
+    private static function convertListValues(&$list)
+    {
+        foreach ($list as &$item) {
+            if (end($item) instanceof \stdClass) {
+                self::convertItemValue($item);
+            } else {
+                self::convertListValues($item);
+            }
+        }
+    }
+
+    private static function convertDictionaryValues(&$dictionary)
+    {
+        foreach (get_object_vars($dictionary) as $key => $item) {
+            if (end($item) instanceof \stdClass) {
+                self::convertItemValue($dictionary->{$key});
+            } else {
+                self::convertListValues($dictionary->{$key});
+            }
         }
     }
 }
