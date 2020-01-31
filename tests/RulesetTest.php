@@ -51,34 +51,35 @@ abstract class RulesetTest extends TestCase
         $record->must_fail = $record->must_fail ?? false;
         $record->can_fail = $record->can_fail ?? false;
 
-
         try {
             if ($record->header_type == 'item') {
                 $parsedValue = Parser::parseItem($record->raw[0]);
             } elseif ($record->header_type == 'list') {
                 $parsedValue = Parser::parseList(implode(',', $record->raw));
             } elseif ($record->header_type == 'dictionary') {
-                $parsedValue = Parser::parseDictionary($record->raw[0]);
-                $this->markTestIncomplete("Dictionary parsing is not implemented");
+                $this->markTestSkipped("Dictionary parsing is not implemented");
+                $parsedValue = Parser::parseDictionary(implode(',', $record->raw));
+            } else {
+                $this->markTestSkipped("Unrecognized header type");
             }
+
+            if ($record->must_fail) {
+                $this->fail('"' . $record->name . '" must fail parsing');
+            }
+
+            $this->assertEquals(
+                $record->expected,
+                $parsedValue,
+                '"' . $record->name . '" was not parsed to expected value'
+            );
         } catch (ParseException $e) {
             if ($record->must_fail) {
                 $this->addToAssertionCount(1);
                 return;
             } elseif (!$record->can_fail) {
-                $this->fail('"' . $record->name . '" cannot fail parsing');
+                $this->fail('"' . $record->name . '" must not fail parsing');
             }
         }
-
-        if ($record->must_fail) {
-            $this->fail('"' . $record->name . '" must fail parsing');
-        }
-
-        $this->assertEquals(
-            $record->expected,
-            $parsedValue,
-            '"' . $record->name . '" was not parsed to expected value'
-        );
     }
 
     private static function convertItemValue(&$value)
