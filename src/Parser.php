@@ -43,6 +43,28 @@ class Parser
 
     private static function parseInnerList(string &$string): array
     {
+        $value = [];
+
+        $string = substr($string, 1);
+
+        while (!empty($string)) {
+            $string = ltrim($string);
+
+            if ($string[0] === ')') {
+                $string = substr($string, 1);
+                return [
+                    $value,
+                    self::parseParameters($string),
+                ];
+            }
+
+            $value[] = self::doParseItem($string);
+
+            if (!empty($string) && !in_array($string[0], [' ', ')'])) {
+                throw new ParseException();
+            }
+        }
+
         throw new ParseException();
     }
 
