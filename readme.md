@@ -36,7 +36,7 @@ print_r(\gapple\StructuredHeaders\Parser::parseItem("42"));
 The `Parser::parseList()` method returns an array of `[value, parameters]` tuples.
 
 ```php
-print_r(\gapple\StructuredHeaders\Parser::parseList("1, 42"));
+print_r(\gapple\StructuredHeaders\Parser::parseList("1, 42;towel;panic=?0"));
 
 // Array
 // (
@@ -52,6 +52,8 @@ print_r(\gapple\StructuredHeaders\Parser::parseList("1, 42"));
 //             [0] => 42
 //             [1] => stdClass Object
 //                 (
+//                     [towel] => 1
+//                     [panic] =>
 //                 )
 //         )
 // )

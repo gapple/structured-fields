@@ -14,6 +14,8 @@ class Parser
     {
         $value = [];
 
+        $string = ltrim($string);
+
         while (!empty($string)) {
             if ($string[0] === '(') {
                 $value[] = self::parseInnerList($string);
@@ -76,13 +78,15 @@ class Parser
      */
     public static function parseItem(string $string): array
     {
+        $string = ltrim($string);
+
         $value = self::doParseItem($string);
 
-        if (!empty(ltrim($string))) {
-            throw new ParseException();
+        if (empty(ltrim($string))) {
+            return $value;
         }
 
-        return $value;
+        throw new ParseException();
     }
 
     /**
@@ -105,11 +109,10 @@ class Parser
     /**
      * @param string $string
      *
-     * @return bool|float|int|string
+     * @return bool|float|int|string|\gapple\StructuredHeaders\Bytes|\gapple\StructuredHeaders\Token
      */
     private static function parseBareItem(string &$string)
     {
-        $string = ltrim($string);
         $value = null;
 
         if ($string === "") {
@@ -135,11 +138,31 @@ class Parser
     {
         $parameters = new \stdClass();
 
-        if (!empty($string) && $string[0] === ';') {
-            $string = ltrim(substr(1, $string));
+        while (!empty($string) && $string[0] === ';') {
+            $string = ltrim(substr($string, 1));
+
+            $key = self::parseKey($string);
+            $parameters->{$key} = true;
+
+            if (!empty($string) && $string[0] === '=') {
+                $string = substr($string, 1);
+                $parameters->{$key} = self::parseBareItem($string);
+            }
         }
 
         return $parameters;
+    }
+
+    private static function parseKey(string &$string): string
+    {
+
+        if (preg_match('/^[a-z0-9.*_-]+/', $string, $matches)) {
+            $string = substr($string, strlen($matches[0]));
+
+            return $matches[0];
+        }
+
+        throw new ParseException();
     }
 
     private static function parseBoolean(string &$string): bool
@@ -207,7 +230,7 @@ class Parser
         return $output_string;
     }
 
-    private static function parseToken(string &$string): string
+    private static function parseToken(string &$string): Token
     {
         // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
         // 3.2.6. Field Value Components
@@ -222,6 +245,13 @@ class Parser
         throw new ParseException();
     }
 
+    /**
+     * Parse Base64-encoded data.
+     *
+     * @param string $string
+     *
+     * @return \gapple\StructuredHeaders\Bytes
+     */
     private static function parseByteSequence(string &$string): Bytes
     {
         if (preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {

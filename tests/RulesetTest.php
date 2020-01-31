@@ -83,14 +83,23 @@ abstract class RulesetTest extends TestCase
 
     private static function convertItemValue(&$value)
     {
-        if (!($value[0] instanceof \stdClass)) {
-            return;
+        if ($value[0] instanceof \stdClass) {
+            self::convertValue($value[0]);
         }
 
-        if ($value[0]->__type == 'token') {
-            $value[0] = new Token($value[0]->value);
-        } elseif ($value[0]->__type == 'binary') {
-            $value[0] = new Bytes(Base32::decodeUpper($value[0]->value));
+        foreach (get_object_vars($value[1]) as $paramKey => &$paramValue) {
+            if ($paramValue instanceof \stdClass) {
+                self::convertValue($value[1]->{$paramKey});
+            }
+        }
+    }
+
+    private static function convertValue(&$value)
+    {
+        if ($value->__type == 'token') {
+            $value = new Token($value->value);
+        } elseif ($value->__type == 'binary') {
+            $value = new Bytes(Base32::decodeUpper($value->value));
         }
     }
 
