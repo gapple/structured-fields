@@ -18,7 +18,7 @@ class Parser
             if ($string[0] === '(') {
                 $value[] = self::parseInnerList($string);
             } else {
-                $value[] = self::parseItem($string);
+                $value[] = self::doParseItem($string);
             }
 
             $string = ltrim($string, ' ');
@@ -52,7 +52,27 @@ class Parser
      * @return array
      *  A [value, parameters] tuple.
      */
-    public static function parseItem(string &$string): array
+    public static function parseItem(string $string): array
+    {
+        $value = self::doParseItem($string);
+
+        if (!empty(ltrim($string))) {
+            throw new ParseException();
+        }
+
+        return $value;
+    }
+
+    /**
+     * Internal implementation of parseItem that doesn't fail if input string
+     * has unparsed characters after parsing.
+     *
+     * @param string $string
+     *
+     * @return array
+     *  A [value, parameters] tuple.
+     */
+    private static function doParseItem(string &$string): array
     {
         return [
             self::parseBareItem($string),
