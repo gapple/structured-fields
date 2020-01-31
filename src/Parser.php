@@ -14,7 +14,7 @@ class Parser
     {
         $value = [];
 
-        $string = ltrim($string);
+        $string = ltrim($string, ' ');
 
         while (!empty($string)) {
             if ($string[0] === '(') {
@@ -50,7 +50,7 @@ class Parser
         $string = substr($string, 1);
 
         while (!empty($string)) {
-            $string = ltrim($string);
+            $string = ltrim($string, ' ');
 
             if ($string[0] === ')') {
                 $string = substr($string, 1);
@@ -78,11 +78,11 @@ class Parser
      */
     public static function parseItem(string $string): array
     {
-        $string = ltrim($string);
+        $string = ltrim($string, ' ');
 
         $value = self::doParseItem($string);
 
-        if (empty(ltrim($string))) {
+        if (empty(ltrim($string, ' '))) {
             return $value;
         }
 
@@ -139,7 +139,7 @@ class Parser
         $parameters = new \stdClass();
 
         while (!empty($string) && $string[0] === ';') {
-            $string = ltrim(substr($string, 1));
+            $string = ltrim(substr($string, 1), ' ');
 
             $key = self::parseKey($string);
             $parameters->{$key} = true;
