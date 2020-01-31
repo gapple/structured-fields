@@ -237,7 +237,7 @@ class Parser
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
 
-        if (preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']+)/i', $string, $matches)) {
+        if (preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)/i', $string, $matches)) {
             $string = substr($string, strlen($matches[1]));
             return new Token($matches[1]);
         }
