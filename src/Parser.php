@@ -155,8 +155,7 @@ class Parser
 
     private static function parseKey(string &$string): string
     {
-
-        if (preg_match('/^[a-z0-9.*_-]+/', $string, $matches)) {
+        if (preg_match('/^[a-z][a-z0-9.*_-]*/', $string, $matches)) {
             $string = substr($string, strlen($matches[0]));
 
             return $matches[0];
