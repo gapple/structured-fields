@@ -13,6 +13,16 @@ abstract class RulesetTest extends TestCase
 {
     protected $ruleset;
 
+    /**
+     * An array of rules which should be skipped.
+     *
+     * The element key should be the name of the rule, and the value should be
+     * the message to provide for skipping the rule.
+     *
+     * @var array
+     */
+    protected $skipRules = [];
+
     public function rulesetDataProvider()
     {
         $path = __DIR__ . '/../vendor/httpwg/structured-header-tests/' . $this->ruleset . '.json';
@@ -47,6 +57,10 @@ abstract class RulesetTest extends TestCase
      */
     public function testRecord($record)
     {
+        if (array_key_exists($record->name, $this->skipRules)) {
+            $this->markTestSkipped('Skipped \'' . $record->name . '\': ' . $this->skipRules[$record->name]);
+        }
+
         // Set default values for optional keys.
         $record->must_fail = $record->must_fail ?? false;
         $record->can_fail = $record->can_fail ?? false;
@@ -57,7 +71,6 @@ abstract class RulesetTest extends TestCase
             } elseif ($record->header_type == 'list') {
                 $parsedValue = Parser::parseList(implode(',', $record->raw));
             } elseif ($record->header_type == 'dictionary') {
-                $this->markTestSkipped("Dictionary parsing is not implemented");
                 $parsedValue = Parser::parseDictionary(implode(',', $record->raw));
             } else {
                 $this->markTestSkipped("Unrecognized header type");

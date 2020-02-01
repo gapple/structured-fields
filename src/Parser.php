@@ -5,22 +5,21 @@ namespace gapple\StructuredHeaders;
 class Parser
 {
 
-    public static function parseDictionary(string $string): array
+    public static function parseDictionary(string $string): \stdClass
     {
-        return [];
-    }
-
-    public static function parseList(string $string): array
-    {
-        $value = [];
+        $value = new \stdClass();
 
         $string = ltrim($string, ' ');
 
         while (!empty($string)) {
-            if ($string[0] === '(') {
-                $value[] = self::parseInnerList($string);
+            $key = self::parseKey($string);
+
+            if (!empty($string) && $string[0] === '=') {
+                $string = substr($string, 1);
+                $value->{$key} = self::parseItemOrInnerList($string);
             } else {
-                $value[] = self::doParseItem($string);
+                // Bare boolean true values cannot have parameters.
+                $value->{$key} = [true, new \stdClass()];
             }
 
             $string = ltrim($string, ' ');
@@ -29,7 +28,7 @@ class Parser
                 return $value;
             }
 
-            if (!preg_match('/^( *, *)/', $string, $comma_matches)) {
+            if (!preg_match('/^(, *)/', $string, $comma_matches)) {
                 throw new ParseException();
             }
 
@@ -41,6 +40,44 @@ class Parser
         }
 
         return $value;
+    }
+
+    public static function parseList(string $string): array
+    {
+        $value = [];
+
+        $string = ltrim($string, ' ');
+
+        while (!empty($string)) {
+            $value[] = self::parseItemOrInnerList($string);
+
+            $string = ltrim($string, ' ');
+
+            if (empty($string)) {
+                return $value;
+            }
+
+            if (!preg_match('/^(, *)/', $string, $comma_matches)) {
+                throw new ParseException();
+            }
+
+            $string = substr($string, strlen($comma_matches[1]));
+
+            if (empty($string)) {
+                throw new ParseException();
+            }
+        }
+
+        return $value;
+    }
+
+    private static function parseItemOrInnerList(string &$string): array
+    {
+        if ($string[0] === '(') {
+            return self::parseInnerList($string);
+        } else {
+            return self::doParseItem($string);
+        }
     }
 
     private static function parseInnerList(string &$string): array
