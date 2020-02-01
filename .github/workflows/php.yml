@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         php-versions: ['7.2', '7.3', '7.4']
 
@@ -15,10 +16,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup PHP ${{ matrix.php-versions }}
+    - name: Setup PHP ${{ matrix.php-versions }} without code coverage
+      if: matrix.php-versions != '7.4'
       uses: shivammathur/setup-php@v1
       with:
         php-version: ${{ matrix.php-versions }}
+        coverage: none
+    - name: Setup PHP ${{ matrix.php-versions }} with code coverage
+      if: matrix.php-versions == '7.4'
+      uses: shivammathur/setup-php@v1
+      with:
+        php-version: ${{ matrix.php-versions }}
+        coverage: xdebug
 
     - name: Setup Problem Matchers for PHPUnit
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
@@ -48,3 +57,10 @@ jobs:
     # Ensure the next test run fetches the latest test ruleset.
     - name: Remove httpwg/structured-header-tests from composer cache
       run: rm -rf $(composer config cache-files-dir)/httpwg
+
+    - name: Upload code coverage report
+      if: matrix.php-versions == '7.4'
+      uses: actions/upload-artifact@v1
+      with:
+        name: code-coverage
+        path: tmp/code-coverage
