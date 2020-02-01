@@ -59,4 +59,31 @@ print_r(\gapple\StructuredHeaders\Parser::parseList("1, 42;towel;panic=?0"));
 // )
 ```
 
+### Parsing a Dictionary
+
+The `Parser::parseDictionary()` method returns a `\stdClass` object with `[value, parameters]` tuples.
+
+```php
+print_r(\gapple\StructuredHeaders\Parser::parseDictionary("towel, panic=?0"));
+
+// stdClass Object
+// (
+//     [towel] => Array
+//         (
+//             [0] => 1
+//             [1] => stdClass Object
+//                 (
+//                 )
+//         )
+//     [panic] => Array
+//         (
+//             [0] =>
+//             [1] => stdClass Object
+//                 (
+//                 )
+//         )
+// )
+
+```
+
 [1]: https://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
