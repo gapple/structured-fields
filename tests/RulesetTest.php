@@ -58,7 +58,9 @@ abstract class RulesetTest extends TestCase
     public function testRecord($record)
     {
         if (array_key_exists($record->name, $this->skipRules)) {
-            $this->markTestSkipped('Skipped \'' . $record->name . '\': ' . $this->skipRules[$record->name]);
+            $this->markTestSkipped(
+                'Skipped ' . $this->ruleset . ' "' . $record->name . '": ' . $this->skipRules[$record->name]
+            );
         }
 
         // Set default values for optional keys.
@@ -73,24 +75,24 @@ abstract class RulesetTest extends TestCase
             } elseif ($record->header_type == 'dictionary') {
                 $parsedValue = Parser::parseDictionary(implode(',', $record->raw));
             } else {
-                $this->markTestSkipped("Unrecognized header type");
+                $this->markTestSkipped($this->ruleset . ' "' . $record->name . 'Unrecognized header type');
             }
 
             if ($record->must_fail) {
-                $this->fail('"' . $record->name . '" must fail parsing');
+                $this->fail($this->ruleset . ' "' . $record->name . '" must fail parsing');
             }
 
             $this->assertEquals(
                 $record->expected,
                 $parsedValue,
-                '"' . $record->name . '" was not parsed to expected value'
+                $this->ruleset . ' "' . $record->name . '" was not parsed to expected value'
             );
         } catch (ParseException $e) {
             if ($record->must_fail) {
                 $this->addToAssertionCount(1);
                 return;
             } elseif (!$record->can_fail) {
-                $this->fail('"' . $record->name . '" must not fail parsing');
+                $this->fail($this->ruleset . ' "' . $record->name . '" must not fail parsing');
             }
         }
     }
