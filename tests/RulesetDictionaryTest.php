@@ -6,7 +6,7 @@ class RulesetDictionaryTest extends RulesetTest
 {
     protected $ruleset = 'dictionary';
 
-    protected $skipRules = [
+    protected $skipParsingRules = [
         'duplicate key dictionary' => 'Duplicate dictionary keys should overwrite previous value.',
     ];
 }

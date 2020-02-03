@@ -5,6 +5,8 @@ namespace gapple\Tests\StructuredHeaders;
 use gapple\StructuredHeaders\Bytes;
 use gapple\StructuredHeaders\ParseException;
 use gapple\StructuredHeaders\Parser;
+use gapple\StructuredHeaders\SerializeException;
+use gapple\StructuredHeaders\Serializer;
 use gapple\StructuredHeaders\Token;
 use ParagonIE\ConstantTime\Base32;
 use PHPUnit\Framework\TestCase;
@@ -14,14 +16,24 @@ abstract class RulesetTest extends TestCase
     protected $ruleset;
 
     /**
-     * An array of rules which should be skipped.
+     * An array of rules which should skip the parsing test.
      *
      * The element key should be the name of the rule, and the value should be
      * the message to provide for skipping the rule.
      *
      * @var array
      */
-    protected $skipRules = [];
+    protected $skipParsingRules = [];
+
+    /**
+     * An array of rules which should skip the serializing test.
+     *
+     * The element key should be the name of the rule, and the value should be
+     * the message to provide for skipping the rule.
+     *
+     * @var array
+     */
+    protected $skipSerializingRules = [];
 
     public function rulesetDataProvider()
     {
@@ -50,16 +62,26 @@ abstract class RulesetTest extends TestCase
         return $dataset;
     }
 
+    public function serializeRulesetDataProvider()
+    {
+        return array_filter(
+            self::rulesetDataProvider(),
+            function ($params) {
+                return !empty($params[0]->expected);
+            }
+        );
+    }
+
     /**
      * @dataProvider rulesetDataProvider
      *
      * @param $record
      */
-    public function testRecord($record)
+    public function testParsing($record)
     {
-        if (array_key_exists($record->name, $this->skipRules)) {
+        if (array_key_exists($record->name, $this->skipParsingRules)) {
             $this->markTestSkipped(
-                'Skipped ' . $this->ruleset . ' "' . $record->name . '": ' . $this->skipRules[$record->name]
+                'Skipped ' . $this->ruleset . ' "' . $record->name . '": ' . $this->skipParsingRules[$record->name]
             );
         }
 
@@ -68,14 +90,15 @@ abstract class RulesetTest extends TestCase
         $record->can_fail = $record->can_fail ?? false;
 
         try {
+            $raw = implode(',', $record->raw);
             if ($record->header_type == 'item') {
-                $parsedValue = Parser::parseItem($record->raw[0]);
+                $parsedValue = Parser::parseItem($raw);
             } elseif ($record->header_type == 'list') {
-                $parsedValue = Parser::parseList(implode(',', $record->raw));
+                $parsedValue = Parser::parseList($raw);
             } elseif ($record->header_type == 'dictionary') {
-                $parsedValue = Parser::parseDictionary(implode(',', $record->raw));
+                $parsedValue = Parser::parseDictionary($raw);
             } else {
-                $this->markTestSkipped($this->ruleset . ' "' . $record->name . 'Unrecognized header type');
+                $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
             }
 
             if ($record->must_fail) {
@@ -94,6 +117,43 @@ abstract class RulesetTest extends TestCase
             } elseif (!$record->can_fail) {
                 $this->fail($this->ruleset . ' "' . $record->name . '" must not fail parsing');
             }
+        }
+    }
+    /**
+     * @dataProvider serializeRulesetDataProvider
+     *
+     * @param $record
+     */
+    public function testSerializing($record)
+    {
+        if (array_key_exists($record->name, $this->skipSerializingRules)) {
+            $this->markTestSkipped(
+                'Skipped ' . $this->ruleset . ' "' . $record->name . '": ' . $this->skipSerializingRules[$record->name]
+            );
+        }
+
+        try {
+            if ($record->header_type == 'item') {
+                $serializedValue = Serializer::serializeItem($record->expected[0], $record->expected[1]);
+            } elseif ($record->header_type == 'list') {
+                $serializedValue = Serializer::serializeList($record->expected);
+                $this->expectNotToPerformAssertions();
+                return;
+            } elseif ($record->header_type == 'dictionary') {
+                $serializedValue = Serializer::serializeDictionary($record->expected);
+                $this->expectNotToPerformAssertions();
+                return;
+            } else {
+                $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
+            }
+
+            $this->assertEquals(
+                implode(',', $record->canonical ?? $record->raw),
+                $serializedValue,
+                $this->ruleset . ' "' . $record->name . '" was not serialized to expected value'
+            );
+        } catch (SerializeException $e) {
+            $this->fail($this->ruleset . ' "' . $record->name . '"  failed serializing');
         }
     }
 
