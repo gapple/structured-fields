@@ -101,8 +101,27 @@ class Serializer
         return ':' . base64_encode($value) . ':';
     }
 
-    private static function serializeParameters($value): string
+    private static function serializeParameters(object $value): string
     {
-        return '';
+        $returnValue = '';
+
+        foreach (get_object_vars($value) as $key => $value) {
+            $returnValue .= ';' . self::serializeKey($key);
+
+            if ($value !== true) {
+                $returnValue .= '=' . self::serializeBareItem($value);
+            }
+        }
+
+        return $returnValue;
+    }
+
+    private static function serializeKey(string $value): string
+    {
+        if (!preg_match('/^[a-z][a-z0-9.*_-]*$/', $value)) {
+            throw new SerializeException("Invalid characters in key");
+        }
+
+        return $value;
     }
 }
