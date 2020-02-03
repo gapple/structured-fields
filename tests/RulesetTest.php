@@ -137,12 +137,8 @@ abstract class RulesetTest extends TestCase
                 $serializedValue = Serializer::serializeItem($record->expected[0], $record->expected[1]);
             } elseif ($record->header_type == 'list') {
                 $serializedValue = Serializer::serializeList($record->expected);
-                $this->expectNotToPerformAssertions();
-                return;
             } elseif ($record->header_type == 'dictionary') {
                 $serializedValue = Serializer::serializeDictionary($record->expected);
-                $this->expectNotToPerformAssertions();
-                return;
             } else {
                 $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
             }

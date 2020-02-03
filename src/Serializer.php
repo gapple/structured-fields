@@ -5,7 +5,7 @@ namespace gapple\StructuredHeaders;
 class Serializer
 {
 
-    public static function serializeItem($value, $parameters = null): string
+    public static function serializeItem($value, ?object $parameters = null): string
     {
         $output = self::serializeBareItem($value);
 
@@ -16,14 +16,60 @@ class Serializer
         return $output;
     }
 
-    public static function serializeList($value): string
+    public static function serializeList(array $value): string
     {
-        return '';
+        $returnValue = array_map(function ($item) {
+            if (is_array($item[0])) {
+                return self::serializeInnerList($item[0], $item[1]);
+            } else {
+                return self::serializeItem($item[0], $item[1]);
+            }
+        }, $value);
+
+        return implode(', ', $returnValue);
     }
 
-    public static function serializeDictionary($value): string
+    public static function serializeDictionary(object $value): string
     {
-        return '';
+        $members = get_object_vars($value);
+        $keys = array_keys($members);
+
+        $returnValue = array_map(function ($item, $key) {
+            $returnValue = self::serializeKey($key);
+
+            if ($item[0] !== true || !empty(get_object_vars($item[1]))) {
+                $returnValue .= '=';
+                if (is_array($item[0])) {
+                    $returnValue .= self::serializeInnerList($item[0], $item[1]);
+                } else {
+                    $returnValue .= self::serializeItem($item[0], $item[1]);
+                }
+            }
+            return $returnValue;
+        }, $members, $keys);
+
+        return implode(', ', $returnValue);
+    }
+
+    private static function serializeInnerList(array $value, ?object $parameters = null): string
+    {
+        $returnValue = '(';
+
+        while ($item = array_shift($value)) {
+            $returnValue .= self::serializeBareItem($item[0], $item[1]);
+
+            if (!empty($value)) {
+                $returnValue .= ' ';
+            }
+        }
+
+        $returnValue .= ')';
+
+        if (!empty($parameters)) {
+            $returnValue .= self::serializeParameters($parameters);
+        }
+
+        return $returnValue;
     }
 
     private static function serializeBareItem($value): string
