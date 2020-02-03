@@ -77,14 +77,14 @@ class Serializer
             return self::serializeInteger($value);
         } elseif (is_float($value)) {
             return self::serializeDecimal($value);
-        } elseif (is_string($value)) {
-            return self::serializeString($value);
-        } elseif ($value instanceof Token) {
-            return self::serializeToken($value);
         } elseif (is_bool($value)) {
             return self::serializeBoolean($value);
+        } elseif ($value instanceof Token) {
+            return self::serializeToken($value);
         } elseif ($value instanceof Bytes) {
             return self::serializeByteSequence($value);
+        } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
+            return self::serializeString($value);
         }
 
         throw new SerializeException("Unrecognized type");
