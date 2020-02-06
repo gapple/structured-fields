@@ -86,4 +86,49 @@ print_r(\gapple\StructuredHeaders\Parser::parseDictionary("towel, panic=?0"));
 
 ```
 
+### Serializing an Item
+
+The `Serializer::serializeItem()` method.
+
+```php
+print_r(\gapple\StructuredHeaders\Serializer::serializeItem(true));
+// ?1
+
+print_r(\gapple\StructuredHeaders\Serializer::serializeItem(42));
+// 42
+
+print_r(\gapple\StructuredHeaders\Serializer::serializeItem("42"));
+// "42"
+
+print_r(\gapple\StructuredHeaders\Serializer::serializeItem(new \gapple\StructuredHeaders\Bytes('🙂')));
+// :8J+Zgg==:
+```
+
+### Serializing a List
+
+The `Serializer::serializeList()` method.
+
+```php
+print_r(\gapple\StructuredHeaders\Serializer::serializeList([
+    [1, (object) []],
+    [42, (object) ['towel' => true, 'panic' => false]],
+]));
+
+// 1, 42;towel;panic=?0
+```
+
+### Serializing a Dictionary
+
+The `Serializer::serializeDictionary()` method.
+
+```php
+print_r(\gapple\StructuredHeaders\Serializer::serializeDictionary((object) [
+    'towel' => [true, (object) []],
+    'panic' => [false, (object) []],
+]));
+
+// towel, panic=?0
+
+```
+
 [1]: https://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
