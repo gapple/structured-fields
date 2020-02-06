@@ -29,13 +29,13 @@ class Parser
             }
 
             if (!preg_match('/^(, *)/', $string, $comma_matches)) {
-                throw new ParseException();
+                throw new ParseException('Expected comma');
             }
 
             $string = substr($string, strlen($comma_matches[1]));
 
             if (empty($string)) {
-                throw new ParseException();
+                throw new ParseException('Unexpected end of input');
             }
         }
 
@@ -58,13 +58,13 @@ class Parser
             }
 
             if (!preg_match('/^(, *)/', $string, $comma_matches)) {
-                throw new ParseException();
+                throw new ParseException('Expected comma');
             }
 
             $string = substr($string, strlen($comma_matches[1]));
 
             if (empty($string)) {
-                throw new ParseException();
+                throw new ParseException('Unexpected end of input');
             }
         }
 
@@ -100,11 +100,11 @@ class Parser
             $value[] = self::doParseItem($string);
 
             if (!empty($string) && !in_array($string[0], [' ', ')'])) {
-                throw new ParseException();
+                throw new ParseException('Unexpected character in inner list');
             }
         }
 
-        throw new ParseException();
+        throw new ParseException('Unexpected end of input');
     }
 
     /**
@@ -123,7 +123,7 @@ class Parser
             return $value;
         }
 
-        throw new ParseException();
+        throw new ParseException('Unexpected characters at end of input');
     }
 
     /**
@@ -153,7 +153,7 @@ class Parser
         $value = null;
 
         if ($string === "") {
-            throw new ParseException();
+            throw new ParseException('Unexpected empty input');
         } elseif (preg_match('/^(-|\d)/', $string)) {
             $value = self::parseNumber($string);
         } elseif ($string[0] == '"') {
@@ -165,7 +165,7 @@ class Parser
         } elseif (preg_match('/^(\*|[a-z])/i', $string)) {
             $value = self::parseToken($string);
         } else {
-            throw new ParseException();
+            throw new ParseException('Unknown item type');
         }
 
         return $value;
@@ -198,13 +198,13 @@ class Parser
             return $matches[0];
         }
 
-        throw new ParseException();
+        throw new ParseException('Invalid character in key');
     }
 
     private static function parseBoolean(string &$string): bool
     {
         if (!preg_match('/^\?[01]/', $string)) {
-            throw new ParseException();
+            throw new ParseException('Invalid character in boolean');
         }
 
         $value = $string[1] === '1';
@@ -224,19 +224,19 @@ class Parser
             $input_number = $number_matches[1];
 
             if (preg_match('/^(-?\d{1,12}\.\d{1,3})$/', $input_number, $decimal_matches)) {
-                if (strlen($decimal_matches[0]) <= 16) {
-                    $string = substr($string, strlen($decimal_matches[0]));
+                $string = substr($string, strlen($decimal_matches[0]));
 
-                    return (float) $decimal_matches[0];
-                }
+                return (float) $decimal_matches[0];
             } elseif (preg_match('/^-?\d{1,15}$/', $input_number, $integer_matches)) {
                 $string = substr($string, strlen($integer_matches[0]));
 
                 return (int) $integer_matches[0];
+            } else {
+                throw new ParseException('Number contains too many digits');
             }
         }
 
-        throw new ParseException();
+        throw new ParseException('Invalid number format');
     }
 
     private static function parseString(string &$string): string
@@ -246,13 +246,13 @@ class Parser
 
             // Newlines and Tabs are not allowed; string cannot end in escape character.
             if (preg_match('/(?<!\\\)\\\([nt]|$)/', $matches[1])) {
-                throw new ParseException();
+                throw new ParseException('Invalid whitespace in string');
             }
             // Only quotes and backslashes should be escaped.
             if (preg_match_all('/(?<!\\\)\\\./', $matches[1], $quoted_matches, PREG_PATTERN_ORDER)) {
                 foreach ($quoted_matches[0] as $quoted_match) {
                     if (!in_array($quoted_match, ['\\"', '\\\\'])) {
-                        throw new ParseException();
+                        throw new ParseException('Invalid escaped character in string');
                     }
                 }
             }
@@ -260,7 +260,7 @@ class Parser
             // Unescape quotes and backslashes.
             $output_string = preg_replace('/\\\(["\\\])/', '$1', $matches[1]);
         } else {
-            throw new ParseException();
+            throw new ParseException('Invalid character in string');
         }
 
         return $output_string;
@@ -278,7 +278,7 @@ class Parser
             return new Token($matches[1]);
         }
 
-        throw new ParseException();
+        throw new ParseException('Invalid character in token');
     }
 
     /**
@@ -295,6 +295,6 @@ class Parser
             return new Bytes(base64_decode($matches[1]));
         }
 
-        throw new ParseException();
+        throw new ParseException('Invalid character in byte sequence');
     }
 }
