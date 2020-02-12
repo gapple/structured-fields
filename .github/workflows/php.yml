@@ -37,13 +37,17 @@ jobs:
 
     - name: Get Composer Cache Directory
       id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: |
+        echo "::set-output name=dir::$(composer config cache-files-dir)"
+        echo "::set-output name=date::$(date "+%m")"
 
     - uses: actions/cache@v1
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
-        restore-keys: ${{ runner.os }}-composer-
+        key: ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-${{ hashFiles('**/composer.json') }}
+        restore-keys: |
+          ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-
+          ${{ runner.os }}-composer-
 
     - name: Validate composer.json and composer.lock
       run: composer validate
