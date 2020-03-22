@@ -37,13 +37,12 @@ class Serializer
         $returnValue = array_map(function ($item, $key) {
             $returnValue = self::serializeKey($key);
 
-            if ($item[0] !== true || !empty(get_object_vars($item[1]))) {
-                $returnValue .= '=';
-                if (is_array($item[0])) {
-                    $returnValue .= self::serializeInnerList($item[0], $item[1]);
-                } else {
-                    $returnValue .= self::serializeItem($item[0], $item[1]);
-                }
+            if ($item[0] === true) {
+                $returnValue .= self::serializeParameters($item[1]);
+            } elseif (is_array($item[0])) {
+                $returnValue .= '=' . self::serializeInnerList($item[0], $item[1]);
+            } else {
+                $returnValue .= '=' . self::serializeItem($item[0], $item[1]);
             }
             return $returnValue;
         }, $members, $keys);

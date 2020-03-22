@@ -18,8 +18,8 @@ class Parser
                 $string = substr($string, 1);
                 $value->{$key} = self::parseItemOrInnerList($string);
             } else {
-                // Bare boolean true values cannot have parameters.
-                $value->{$key} = [true, new \stdClass()];
+                // Bare boolean true value.
+                $value->{$key} = [true, self::parseParameters($string)];
             }
 
             $string = ltrim($string, ' ');
