@@ -163,7 +163,7 @@ class Serializer
 
     private static function serializeKey(string $value): string
     {
-        if (!preg_match('/^[a-z][a-z0-9.*_-]*$/', $value)) {
+        if (!preg_match('/^[a-z*][a-z0-9.*_-]*$/', $value)) {
             throw new SerializeException("Invalid characters in key");
         }
 

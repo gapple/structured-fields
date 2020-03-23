@@ -28,7 +28,6 @@ class SerializeKeyTest extends TestCase
             'underscore' => ['_'],
             'dash' => ['-'],
             'period' => ['.'],
-            'asterisk' => ['*'],
         ];
     }
 
