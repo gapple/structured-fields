@@ -120,7 +120,7 @@ class Serializer
 
     private static function serializeString(string $value): string
     {
-        if (preg_match('/[^\x00-\x7F]/i', $value)) {
+        if (preg_match('/[^\x20-\x7E]/i', $value)) {
             throw new SerializeException("Invalid characters in string");
         }
 
