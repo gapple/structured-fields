@@ -42,7 +42,17 @@ abstract class RulesetTest extends TestCase
             throw new \RuntimeException('Ruleset file does not exist');
         }
 
-        $rules = json_decode(file_get_contents($path));
+        $rules = json_decode(
+            preg_replace(
+                '/".*?\\u0000.*?":/', // PHP can't parse JSON with null bytes in object keys.
+                '"":',
+                file_get_contents($path)
+            )
+        );
+
+        if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException("Unable to parse ruleset JSON file.");
+        }
 
         $dataset = [];
         foreach ($rules as $rule) {
@@ -55,6 +65,10 @@ abstract class RulesetTest extends TestCase
                     self::convertDictionaryValues($rule->expected);
                 }
             }
+
+            // Set default values for optional keys.
+            $rule->must_fail = $rule->must_fail ?? false;
+            $rule->can_fail = $rule->can_fail ?? false;
 
             $dataset[$rule->name] = [$rule];
         }
@@ -75,7 +89,7 @@ abstract class RulesetTest extends TestCase
     public function serializeRulesetDataProvider()
     {
         return array_filter(
-            self::rulesetDataProvider(),
+            static::rulesetDataProvider(),
             function ($params) {
                 return !empty($params[0]->expected);
             }
@@ -94,10 +108,6 @@ abstract class RulesetTest extends TestCase
                 'Skipped ' . $this->ruleset . ' "' . $record->name . '": ' . $this->skipParsingRules[$record->name]
             );
         }
-
-        // Set default values for optional keys.
-        $record->must_fail = $record->must_fail ?? false;
-        $record->can_fail = $record->can_fail ?? false;
 
         try {
             $raw = implode(',', $record->raw);
@@ -152,6 +162,10 @@ abstract class RulesetTest extends TestCase
                 $serializedValue = Serializer::serializeDictionary($record->expected);
             } else {
                 $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
+            }
+
+            if ($record->must_fail) {
+                $this->fail($this->ruleset . ' "' . $record->name . '" must fail serializing');
             }
 
             $this->assertEquals(
