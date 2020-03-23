@@ -35,7 +35,7 @@ abstract class RulesetTest extends TestCase
      */
     protected $skipSerializingRules = [];
 
-    public function rulesetDataProvider()
+    private function rulesetDataProvider()
     {
         $path = __DIR__ . '/../vendor/httpwg/structured-header-tests/' . $this->ruleset . '.json';
         if (!file_exists($path)) {
@@ -62,6 +62,16 @@ abstract class RulesetTest extends TestCase
         return $dataset;
     }
 
+    public function parseRulesetDataProvider()
+    {
+        return array_filter(
+            static::rulesetDataProvider(),
+            function ($params) {
+                return !empty($params[0]->raw);
+            }
+        );
+    }
+
     public function serializeRulesetDataProvider()
     {
         return array_filter(
@@ -73,7 +83,7 @@ abstract class RulesetTest extends TestCase
     }
 
     /**
-     * @dataProvider rulesetDataProvider
+     * @dataProvider parseRulesetDataProvider
      *
      * @param $record
      */
@@ -119,6 +129,7 @@ abstract class RulesetTest extends TestCase
             }
         }
     }
+
     /**
      * @dataProvider serializeRulesetDataProvider
      *
@@ -149,7 +160,12 @@ abstract class RulesetTest extends TestCase
                 $this->ruleset . ' "' . $record->name . '" was not serialized to expected value'
             );
         } catch (SerializeException $e) {
-            $this->fail($this->ruleset . ' "' . $record->name . '"  failed serializing');
+            if ($record->must_fail) {
+                $this->addToAssertionCount(1);
+                return;
+            } else {
+                $this->fail($this->ruleset . ' "' . $record->name . '"  failed serializing');
+            }
         }
     }
 
