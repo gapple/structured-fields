@@ -134,7 +134,7 @@ class Serializer
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
 
-        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)/i', $value)) {
+        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', $value)) {
             throw new SerializeException('Invalid characters in token');
         }
 
