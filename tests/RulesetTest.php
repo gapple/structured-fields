@@ -42,14 +42,16 @@ abstract class RulesetTest extends TestCase
             throw new \RuntimeException('Ruleset file does not exist');
         }
 
-        $rules = json_decode(
-            preg_replace(
-                '/".*?\\u0000.*?":/', // PHP can't parse JSON with null bytes in object keys.
-                '"":',
-                file_get_contents($path)
-            )
+        $rulesJson = file_get_contents($path);
+        // PHP doesn't allow null bytes in object keys, and will fail parsing.
+        // Corresponding tests will need to be ignored in relevant test case.
+        $rulesJson = preg_replace(
+            '/".*?\\\u0000.*?":/',
+            '"":',
+            $rulesJson
         );
 
+        $rules = json_decode($rulesJson);
         if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
             throw new \RuntimeException("Unable to parse ruleset JSON file.");
         }
