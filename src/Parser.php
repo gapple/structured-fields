@@ -284,7 +284,10 @@ class Parser
             return new Token($matches[1]);
         }
 
-        throw new ParseException('Invalid character in token');
+        // parseToken is only called by parseBareItem if the initial character
+        // is valid, so a Token object is always returned.  If there is an
+        // invalid character in the token, the public function that was called
+        // will detect that the remainder of the input string is invalid.
     }
 
     /**
