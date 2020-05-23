@@ -22,13 +22,16 @@ class Parser
                 $value->{$key} = [true, self::parseParameters($string)];
             }
 
-            $string = ltrim($string, ' ');
+            // OWS (optional whitespace) before comma.
+            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
+            $string = ltrim($string, " \t");
 
             if (empty($string)) {
                 return $value;
             }
 
-            if (!preg_match('/^(, *)/', $string, $comma_matches)) {
+            // OWS (optional whitespace) after comma.
+            if (!preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
                 throw new ParseException('Expected comma');
             }
 
@@ -51,13 +54,16 @@ class Parser
         while (!empty($string)) {
             $value[] = self::parseItemOrInnerList($string);
 
-            $string = ltrim($string, ' ');
+            // OWS (optional whitespace) before comma.
+            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
+            $string = ltrim($string, " \t");
 
             if (empty($string)) {
                 return $value;
             }
 
-            if (!preg_match('/^(, *)/', $string, $comma_matches)) {
+            // OWS (optional whitespace) after comma.
+            if (!preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
                 throw new ParseException('Expected comma');
             }
 
