@@ -279,15 +279,14 @@ class Parser
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
 
-        if (preg_match('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i', $string, $matches)) {
-            $string = substr($string, strlen($matches[1]));
-            return new Token($matches[1]);
-        }
+        preg_match('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i', $string, $matches);
+        $string = substr($string, strlen($matches[1]));
 
         // parseToken is only called by parseBareItem if the initial character
         // is valid, so a Token object is always returned.  If there is an
         // invalid character in the token, the public function that was called
         // will detect that the remainder of the input string is invalid.
+        return new Token($matches[1]);
     }
 
     /**
