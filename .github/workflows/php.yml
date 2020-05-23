@@ -71,3 +71,10 @@ jobs:
       with:
         name: code-coverage
         path: tmp/code-coverage
+
+    - name: Upload code coverage to codecov
+      if: matrix.php-versions == '7.4'
+      uses: codecov/codecov-action@v1
+      with:
+        file: ./tmp/code-coverage/clover.xml
+        flags: phpunit

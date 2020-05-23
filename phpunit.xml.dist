@@ -13,6 +13,7 @@
 
     <logging>
         <log type="coverage-html" target="tmp/code-coverage"/>
+        <log type="coverage-clover" target="tmp/code-coverage/clover.xml"/>
     </logging>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

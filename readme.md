@@ -4,6 +4,8 @@ Structured Headers parser for PHP
 Parser and serializer for the [Structured Headers for HTTP][1] specification.
 
 [![Build Status](https://github.com/gapple/structured-headers/workflows/PHP%20Composer/badge.svg)](https://github.com/gapple/structured-headers/actions)
+[![codecov](https://codecov.io/gh/gapple/structured-headers/branch/master/graph/badge.svg)](https://codecov.io/gh/gapple/structured-headers)
+
 
 Installation
 ------------
