@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.2', '7.3', '7.4']
+        php-versions: ['7.2', '7.3', '7.4', '8.0']
 
     name: PHP ${{ matrix.php-versions }}
 
@@ -44,16 +44,23 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-${{ hashFiles('**/composer.json') }}
+        key: ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
         restore-keys: |
+          ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-${{ matrix.php-versions }}-
           ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-
           ${{ runner.os }}-composer-
 
     - name: Validate composer.json and composer.lock
       run: composer validate
 
-    - name: Install dependencies
+    - name: Install PHP 7 dependencies
+      if: matrix.php-versions != '8.0'
       run: composer install --prefer-dist --no-progress --no-suggest
+
+    # PHPUnit is not yet officially compatible with PHP 8
+    - name: Install PHP 8 dependencies
+      if: matrix.php-versions == '8.0'
+      run: composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest
 
     - name: Check code style
       run: composer run-script phpcs
