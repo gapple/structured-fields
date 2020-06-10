@@ -59,13 +59,7 @@ abstract class RulesetTest extends TestCase
         $dataset = [];
         foreach ($rules as $rule) {
             if (isset($rule->expected)) {
-                if ($rule->header_type == 'item') {
-                    self::convertItemValue($rule->expected);
-                } elseif ($rule->header_type == 'list') {
-                    self::convertListValues($rule->expected);
-                } elseif ($rule->header_type == 'dictionary') {
-                    self::convertDictionaryValues($rule->expected);
-                }
+                self::convertValues($rule->expected);
             }
 
             // Set default values for optional keys.
@@ -185,46 +179,29 @@ abstract class RulesetTest extends TestCase
         }
     }
 
-    private static function convertItemValue(&$value)
+    /**
+     * Convert any encoded special values to typed objects.
+     *
+     * @param $input
+     *   The expected Item, List, or Dictionary structure.
+     */
+    private static function convertValues(&$input)
     {
-        if ($value[0] instanceof \stdClass) {
-            self::convertValue($value[0]);
-        }
-
-        foreach (get_object_vars($value[1]) as $paramKey => &$paramValue) {
-            if ($paramValue instanceof \stdClass) {
-                self::convertValue($value[1]->{$paramKey});
+        if (is_array($input)) {
+            foreach ($input as &$value) {
+                self::convertValues($value);
             }
-        }
-    }
-
-    private static function convertValue(&$value)
-    {
-        if ($value->__type == 'token') {
-            $value = new Token($value->value);
-        } elseif ($value->__type == 'binary') {
-            $value = new Bytes(Base32::decodeUpper($value->value));
-        }
-    }
-
-    private static function convertListValues(&$list)
-    {
-        foreach ($list as &$item) {
-            if (end($item) instanceof \stdClass) {
-                self::convertItemValue($item);
+        } elseif (is_object($input)) {
+            if (property_exists($input, '__type')) {
+                if ($input->__type == 'token') {
+                    $input = new Token($input->value);
+                } elseif ($input->__type == 'binary') {
+                    $input = new Bytes(Base32::decodeUpper($input->value));
+                }
             } else {
-                self::convertListValues($item);
-            }
-        }
-    }
-
-    private static function convertDictionaryValues(&$dictionary)
-    {
-        foreach (get_object_vars($dictionary) as $key => $item) {
-            if (end($item) instanceof \stdClass) {
-                self::convertItemValue($dictionary->{$key});
-            } else {
-                self::convertListValues($dictionary->{$key});
+                foreach (get_object_vars($input) as $paramKey => $paramValue) {
+                    self::convertValues($input->{$paramKey});
+                }
             }
         }
     }
