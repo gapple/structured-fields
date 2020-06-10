@@ -55,7 +55,7 @@ class Serializer
         $returnValue = '(';
 
         while ($item = array_shift($value)) {
-            $returnValue .= self::serializeBareItem($item[0], $item[1]);
+            $returnValue .= self::serializeItem($item[0], $item[1]);
 
             if (!empty($value)) {
                 $returnValue .= ' ';
