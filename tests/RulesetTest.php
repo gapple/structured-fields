@@ -37,7 +37,7 @@ abstract class RulesetTest extends TestCase
 
     private function rulesetDataProvider()
     {
-        $path = __DIR__ . '/../vendor/httpwg/structured-header-tests/' . $this->ruleset . '.json';
+        $path = __DIR__ . '/../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';
         if (!file_exists($path)) {
             throw new \RuntimeException('Ruleset file does not exist');
         }

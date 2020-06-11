@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "ext-json": "*",
-        "httpwg/structured-header-tests": "*@dev",
+        "httpwg/structured-field-tests": "*@dev",
         "paragonie/constant_time_encoding": "^2.3",
         "phpunit/phpunit": "^8.5 || ^9.1",
         "squizlabs/php_codesniffer": "^3.5"
@@ -39,14 +39,14 @@
         {
             "type": "package",
             "package": {
-                "name": "httpwg/structured-header-tests",
+                "name": "httpwg/structured-field-tests",
                 "version": "dev-master",
                 "dist": {
-                    "url": "https://github.com/httpwg/structured-header-tests/archive/master.zip",
+                    "url": "https://github.com/httpwg/structured-field-tests/archive/master.zip",
                     "type": "zip"
                 },
                 "source": {
-                    "url": "git@github.com:httpwg/structured-header-tests.git",
+                    "url": "git@github.com:httpwg/structured-field-tests.git",
                     "type": "git",
                     "reference": "master"
                 }

@@ -42,6 +42,7 @@ jobs:
         echo "::set-output name=date::$(date "+%m")"
 
     - uses: actions/cache@v2
+      id: cache
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ steps.composer-cache.outputs.date }}-${{ matrix.php-versions }}-${{ hashFiles('**/composer.json') }}
@@ -69,7 +70,8 @@ jobs:
       run: composer run-script phpunit
 
     # Ensure the next test run fetches the latest test ruleset.
-    - name: Remove httpwg/structured-header-tests from composer cache
+    - name: Cleanup composer cache
+      if: steps.cache.outputs.cache-hit != 'true'
       run: rm -rf $(composer config cache-files-dir)/httpwg
 
     - name: Upload code coverage report
