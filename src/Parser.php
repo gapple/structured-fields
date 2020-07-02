@@ -1,6 +1,6 @@
 <?php
 
-namespace gapple\StructuredHeaders;
+namespace gapple\StructuredFields;
 
 class Parser
 {
@@ -152,7 +152,7 @@ class Parser
     /**
      * @param string $string
      *
-     * @return bool|float|int|string|\gapple\StructuredHeaders\Bytes|\gapple\StructuredHeaders\Token
+     * @return bool|float|int|string|\gapple\StructuredFields\Bytes|\gapple\StructuredFields\Token
      */
     private static function parseBareItem(string &$string)
     {
@@ -294,7 +294,7 @@ class Parser
      *
      * @param string $string
      *
-     * @return \gapple\StructuredHeaders\Bytes
+     * @return \gapple\StructuredFields\Bytes
      */
     private static function parseByteSequence(string &$string): Bytes
     {

@@ -6,7 +6,7 @@
     failOnWarning="true"
 >
     <testsuites>
-        <testsuite name="structured-headers tests">
+        <testsuite name="structured-fields tests">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>

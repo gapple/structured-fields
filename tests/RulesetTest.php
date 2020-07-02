@@ -1,13 +1,13 @@
 <?php
 
-namespace gapple\Tests\StructuredHeaders;
+namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredHeaders\Bytes;
-use gapple\StructuredHeaders\ParseException;
-use gapple\StructuredHeaders\Parser;
-use gapple\StructuredHeaders\SerializeException;
-use gapple\StructuredHeaders\Serializer;
-use gapple\StructuredHeaders\Token;
+use gapple\StructuredFields\Bytes;
+use gapple\StructuredFields\ParseException;
+use gapple\StructuredFields\Parser;
+use gapple\StructuredFields\SerializeException;
+use gapple\StructuredFields\Serializer;
+use gapple\StructuredFields\Token;
 use ParagonIE\ConstantTime\Base32;
 use PHPUnit\Framework\TestCase;
 

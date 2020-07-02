@@ -1,9 +1,9 @@
 <?php
 
-namespace gapple\Tests\StructuredHeaders;
+namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredHeaders\SerializeException;
-use gapple\StructuredHeaders\Serializer;
+use gapple\StructuredFields\SerializeException;
+use gapple\StructuredFields\Serializer;
 use PHPUnit\Framework\TestCase;
 
 class SerializeStringTest extends TestCase

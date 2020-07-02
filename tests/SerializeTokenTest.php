@@ -1,10 +1,10 @@
 <?php
 
-namespace gapple\Tests\StructuredHeaders;
+namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredHeaders\SerializeException;
-use gapple\StructuredHeaders\Serializer;
-use gapple\StructuredHeaders\Token;
+use gapple\StructuredFields\SerializeException;
+use gapple\StructuredFields\Serializer;
+use gapple\StructuredFields\Token;
 use PHPUnit\Framework\TestCase;
 
 class SerializeTokenTest extends TestCase

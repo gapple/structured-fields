@@ -1,6 +1,6 @@
 {
-    "name": "gapple/structured-headers",
-    "description": "Parser for Structured Headers for HTTP",
+    "name": "gapple/structured-fields",
+    "description": "Parser for Structured Field Values for HTTP",
     "type": "library",
     "license": [
         "MIT",
@@ -12,13 +12,14 @@
         }
     ],
     "support": {
-        "source": "https://github.com/gapple/structured-headers",
-        "issues": "https://github.com/gapple/structured-headers/issues"
+        "source": "https://github.com/gapple/structured-fields",
+        "issues": "https://github.com/gapple/structured-fields/issues"
     },
     "autoload": {
         "psr-4": {
-            "gapple\\StructuredHeaders\\": "src/",
-            "gapple\\Tests\\StructuredHeaders\\": "tests/"
+            "gapple\\StructuredFields\\": "src/",
+            "gapple\\Tests\\StructuredFields\\": "tests/",
+            "gapple\\StructuredHeaders\\": "src/headers-compat"
         }
     },
     "scripts": {

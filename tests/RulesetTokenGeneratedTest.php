@@ -1,6 +1,6 @@
 <?php
 
-namespace gapple\Tests\StructuredHeaders;
+namespace gapple\Tests\StructuredFields;
 
 class RulesetTokenGeneratedTest extends RulesetTest
 {

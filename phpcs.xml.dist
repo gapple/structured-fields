@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="structured-headers">
-  <description>Default PHP CodeSniffer configuration for gapple/structured-headers.</description>
+<ruleset name="structured-fields">
+  <description>Default PHP CodeSniffer configuration for gapple/structured-fields.</description>
 
   <file>src</file>
   <file>tests</file>

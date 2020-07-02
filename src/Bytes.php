@@ -1,6 +1,6 @@
 <?php
 
-namespace gapple\StructuredHeaders;
+namespace gapple\StructuredFields;
 
 class Bytes
 {
