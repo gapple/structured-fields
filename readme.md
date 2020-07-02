@@ -4,7 +4,7 @@ Structured Field Values Parser for PHP
 Parser and serializer for the [Structured Field Values for HTTP][1] specification.
 
 [![Build Status](https://github.com/gapple/structured-fields/workflows/PHP%20Composer/badge.svg)](https://github.com/gapple/structured-fields/actions)
-[![codecov](https://codecov.io/gh/gapple/structured-fields/branch/master/graph/badge.svg)](https://codecov.io/gh/gapple/structured-fields)
+[![codecov](https://codecov.io/gh/gapple/structured-fields/branch/develop/graph/badge.svg)](https://codecov.io/gh/gapple/structured-fields)
 
 
 Installation
