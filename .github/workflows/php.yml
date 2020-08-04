@@ -30,12 +30,14 @@ jobs:
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: none
+        tools: cs2pr
     - name: Setup PHP ${{ matrix.php-versions }} with code coverage
       if: matrix.php-versions == '7.4'
       uses: shivammathur/setup-php@v1
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: xdebug
+        tools: cs2pr
 
     - name: Setup Problem Matchers for PHPUnit
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
@@ -69,7 +71,7 @@ jobs:
       run: composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest
 
     - name: Check code style
-      run: composer run-script phpcs
+      run: composer run-script phpcs -- --report=checkstyle | cs2pr
 
     - name: Run tests
       run: composer run-script phpunit
