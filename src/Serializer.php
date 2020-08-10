@@ -105,17 +105,19 @@ class Serializer
 
     private static function serializeDecimal(float $value): string
     {
-        if (floor($value) > 999999999999 || floor($value) < -999999999999) {
+        if (abs(floor($value)) > 999999999999) {
             throw new SerializeException("Integer portion of decimals is limited to 12 digits");
         }
 
-        $returnValue = (string) round($value, 3, PHP_ROUND_HALF_EVEN);
+        // Casting to a string loses a digit on long numbers, but is preserved
+        // by json_encode (e.g. 111111111111.111).
+        $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
 
-        if (stripos($returnValue, '.') === false) {
-            $returnValue .= '.0';
+        if (strpos($result, '.') === false) {
+            $result .= '.0';
         }
 
-        return $returnValue;
+        return $result;
     }
 
     private static function serializeString(string $value): string
