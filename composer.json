@@ -33,7 +33,7 @@
         "ext-json": "*",
         "httpwg/structured-field-tests": "*@dev",
         "paragonie/constant_time_encoding": "^2.3",
-        "phpunit/phpunit": "^8.5 || ^9.1",
+        "phpunit/phpunit": "^8.5 || ^9.3",
         "squizlabs/php_codesniffer": "^3.5"
     },
     "repositories": [

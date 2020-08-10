@@ -65,12 +65,12 @@ jobs:
       if: matrix.php-versions != '8.0'
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    # PHPUnit is not yet officially compatible with PHP 8
+    # A PHPUnit dependency is not yet officially compatible with PHP 8
     - name: Install PHP 8 dependencies
       if: matrix.php-versions == '8.0'
       run: composer install --ignore-platform-reqs --prefer-dist --no-progress --no-suggest
 
-    - name: Run tests
+    - name: Run PHPUnit tests
       run: composer run-script phpunit
 
     - name: Check code style

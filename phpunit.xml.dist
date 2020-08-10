@@ -11,13 +11,15 @@
         </testsuite>
     </testsuites>
 
-    <logging>
-        <log type="coverage-html" target="tmp/code-coverage"/>
-        <log type="coverage-clover" target="tmp/code-coverage/clover.xml"/>
-    </logging>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
+    <coverage includeUncoveredFiles="true"
+              processUncoveredFiles="true">
+        <include>
             <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+        </include>
+
+        <report>
+            <html outputDirectory="tmp/code-coverage"/>
+            <clover outputFile="tmp/code-coverage/clover.xml"/>
+        </report>
+    </coverage>
 </phpunit>
