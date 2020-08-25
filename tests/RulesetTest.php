@@ -43,13 +43,6 @@ abstract class RulesetTest extends TestCase
         }
 
         $rulesJson = file_get_contents($path);
-        // PHP doesn't allow null bytes in object keys, and will fail parsing.
-        // Corresponding tests will need to be ignored in relevant test case.
-        $rulesJson = preg_replace(
-            '/".*?\\\u0000.*?":/',
-            '"":',
-            $rulesJson
-        );
 
         $rules = json_decode($rulesJson);
         if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
@@ -59,7 +52,12 @@ abstract class RulesetTest extends TestCase
         $dataset = [];
         foreach ($rules as $rule) {
             if (isset($rule->expected)) {
-                self::convertValues($rule->expected);
+                try {
+                    $rule->expected = self::{"convertExpected" . ucfirst($rule->header_type)}($rule->expected);
+                } catch (\UnexpectedValueException $e) {
+                    // Skip rules that cannot be parsed.
+                    continue;
+                }
             }
 
             // Set default values for optional keys.
@@ -107,15 +105,7 @@ abstract class RulesetTest extends TestCase
 
         try {
             $raw = implode(',', $record->raw);
-            if ($record->header_type == 'item') {
-                $parsedValue = Parser::parseItem($raw);
-            } elseif ($record->header_type == 'list') {
-                $parsedValue = Parser::parseList($raw);
-            } elseif ($record->header_type == 'dictionary') {
-                $parsedValue = Parser::parseDictionary($raw);
-            } else {
-                $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
-            }
+            $parsedValue = Parser::{'parse' . ucfirst($record->header_type)}($raw);
 
             if ($record->must_fail) {
                 $this->fail($this->ruleset . ' "' . $record->name . '" must fail parsing');
@@ -152,12 +142,8 @@ abstract class RulesetTest extends TestCase
         try {
             if ($record->header_type == 'item') {
                 $serializedValue = Serializer::serializeItem($record->expected[0], $record->expected[1]);
-            } elseif ($record->header_type == 'list') {
-                $serializedValue = Serializer::serializeList($record->expected);
-            } elseif ($record->header_type == 'dictionary') {
-                $serializedValue = Serializer::serializeDictionary($record->expected);
             } else {
-                $this->markTestSkipped($this->ruleset . ' "' . $record->name . ' Unrecognized header type');
+                $serializedValue = Serializer::{'serialize' . ucfirst($record->header_type)}($record->expected);
             }
 
             if ($record->must_fail) {
@@ -180,29 +166,120 @@ abstract class RulesetTest extends TestCase
     }
 
     /**
-     * Convert any encoded special values to typed objects.
+     * Convert the expected value of an item tuple.
      *
-     * @param $input
-     *   The expected Item, List, or Dictionary structure.
+     * @param  array  $item
+     * @return array
      */
-    private static function convertValues(&$input)
+    private static function convertExpectedItem(array $item): array
     {
-        if (is_array($input)) {
-            foreach ($input as &$value) {
-                self::convertValues($value);
+        return [self::convertValue($item[0]), self::convertParameters($item[1])];
+    }
+
+    /**
+     * Convert the expected values of a parameters map.
+     *
+     * @param  array  $parameters
+     * @return object
+     */
+    private static function convertParameters(array $parameters): object
+    {
+        $output = new \stdClass();
+
+        foreach ($parameters as $value) {
+            // Null byte is not supported as first character of property name.
+            if (strpos($value[0], "\0") === 0) {
+                throw new \UnexpectedValueException();
             }
-        } elseif (is_object($input)) {
-            if (property_exists($input, '__type')) {
-                if ($input->__type == 'token') {
-                    $input = new Token($input->value);
-                } elseif ($input->__type == 'binary') {
-                    $input = new Bytes(Base32::decodeUpper($input->value));
-                }
+
+            $output->{$value[0]} = self::convertValue($value[1]);
+        }
+
+        return $output;
+    }
+
+    /**
+     * Convert the expected values of an inner list tuple.
+     *
+     * @param  array  $innerList
+     * @return array
+     */
+    private static function convertInnerList(array $innerList)
+    {
+        $outputList = [];
+
+        foreach ($innerList[0] as $value) {
+            $outputList[] = [self::convertValue($value[0]), self::convertParameters($value[1])];
+        }
+
+        return [$outputList, self::convertParameters($innerList[1])];
+    }
+
+    /**
+     * Convert the expected values of a list.
+     *
+     * @param  array  $list
+     * @return array
+     */
+    private static function convertExpectedList(array $list): array
+    {
+        $output = [];
+
+        foreach ($list as $value) {
+            if (is_array($value[0])) {
+                $output[] = self::convertInnerList($value);
             } else {
-                foreach (get_object_vars($input) as $paramKey => $paramValue) {
-                    self::convertValues($input->{$paramKey});
-                }
+                $output[] = self::convertExpectedItem($value);
             }
         }
+
+        return $output;
+    }
+
+    /**
+     * Convert the expected values of a dictionary.
+     *
+     * @param  array  $dictionary
+     * @return object
+     */
+    private static function convertExpectedDictionary(array $dictionary): object
+    {
+        $output = new \stdClass();
+
+        foreach ($dictionary as $value) {
+            // Null byte is not supported as first character of property name.
+            if (strpos($value[0], "\0") === 0) {
+                throw new \UnexpectedValueException();
+            }
+
+            if (is_array($value[1][0])) {
+                $output->{$value[0]} = self::convertInnerList($value[1]);
+            } else {
+                $output->{$value[0]} = self::convertExpectedItem($value[1]);
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Convert any encoded special values to typed objects.
+     *
+     * @param mixed $data
+     *   The expected bare value.
+     * @return mixed
+     */
+    private static function convertValue($data)
+    {
+        if (is_object($data) && property_exists($data, '__type')) {
+            switch ($data->__type) {
+                case 'token':
+                    return new Token($data->value);
+                case 'binary':
+                    return new Bytes(Base32::decodeUpper($data->value));
+            }
+        }
+
+        return $data;
     }
 }
