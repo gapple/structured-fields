@@ -26,14 +26,14 @@ jobs:
 
     - name: Setup PHP ${{ matrix.php-versions }} without code coverage
       if: matrix.php-versions != '7.4'
-      uses: shivammathur/setup-php@v1
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: none
         tools: cs2pr
     - name: Setup PHP ${{ matrix.php-versions }} with code coverage
       if: matrix.php-versions == '7.4'
-      uses: shivammathur/setup-php@v1
+      uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: xdebug
