@@ -247,29 +247,36 @@ class Parser
 
     private static function parseString(string &$string): string
     {
-        if (preg_match('/^"([\x00-\x7F]*)"/i', $string, $matches)) {
-            $string = substr($string, strlen($matches[1]) + 2);
+        // parseString is only called if first character is a double quote, so
+        // don't need to validate it here.
+        $string = substr($string, 1);
 
-            // Newlines and Tabs are not allowed; string cannot end in escape character.
-            if (preg_match('/(?<!\\\)\\\([nt]|$)/', $matches[1])) {
-                throw new ParseException('Invalid whitespace in string');
-            }
-            // Only quotes and backslashes should be escaped.
-            if (preg_match_all('/(?<!\\\)\\\./', $matches[1], $quoted_matches, PREG_PATTERN_ORDER)) {
-                foreach ($quoted_matches[0] as $quoted_match) {
-                    if (!in_array($quoted_match, ['\\"', '\\\\'])) {
-                        throw new ParseException('Invalid escaped character in string');
-                    }
+        $output_string = '';
+
+        while (strlen($string)) {
+            $char = $string[0];
+            $string = substr($string, 1);
+
+            if ($char == '\\') {
+                if ($string == '') {
+                    throw new ParseException("Invalid end of string");
                 }
+
+                $char = $string[0];
+                $string = substr($string, 1);
+                if ($char != '"' && $char != '\\') {
+                    throw new ParseException('Invalid escaped character in string');
+                }
+            } elseif ($char == '"') {
+                return $output_string;
+            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+                throw new ParseException('Invalid character in string');
             }
 
-            // Unescape quotes and backslashes.
-            $output_string = preg_replace('/\\\(["\\\])/', '$1', $matches[1]);
-        } else {
-            throw new ParseException('Invalid character in string');
+            $output_string .= $char;
         }
 
-        return $output_string;
+        throw new ParseException("Invalid end of string");
     }
 
     private static function parseToken(string &$string): Token
