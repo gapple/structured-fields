@@ -64,6 +64,13 @@ abstract class RulesetTest extends TestCase
             $rule->must_fail = $rule->must_fail ?? false;
             $rule->can_fail = $rule->can_fail ?? false;
 
+            if (isset($dataset[$rule->name])) {
+                user_error(
+                    'Ruleset "' . $this->ruleset . '" contains duplicate rule name "' . $rule->name . '"',
+                    E_USER_WARNING
+                );
+            }
+
             $dataset[$rule->name] = [$rule];
         }
 
