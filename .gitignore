@@ -1,3 +1,5 @@
 composer.lock
 /vendor/
 /tmp/
+phpcs.xml
+phpunit.xml
