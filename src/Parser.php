@@ -228,18 +228,14 @@ class Parser
     {
         if (preg_match('/^(-?\d+(?:\.\d+)?)(?:[^\d.]|$)/', $string, $number_matches)) {
             $input_number = $number_matches[1];
+            $string = substr($string, strlen($input_number));
 
-            if (preg_match('/^(-?\d{1,12}\.\d{1,3})$/', $input_number, $decimal_matches)) {
-                $string = substr($string, strlen($decimal_matches[0]));
-
-                return (float) $decimal_matches[0];
-            } elseif (preg_match('/^-?\d{1,15}$/', $input_number, $integer_matches)) {
-                $string = substr($string, strlen($integer_matches[0]));
-
-                return (int) $integer_matches[0];
-            } else {
-                throw new ParseException('Number contains too many digits');
+            if (preg_match('/^-?\d{1,12}\.\d{1,3}$/', $input_number)) {
+                return (float) $input_number;
+            } elseif (preg_match('/^-?\d{1,15}$/', $input_number)) {
+                return (int) $input_number;
             }
+            throw new ParseException('Number contains too many digits');
         }
 
         throw new ParseException('Invalid number format');
@@ -306,7 +302,7 @@ class Parser
     private static function parseByteSequence(string &$string): Bytes
     {
         if (preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
-            $string = substr($string, strlen($matches[1]) + 2);
+            $string = substr($string, strlen($matches[0]));
             return new Bytes(base64_decode($matches[1]));
         }
 
