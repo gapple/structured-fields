@@ -4,9 +4,33 @@ namespace gapple\StructuredFields;
 
 class Serializer
 {
+    /**
+     * Serialize and item with optional parameters.
+     *
+     * @param $value
+     *   A bare value, or an Item object.
+     * @param object|null $parameters
+     *   An optional object containing parameter values if a bare value is provided.
+     *
+     * @return string
+     *   The serialized value.
+     */
     public static function serializeItem($value, ?object $parameters = null): string
     {
-        $output = self::serializeBareItem($value);
+        if ($value instanceof Item) {
+            if (!is_null($parameters)) {
+                throw new \InvalidArgumentException(
+                    'Parameters argument is not allowed when serializing an Item object'
+                );
+            }
+
+            $bareValue = $value[0];
+            $parameters = $value[1];
+        } else {
+            $bareValue = $value;
+        }
+
+        $output = self::serializeBareItem($bareValue);
 
         if (!empty($parameters)) {
             $output .= self::serializeParameters($parameters);
@@ -15,8 +39,12 @@ class Serializer
         return $output;
     }
 
-    public static function serializeList(array $value): string
+    public static function serializeList($value): string
     {
+        if ($value instanceof OuterList) {
+            $value = iterator_to_array($value->getIterator());
+        }
+
         $returnValue = array_map(function ($item) {
             if (is_array($item[0])) {
                 return self::serializeInnerList($item[0], $item[1]);

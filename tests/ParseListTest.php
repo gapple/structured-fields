@@ -2,6 +2,8 @@
 
 namespace gapple\Tests\StructuredFields;
 
+use gapple\StructuredFields\Item;
+use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Parser;
 use PHPUnit\Framework\TestCase;
 
@@ -13,20 +15,20 @@ class ParseListTest extends TestCase
 
         $dataset[] = [
             'raw' => '"one", 1, 42;towel;panic=?0, "two"',
-            'expected' => [
-                ['one', (object) []],
-                [1, (object) []],
-                [42, (object) ['towel' => true, 'panic' => false]],
-                ['two', (object) []],
-            ]
+            'expected' => new OuterList([
+                new Item('one'),
+                new Item(1),
+                new Item(42, (object) ['towel' => true, 'panic' => false]),
+                new Item('two'),
+            ])
         ];
 
         $dataset[] = [
             'raw' => '"\"Not\\\A;Brand";v="99", "Chromium";v="86"',
-            'expected' => [
-                ['"Not\\A;Brand', (object) ['v' => "99"]],
-                ['Chromium', (object) ['v' => "86"]],
-            ],
+            'expected' => new OuterList([
+                new Item('"Not\\A;Brand', (object) ['v' => "99"]),
+                new Item('Chromium', (object) ['v' => "86"]),
+            ]),
         ];
 
         return $dataset;

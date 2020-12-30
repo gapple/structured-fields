@@ -18,7 +18,7 @@ class Parser
                 $value->{$key} = self::parseItemOrInnerList($string);
             } else {
                 // Bare boolean true value.
-                $value->{$key} = [true, self::parseParameters($string)];
+                $value->{$key} = new Item(true, self::parseParameters($string));
             }
 
             // OWS (optional whitespace) before comma.
@@ -44,9 +44,9 @@ class Parser
         return $value;
     }
 
-    public static function parseList(string $string): array
+    public static function parseList(string $string): OuterList
     {
-        $value = [];
+        $value = new OuterList();
 
         $string = ltrim($string, ' ');
 
@@ -76,7 +76,7 @@ class Parser
         return $value;
     }
 
-    private static function parseItemOrInnerList(string &$string): array
+    private static function parseItemOrInnerList(string &$string): TupleInterface
     {
         if ($string[0] === '(') {
             return self::parseInnerList($string);
@@ -85,7 +85,7 @@ class Parser
         }
     }
 
-    private static function parseInnerList(string &$string): array
+    private static function parseInnerList(string &$string): InnerList
     {
         $value = [];
 
@@ -96,10 +96,10 @@ class Parser
 
             if ($string[0] === ')') {
                 $string = substr($string, 1);
-                return [
+                return new InnerList(
                     $value,
-                    self::parseParameters($string),
-                ];
+                    self::parseParameters($string)
+                );
             }
 
             $value[] = self::doParseItem($string);
@@ -115,10 +115,10 @@ class Parser
     /**
      * @param string $string
      *
-     * @return array
+     * @return \gapple\StructuredFields\Item
      *  A [value, parameters] tuple.
      */
-    public static function parseItem(string $string): array
+    public static function parseItem(string $string): Item
     {
         $string = ltrim($string, ' ');
 
@@ -137,15 +137,15 @@ class Parser
      *
      * @param string $string
      *
-     * @return array
+     * @return \gapple\StructuredFields\Item
      *  A [value, parameters] tuple.
      */
-    private static function doParseItem(string &$string): array
+    private static function doParseItem(string &$string): Item
     {
-        return [
+        return new Item(
             self::parseBareItem($string),
             self::parseParameters($string)
-        ];
+        );
     }
 
     /**

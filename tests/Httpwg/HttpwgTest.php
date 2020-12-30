@@ -4,6 +4,9 @@ namespace gapple\Tests\StructuredFields\Httpwg;
 
 use gapple\StructuredFields\Bytes;
 use gapple\StructuredFields\Date;
+use gapple\StructuredFields\InnerList;
+use gapple\StructuredFields\Item;
+use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Token;
 use gapple\Tests\StructuredFields\RulesetTest;
 use ParagonIE\ConstantTime\Base32;
@@ -58,11 +61,11 @@ abstract class HttpwgTest extends RulesetTest
      * Convert the expected value of an item tuple.
      *
      * @param  array  $item
-     * @return array
+     * @return \gapple\StructuredFields\Item
      */
-    private static function convertExpectedItem(array $item): array
+    private static function convertExpectedItem(array $item): Item
     {
-        return [self::convertValue($item[0]), self::convertParameters($item[1])];
+        return new Item(self::convertValue($item[0]), self::convertParameters($item[1]));
     }
 
     /**
@@ -91,28 +94,28 @@ abstract class HttpwgTest extends RulesetTest
      * Convert the expected values of an inner list tuple.
      *
      * @param  array  $innerList
-     * @return array
+     * @return InnerList
      */
-    private static function convertInnerList(array $innerList): array
+    private static function convertInnerList(array $innerList)
     {
         $outputList = [];
 
         foreach ($innerList[0] as $value) {
-            $outputList[] = [self::convertValue($value[0]), self::convertParameters($value[1])];
+            $outputList[] = new Item(self::convertValue($value[0]), self::convertParameters($value[1]));
         }
 
-        return [$outputList, self::convertParameters($innerList[1])];
+        return new InnerList($outputList, self::convertParameters($innerList[1]));
     }
 
     /**
      * Convert the expected values of a list.
      *
      * @param  array  $list
-     * @return array
+     * @return OuterList
      */
-    private static function convertExpectedList(array $list): array
+    private static function convertExpectedList(array $list): OuterList
     {
-        $output = [];
+        $output = new OuterList();
 
         foreach ($list as $value) {
             if (is_array($value[0])) {

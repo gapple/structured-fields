@@ -2,14 +2,10 @@
 
 namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredFields\Bytes;
-use gapple\StructuredFields\Date;
 use gapple\StructuredFields\ParseException;
 use gapple\StructuredFields\Parser;
 use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
-use gapple\StructuredFields\Token;
-use ParagonIE\ConstantTime\Base32;
 use PHPUnit\Framework\TestCase;
 
 abstract class RulesetTest extends TestCase
@@ -118,11 +114,7 @@ abstract class RulesetTest extends TestCase
         }
 
         try {
-            if ($record->header_type == 'item') {
-                $serializedValue = Serializer::serializeItem($record->expected[0], $record->expected[1]);
-            } else {
-                $serializedValue = Serializer::{'serialize' . ucfirst($record->header_type)}($record->expected);
-            }
+            $serializedValue = Serializer::{'serialize' . ucfirst($record->header_type)}($record->expected);
 
             if ($record->must_fail) {
                 $this->fail($this->ruleset . ' "' . $record->name . '" must fail serializing');
