@@ -18,8 +18,7 @@
     "autoload": {
         "psr-4": {
             "gapple\\StructuredFields\\": "src/",
-            "gapple\\Tests\\StructuredFields\\": "tests/",
-            "gapple\\StructuredHeaders\\": "src/headers-compat"
+            "gapple\\Tests\\StructuredFields\\": "tests/"
         }
     },
     "scripts": {
