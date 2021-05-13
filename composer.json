@@ -27,13 +27,13 @@
         "phpunit": "phpunit"
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.3 || ^8.0",
         "ext-json": "*"
     },
     "require-dev": {
         "httpwg/structured-field-tests": "*@dev",
         "paragonie/constant_time_encoding": "^2.3",
-        "phpunit/phpunit": "^8.5 || ^9.3",
+        "phpunit/phpunit": "^9.3",
         "squizlabs/php_codesniffer": "^3.5"
     },
     "repositories": [
