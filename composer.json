@@ -36,6 +36,11 @@
         "phpunit/phpunit": "^8.5 || ^9.3",
         "squizlabs/php_codesniffer": "^3.5"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "0.1.x-dev"
+        }
+    },
     "repositories": [
         {
             "type": "package",
