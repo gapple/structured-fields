@@ -1,6 +1,6 @@
 {
     "name": "gapple/structured-fields",
-    "description": "Parser for Structured Field Values for HTTP",
+    "description": "Library for Structured Field Values for HTTP ",
     "type": "library",
     "license": [
         "MIT",
@@ -45,7 +45,7 @@
             "type": "package",
             "package": {
                 "name": "httpwg/structured-field-tests",
-                "version": "dev-master",
+                "version": "dev-main",
                 "dist": {
                     "url": "https://github.com/httpwg/structured-field-tests/archive/main.zip",
                     "type": "zip"
