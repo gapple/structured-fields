@@ -4,7 +4,6 @@ namespace gapple\StructuredFields;
 
 class Parser
 {
-
     public static function parseDictionary(string $string): \stdClass
     {
         $value = new \stdClass();

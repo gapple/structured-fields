@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeTokenTest extends TestCase
 {
-
     public function testNumericFirstCharacter()
     {
         $this->expectException(SerializeException::class);

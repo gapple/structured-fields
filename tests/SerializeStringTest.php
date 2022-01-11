@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeStringTest extends TestCase
 {
-
     /**
      * Only printable ASCII is allowed in strings.
      */

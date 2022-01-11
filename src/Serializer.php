@@ -4,7 +4,6 @@ namespace gapple\StructuredFields;
 
 class Serializer
 {
-
     public static function serializeItem($value, ?object $parameters = null): string
     {
         $output = self::serializeBareItem($value);

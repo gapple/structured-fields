@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeItemTest extends TestCase
 {
-
     public function testUnkownType()
     {
         $this->expectException(SerializeException::class);

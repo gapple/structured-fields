@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class ParseListTest extends TestCase
 {
-
     public function multipleStringProvider()
     {
         $dataset = [];
