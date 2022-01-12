@@ -4,6 +4,7 @@ namespace gapple\Tests\StructuredFields\Httpwg;
 
 use gapple\StructuredFields\Bytes;
 use gapple\StructuredFields\Date;
+use gapple\StructuredFields\Dictionary;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
@@ -132,11 +133,11 @@ abstract class HttpwgTest extends RulesetTest
      * Convert the expected values of a dictionary.
      *
      * @param  array  $dictionary
-     * @return object
+     * @return Dictionary
      */
-    private static function convertExpectedDictionary(array $dictionary): object
+    private static function convertExpectedDictionary(array $dictionary): Dictionary
     {
-        $output = new \stdClass();
+        $output = new Dictionary();
 
         foreach ($dictionary as $value) {
             // Null byte is not supported as first character of property name.

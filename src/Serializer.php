@@ -58,11 +58,18 @@ class Serializer
 
     public static function serializeDictionary(object $value): string
     {
-        $members = get_object_vars($value);
-        $keys = array_keys($members);
+        $returnValue = '';
 
-        $returnValue = array_map(function ($item, $key) {
-            $returnValue = self::serializeKey($key);
+        if (!$value instanceof Dictionary) {
+            $value = get_object_vars($value);
+        }
+
+        foreach ($value as $key => $item) {
+            if (!empty($returnValue)) {
+                $returnValue .= ', ';
+            }
+
+            $returnValue .= self::serializeKey($key);
 
             if ($item[0] === true) {
                 $returnValue .= self::serializeParameters($item[1]);
@@ -71,10 +78,9 @@ class Serializer
             } else {
                 $returnValue .= '=' . self::serializeItem($item[0], $item[1]);
             }
-            return $returnValue;
-        }, $members, $keys);
+        }
 
-        return implode(', ', $returnValue);
+        return $returnValue;
     }
 
     private static function serializeInnerList(array $value, ?object $parameters = null): string
