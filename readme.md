@@ -1,4 +1,4 @@
-Structured Field Values Parser for PHP
+Structured Field Values for PHP
 =======================================
 
 Parser and serializer for the [Structured Field Values for HTTP][1] specification.
