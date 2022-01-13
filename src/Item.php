@@ -11,7 +11,7 @@ class Item implements TupleInterface
         $this->value = $value;
 
         if (is_null($parameters)) {
-            $this->parameters = new \stdClass();
+            $this->parameters = new Parameters();
         } else {
             $this->parameters = $parameters;
         }

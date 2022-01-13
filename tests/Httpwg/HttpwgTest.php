@@ -8,6 +8,7 @@ use gapple\StructuredFields\Dictionary;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
+use gapple\StructuredFields\Parameters;
 use gapple\StructuredFields\Token;
 use gapple\Tests\StructuredFields\RulesetTest;
 use ParagonIE\ConstantTime\Base32;
@@ -73,11 +74,11 @@ abstract class HttpwgTest extends RulesetTest
      * Convert the expected values of a parameters map.
      *
      * @param  array  $parameters
-     * @return object
+     * @return Parameters
      */
-    private static function convertParameters(array $parameters): object
+    private static function convertParameters(array $parameters): Parameters
     {
-        $output = new \stdClass();
+        $output = new Parameters();
 
         foreach ($parameters as $value) {
             // Null byte is not supported as first character of property name.

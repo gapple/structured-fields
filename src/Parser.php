@@ -180,7 +180,7 @@ class Parser
 
     private static function parseParameters(string &$string): object
     {
-        $parameters = new \stdClass();
+        $parameters = new Parameters();
 
         while (!empty($string) && $string[0] === ';') {
             $string = ltrim(substr($string, 1), ' ');

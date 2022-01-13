@@ -187,7 +187,11 @@ class Serializer
     {
         $returnValue = '';
 
-        foreach (get_object_vars($value) as $key => $value) {
+        if (!$value instanceof Parameters) {
+            $value = get_object_vars($value);
+        }
+
+        foreach ($value as $key => $value) {
             $returnValue .= ';' . self::serializeKey($key);
 
             if ($value !== true) {

@@ -3,6 +3,7 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Item;
+use gapple\StructuredFields\Parameters;
 use PHPUnit\Framework\TestCase;
 
 class ItemTest extends TestCase
@@ -11,7 +12,7 @@ class ItemTest extends TestCase
     {
         $item = new Item(true);
 
-        $this->assertInstanceOf(\stdClass::class, $item[1]);
+        $this->assertInstanceOf(Parameters::class, $item[1]);
         $this->assertEmpty(get_object_vars($item[1]));
     }
 
