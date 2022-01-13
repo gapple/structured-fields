@@ -135,4 +135,4 @@ print_r(\gapple\StructuredFields\Serializer::serializeDictionary((object) [
 
 ```
 
-[1]: https://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
+[1]: https://www.rfc-editor.org/rfc/rfc8941.html
