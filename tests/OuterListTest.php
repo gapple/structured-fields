@@ -2,6 +2,8 @@
 
 namespace gapple\Tests\StructuredFields;
 
+use gapple\StructuredFields\InnerList;
+use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
 use PHPUnit\Framework\TestCase;
 
@@ -121,5 +123,28 @@ class OuterListTest extends TestCase
 
         $list = new OuterList();
         $list[] = $value;
+    }
+
+    public function testFromArray()
+    {
+        $dictionary = OuterList::fromArray([
+            true,
+            new Item(false),
+            [
+                'four',
+                new Item('five'),
+            ],
+        ]);
+
+        $expected = new OuterList([
+            new Item(true),
+            new Item(false),
+            new InnerList([
+                new Item('four'),
+                new Item('five'),
+            ]),
+        ]);
+
+        $this->assertEquals($expected, $dictionary);
     }
 }

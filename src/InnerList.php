@@ -19,6 +19,20 @@ class InnerList implements TupleInterface
         }
     }
 
+    public static function fromArray(array $array): InnerList
+    {
+        $list = new static([]);
+
+        foreach ($array as $item) {
+            if (!$item instanceof TupleInterface) {
+                $item = new Item($item);
+            }
+            $list->value[] = $item;
+        }
+
+        return $list;
+    }
+
     private static function validateItemType($value): void
     {
         if (is_object($value)) {

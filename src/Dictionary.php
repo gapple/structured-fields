@@ -9,6 +9,24 @@ class Dictionary implements \IteratorAggregate
      */
     protected $value = [];
 
+    public static function fromArray(array $array): Dictionary
+    {
+        $dictionary = new static();
+
+        foreach ($array as $key => $value) {
+            if (!$value instanceof TupleInterface) {
+                if (is_array($value)) {
+                    $value = InnerList::fromArray($value);
+                } else {
+                    $value = new Item($value);
+                }
+            }
+            $dictionary->{$key} = $value;
+        }
+
+        return $dictionary;
+    }
+
     public function __get($name)
     {
         return $this->value[$name] ?? null;

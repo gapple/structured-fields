@@ -9,7 +9,7 @@ class Parameters implements \IteratorAggregate
      */
     protected $value = [];
 
-    public static function fromArray($array): Parameters
+    public static function fromArray(array $array): Parameters
     {
         $parameters = new static();
         $parameters->value = $array;

@@ -18,6 +18,23 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         $this->value = $value;
     }
 
+    public static function fromArray($array): OuterList
+    {
+        $list = new static();
+        foreach ($array as $value) {
+            if (!$value instanceof TupleInterface) {
+                if (is_array($value)) {
+                    $value = InnerList::fromArray($value);
+                } else {
+                    $value = new Item($value);
+                }
+            }
+            $list[] = $value;
+        }
+
+        return $list;
+    }
+
     private static function validateItemType($value): void
     {
         if (is_object($value)) {

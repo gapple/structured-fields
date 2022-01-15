@@ -3,6 +3,8 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Dictionary;
+use gapple\StructuredFields\InnerList;
+use gapple\StructuredFields\Item;
 use PHPUnit\Framework\TestCase;
 
 class DictionaryTest extends TestCase
@@ -19,5 +21,27 @@ class DictionaryTest extends TestCase
 
         unset($dictionary->key);
         $this->assertFalse(isset($dictionary->key));
+    }
+
+    public function testFromArray()
+    {
+        $dictionary = Dictionary::fromArray([
+            'one' => true,
+            'two' => new Item(false),
+            'three' => [
+                'four',
+                new Item('five'),
+            ],
+        ]);
+
+        $expected = new Dictionary();
+        $expected->one = new Item(true);
+        $expected->two = new Item(false);
+        $expected->three = new InnerList([
+            new Item('four'),
+            new Item('five'),
+        ]);
+
+        $this->assertEquals($expected, $dictionary);
     }
 }
