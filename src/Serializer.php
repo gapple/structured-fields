@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
+
+use Stringable;
 
 class Serializer
 {
-    public static function serializeItem($value, ?object $parameters = null): string
+    public static function serializeItem($value, object|null $parameters = null): string
     {
         $output = self::serializeBareItem($value);
 
-        if (!empty($parameters)) {
+        if (null !== $parameters) {
             $output .= self::serializeParameters($parameters);
         }
 
@@ -17,53 +21,40 @@ class Serializer
 
     public static function serializeList(array $value): string
     {
-        $returnValue = array_map(function ($item) {
-            if (is_array($item[0])) {
-                return self::serializeInnerList($item[0], $item[1]);
-            } else {
-                return self::serializeItem($item[0], $item[1]);
-            }
-        }, $value);
-
-        return implode(', ', $returnValue);
+        return implode(', ', array_map(
+            fn (array $item): string => is_array($item[0]) ?
+                self::serializeInnerList($item[0], $item[1]) :
+                self::serializeItem($item[0], $item[1]),
+            $value
+        ));
     }
 
     public static function serializeDictionary(object $value): string
     {
         $members = get_object_vars($value);
-        $keys = array_keys($members);
 
-        $returnValue = array_map(function ($item, $key) {
-            $returnValue = self::serializeKey($key);
-
-            if ($item[0] === true) {
-                $returnValue .= self::serializeParameters($item[1]);
-            } elseif (is_array($item[0])) {
-                $returnValue .= '=' . self::serializeInnerList($item[0], $item[1]);
-            } else {
-                $returnValue .= '=' . self::serializeItem($item[0], $item[1]);
-            }
-            return $returnValue;
-        }, $members, $keys);
-
-        return implode(', ', $returnValue);
+        return implode(', ', array_map(fn (array $item, string $key): string => match (true) {
+            $item[0] === true => self::serializeKey($key) . self::serializeParameters($item[1]),
+            is_array($item[0]) => self::serializeKey($key) . '=' . self::serializeInnerList($item[0], $item[1]),
+            default => self::serializeKey($key) . '=' . self::serializeItem($item[0], $item[1]),
+        }, $members, array_keys($members)));
     }
 
-    private static function serializeInnerList(array $value, ?object $parameters = null): string
+    private static function serializeInnerList(array $value, object|null $parameters = null): string
     {
         $returnValue = '(';
 
         while ($item = array_shift($value)) {
             $returnValue .= self::serializeItem($item[0], $item[1]);
 
-            if (!empty($value)) {
+            if ([] !== $value) {
                 $returnValue .= ' ';
             }
         }
 
         $returnValue .= ')';
 
-        if (!empty($parameters)) {
+        if (null !== $parameters) {
             $returnValue .= self::serializeParameters($parameters);
         }
 
@@ -72,21 +63,15 @@ class Serializer
 
     private static function serializeBareItem($value): string
     {
-        if (is_int($value)) {
-            return self::serializeInteger($value);
-        } elseif (is_float($value)) {
-            return self::serializeDecimal($value);
-        } elseif (is_bool($value)) {
-            return self::serializeBoolean($value);
-        } elseif ($value instanceof Token) {
-            return self::serializeToken($value);
-        } elseif ($value instanceof Bytes) {
-            return self::serializeByteSequence($value);
-        } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
-            return self::serializeString($value);
-        }
-
-        throw new SerializeException("Unrecognized type");
+        return match (true) {
+            $value instanceof Token => self::serializeToken($value),
+            $value instanceof Bytes => self::serializeByteSequence($value),
+            is_int($value) => self::serializeInteger($value),
+            is_float($value) => self::serializeDecimal($value),
+            is_bool($value) => self::serializeBoolean($value),
+            $value instanceof Stringable, is_string($value) => self::serializeString($value),
+            default => throw new SerializeException("Unrecognized type"),
+        };
     }
 
     private static function serializeBoolean(bool $value): string
@@ -99,7 +84,8 @@ class Serializer
         if ($value > 999999999999999 || $value < -999999999999999) {
             throw new SerializeException("Integers are limited to 15 digits");
         }
-        return $value;
+
+        return (string) $value;
     }
 
     private static function serializeDecimal(float $value): string
@@ -112,16 +98,18 @@ class Serializer
         // by json_encode (e.g. 111111111111.111).
         $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
 
-        if (strpos($result, '.') === false) {
+        if (!str_contains($result, '.')) {
             $result .= '.0';
         }
 
         return $result;
     }
 
-    private static function serializeString(string $value): string
+    private static function serializeString(Stringable|string $value): string
     {
-        if (preg_match('/[^\x20-\x7E]/i', $value)) {
+        $value = (string) $value;
+
+        if (1 === preg_match('/[^\x20-\x7E]/i', $value)) {
             throw new SerializeException("Invalid characters in string");
         }
 
@@ -130,12 +118,13 @@ class Serializer
 
     private static function serializeToken(Token $value): string
     {
+        $value = (string) $value;
+
         // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
         // 3.2.6. Field Value Components
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
-
-        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', $value)) {
+        if (1 !== preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', $value)) {
             throw new SerializeException('Invalid characters in token');
         }
 
@@ -144,7 +133,7 @@ class Serializer
 
     private static function serializeByteSequence(Bytes $value): string
     {
-        return ':' . base64_encode($value) . ':';
+        return ':' . base64_encode((string) $value) . ':';
     }
 
     private static function serializeParameters(object $value): string
@@ -164,7 +153,7 @@ class Serializer
 
     private static function serializeKey(string $value): string
     {
-        if (!preg_match('/^[a-z*][a-z0-9.*_-]*$/', $value)) {
+        if (1 !== preg_match('/^[a-z*][a-z0-9.*_-]*$/', $value)) {
             throw new SerializeException("Invalid characters in key");
         }
 
