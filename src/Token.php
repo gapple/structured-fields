@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
 
-class Token
-{
-    private $value;
+use Stringable;
 
-    public function __construct(string $value)
+class Token implements Stringable
+{
+    public function __construct(private string $value)
     {
-        $this->value = $value;
     }
 
     public function __toString(): string

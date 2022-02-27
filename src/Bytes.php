@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
 
-class Bytes
-{
-    private $value;
+use Stringable;
 
-    public function __construct(string $value)
+class Bytes implements Stringable
+{
+    public function __construct(private string $value)
     {
-        $this->value = $value;
     }
 
     public function __toString(): string
