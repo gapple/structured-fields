@@ -48,6 +48,9 @@ class Parser
         return (object) $value;
     }
 
+    /**
+     * @return array<array{0:bool|float|int|string|Token|Bytes, 1:object}>
+     */
     public static function parseList(string $string): array
     {
         $value = [];
@@ -80,6 +83,9 @@ class Parser
         return $value;
     }
 
+    /**
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
+     */
     private static function parseItemOrInnerList(string &$string): array
     {
         if ($string[0] === '(') {
@@ -89,6 +95,11 @@ class Parser
         return self::doParseItem($string);
     }
 
+    /**
+     * @param string $string
+     *
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
+     */
     private static function parseInnerList(string &$string): array
     {
         $value = [];
@@ -115,8 +126,7 @@ class Parser
     }
 
     /**
-     * @return array
-     *  A [value, parameters] tuple.
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
      */
     public static function parseItem(string $string): array
     {
@@ -136,8 +146,7 @@ class Parser
      *
      * @param string $string
      *
-     * @return array
-     *  A [value, parameters] tuple.
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
      */
     private static function doParseItem(string &$string): array
     {
@@ -277,7 +286,10 @@ class Parser
     {
         if (1 === preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
             $string = substr($string, strlen($matches[0]));
-            return new Bytes(base64_decode($matches[1]));
+
+            /** @var string $value */
+            $value = base64_decode($matches[1], true);
+            return new Bytes($value);
         }
 
         throw new ParseException('Invalid character in byte sequence');

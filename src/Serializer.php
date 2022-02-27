@@ -8,7 +8,7 @@ use Stringable;
 
 class Serializer
 {
-    public static function serializeItem($value, object|null $parameters = null): string
+    public static function serializeItem(mixed $value, object|null $parameters = null): string
     {
         $output = self::serializeBareItem($value);
 
@@ -19,6 +19,9 @@ class Serializer
         return $output;
     }
 
+    /**
+     * @param array{0:mixed, 1:object} $value
+     */
     public static function serializeList(array $value): string
     {
         return implode(', ', array_map(
@@ -33,13 +36,18 @@ class Serializer
     {
         $members = get_object_vars($value);
 
-        return implode(', ', array_map(fn (array $item, string $key): string => match (true) {
+        $mapper = fn (array $item, string $key): string => match (true) {
             $item[0] === true => self::serializeKey($key) . self::serializeParameters($item[1]),
             is_array($item[0]) => self::serializeKey($key) . '=' . self::serializeInnerList($item[0], $item[1]),
             default => self::serializeKey($key) . '=' . self::serializeItem($item[0], $item[1]),
-        }, $members, array_keys($members)));
+        };
+
+        return implode(', ', array_map($mapper, $members, array_keys($members)));
     }
 
+    /**
+     * @param array{0:mixed, 1:object} $value
+     */
     private static function serializeInnerList(array $value, object|null $parameters = null): string
     {
         $returnValue = '(';
@@ -61,7 +69,7 @@ class Serializer
         return $returnValue;
     }
 
-    private static function serializeBareItem($value): string
+    private static function serializeBareItem(mixed $value): string
     {
         return match (true) {
             $value instanceof Token => self::serializeToken($value),
@@ -96,6 +104,7 @@ class Serializer
 
         // Casting to a string loses a digit on long numbers, but is preserved
         // by json_encode (e.g. 111111111111.111).
+        /** @var string $result */
         $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
 
         if (!str_contains($result, '.')) {
@@ -140,11 +149,11 @@ class Serializer
     {
         $returnValue = '';
 
-        foreach (get_object_vars($value) as $key => $value) {
+        foreach (get_object_vars($value) as $key => $val) {
             $returnValue .= ';' . self::serializeKey($key);
 
-            if ($value !== true) {
-                $returnValue .= '=' . self::serializeBareItem($value);
+            if ($val !== true) {
+                $returnValue .= '=' . self::serializeBareItem($val);
             }
         }
 

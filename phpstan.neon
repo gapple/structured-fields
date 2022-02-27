@@ -1,0 +1,19 @@
+includes:
+    - vendor/phpstan/phpstan-strict-rules/rules.neon
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+parameters:
+    level: max
+    paths:
+        - src
+    ignoreErrors:
+      - message: '#^Method gapple\\StructuredFields\\Parser::parseInnerList\(\) should return(.*)#'
+        path: src/Parser.php
+      - message: '#^Parameter \#1 \$value of static method gapple\\StructuredFields\\Serializer::serializeInnerList\(\) expects(.*)#'
+        path: src/Serializer.php
+      - message: '#^Parameter \#1 \$callback of function array_map expects(.*)#'
+        path: src/Serializer.php
+      - message: '#^Parameter \#2 \$parameters of static method gapple\\StructuredFields\\Serializer::serializeItem\(\) expects#'
+        path: src/Serializer.php
+      - message: '#Cannot access offset \d+ on mixed.#'
+        path: src/Serializer.php

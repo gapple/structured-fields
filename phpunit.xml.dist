@@ -4,6 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
     failOnWarning="true"
+    colors="true"
 >
     <testsuites>
         <testsuite name="structured-fields tests">
