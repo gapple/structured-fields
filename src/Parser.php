@@ -8,48 +8,26 @@ use stdClass;
 
 class Parser
 {
-    public static function parseDictionary(string $string): stdClass
+    /**
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:stdClass}
+     */
+    public static function parseItem(string $string): array
     {
-        $value = [];
-
         $string = ltrim($string, ' ');
+        $value = self::doParseItem($string);
 
-        while ('' !== $string) {
-            $key = self::parseKey($string);
-
-            if ('' !== $string && $string[0] === '=') {
-                $string = substr($string, 1);
-                $value[$key] = self::parseItemOrInnerList($string);
-            } else {
-                // Bare boolean true value.
-                $value[$key] = [true, self::parseParameters($string)];
-            }
-
-            // OWS (optional whitespace) before comma.
-            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
-            $string = ltrim($string, " \t");
-
-            if ('' === $string) {
-                return (object) $value;
-            }
-
-            // OWS (optional whitespace) after comma.
-            if (1 !== preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
-                throw new ParseException('Expected comma');
-            }
-
-            $string = substr($string, strlen($comma_matches[1]));
-
-            if ('' === $string) {
-                throw new ParseException('Unexpected end of input');
-            }
+        if ('' !== ltrim($string, ' ')) {
+            throw new ParseException('Unexpected characters at end of input');
         }
 
-        return (object) $value;
+        return $value;
     }
 
     /**
-     * @return array<array{0:bool|float|int|string|Token|Bytes, 1:object}>
+     * @return array<array{
+     *     0:bool|float|int|string|Token|Bytes|array<array{bool|float|Bytes|Token|int|string, stdClass}>,
+     *     1:stdClass
+     * }>
      */
     public static function parseList(string $string): array
     {
@@ -83,8 +61,51 @@ class Parser
         return $value;
     }
 
+    public static function parseDictionary(string $string): stdClass
+    {
+        $value = [];
+
+        $string = ltrim($string, ' ');
+
+        while ('' !== $string) {
+            $key = self::parseKey($string);
+
+            if ('' !== $string && $string[0] === '=') {
+                $string = substr($string, 1);
+                $value[$key] = self::parseItemOrInnerList($string);
+            } else {
+                // Bare boolean true value.
+                $value[$key] = [true, self::parseParameters($string)];
+            }
+
+            // OWS (optional whitespace) before comma.
+            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
+            $string = ltrim($string, " \t");
+
+            if ('' === $string) {
+                break;
+            }
+
+            // OWS (optional whitespace) after comma.
+            if (1 !== preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
+                throw new ParseException('Expected comma');
+            }
+
+            $string = substr($string, strlen($comma_matches[1]));
+
+            if ('' === $string) {
+                throw new ParseException('Unexpected end of input');
+            }
+        }
+
+        return (object) $value;
+    }
+
     /**
-     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
+     * @return array{
+     *     0:bool|float|int|string|Token|Bytes|array<array{bool|float|Bytes|Token|int|string, stdClass}>,
+     *     1:stdClass
+     * }
      */
     private static function parseItemOrInnerList(string &$string): array
     {
@@ -96,9 +117,10 @@ class Parser
     }
 
     /**
-     * @param string $string
-     *
-     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
+     * @return array{
+     *     0:bool|float|int|string|Token|Bytes|array<array{bool|float|Bytes|Token|int|string, stdClass}>,
+     *     1:stdClass
+     * }
      */
     private static function parseInnerList(string &$string): array
     {
@@ -126,27 +148,12 @@ class Parser
     }
 
     /**
-     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
-     */
-    public static function parseItem(string $string): array
-    {
-        $string = ltrim($string, ' ');
-        $value = self::doParseItem($string);
-
-        if ('' !== ltrim($string, ' ')) {
-            throw new ParseException('Unexpected characters at end of input');
-        }
-
-        return $value;
-    }
-
-    /**
      * Internal implementation of parseItem that doesn't fail if input string
      * has unparsed characters after parsing.
      *
      * @param string $string
      *
-     * @return array{0:bool|float|int|string|Token|Bytes, 1:object}
+     * @return array{0:bool|float|int|string|Token|Bytes, 1:stdClass}
      */
     private static function doParseItem(string &$string): array
     {
@@ -169,23 +176,23 @@ class Parser
         };
     }
 
-    private static function parseParameters(string &$string): object
+    private static function parseParameters(string &$string): stdClass
     {
-        $parameters = new stdClass();
+        $parameters = [];
 
         while ('' !== $string && $string[0] === ';') {
             $string = ltrim(substr($string, 1), ' ');
 
             $key = self::parseKey($string);
-            $parameters->{$key} = true;
+            $parameters[$key] = true;
 
             if ('' !== $string && $string[0] === '=') {
                 $string = substr($string, 1);
-                $parameters->{$key} = self::parseBareItem($string);
+                $parameters[$key] = self::parseBareItem($string);
             }
         }
 
-        return $parameters;
+        return (object) $parameters;
     }
 
     private static function parseKey(string &$string): string
@@ -240,20 +247,27 @@ class Parser
             $char = $string[0];
             $string = substr($string, 1);
 
-            if ($char == '\\') {
-                if ($string == '') {
-                    throw new ParseException("Invalid end of string");
-                }
-
-                $char = $string[0];
-                $string = substr($string, 1);
-                if ($char != '"' && $char != '\\') {
-                    throw new ParseException('Invalid escaped character in string');
-                }
-            } elseif ($char == '"') {
+            if ($char === '"') {
                 return $output_string;
-            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+            }
+
+            if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
                 throw new ParseException('Invalid character in string');
+            }
+
+            if ($char !== '\\') {
+                $output_string .= $char;
+                continue;
+            }
+
+            if ($string === '') {
+                throw new ParseException("Invalid end of string");
+            }
+
+            $char = $string[0];
+            $string = substr($string, 1);
+            if (!in_array($char, ['"', '\\'], true)) {
+                throw new ParseException('Invalid escaped character in string');
             }
 
             $output_string .= $char;
@@ -279,19 +293,16 @@ class Parser
         return new Token($matches[1]);
     }
 
-    /**
-     * Parse Base64-encoded data.
-     */
     private static function parseByteSequence(string &$string): Bytes
     {
-        if (1 === preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
-            $string = substr($string, strlen($matches[0]));
-
-            /** @var string $value */
-            $value = base64_decode($matches[1], true);
-            return new Bytes($value);
+        if (1 !== preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
+            throw new ParseException('Invalid character in byte sequence');
         }
 
-        throw new ParseException('Invalid character in byte sequence');
+        $string = substr($string, strlen($matches[0]));
+        /** @var string $value */
+        $value = base64_decode($matches[1], true);
+
+        return new Bytes($value);
     }
 }

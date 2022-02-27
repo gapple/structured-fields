@@ -8,8 +8,10 @@ use Stringable;
 
 class Serializer
 {
-    public static function serializeItem(mixed $value, object|null $parameters = null): string
-    {
+    public static function serializeItem(
+        Token|Bytes|Stringable|string|int|float|bool $value,
+        object|null $parameters = null
+    ): string {
         $output = self::serializeBareItem($value);
 
         if (null !== $parameters) {
@@ -24,12 +26,14 @@ class Serializer
      */
     public static function serializeList(array $value): string
     {
-        return implode(', ', array_map(
+        $resultValue = array_map(
             fn (array $item): string => is_array($item[0]) ?
                 self::serializeInnerList($item[0], $item[1]) :
                 self::serializeItem($item[0], $item[1]),
             $value
-        ));
+        );
+
+        return implode(', ', $resultValue);
     }
 
     public static function serializeDictionary(object $value): string
@@ -46,7 +50,7 @@ class Serializer
     }
 
     /**
-     * @param array{0:mixed, 1:object} $value
+     * @param array<array{0:Token|Bytes|Stringable|string|int|float|bool,1:object|null}> $value
      */
     private static function serializeInnerList(array $value, object|null $parameters = null): string
     {
@@ -69,7 +73,7 @@ class Serializer
         return $returnValue;
     }
 
-    private static function serializeBareItem(mixed $value): string
+    private static function serializeBareItem(Token|Bytes|Stringable|string|int|float|bool $value): string
     {
         return match (true) {
             $value instanceof Token => self::serializeToken($value),
@@ -77,8 +81,7 @@ class Serializer
             is_int($value) => self::serializeInteger($value),
             is_float($value) => self::serializeDecimal($value),
             is_bool($value) => self::serializeBoolean($value),
-            $value instanceof Stringable, is_string($value) => self::serializeString($value),
-            default => throw new SerializeException("Unrecognized type"),
+            default => self::serializeString($value),
         };
     }
 
@@ -149,6 +152,10 @@ class Serializer
     {
         $returnValue = '';
 
+        /**
+         * @var string $key
+         * @var bool|float|int|string|Stringable $val
+         */
         foreach (get_object_vars($value) as $key => $val) {
             $returnValue .= ';' . self::serializeKey($key);
 

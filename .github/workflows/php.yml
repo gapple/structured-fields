@@ -77,6 +77,9 @@ jobs:
     - name: Run PHPUnit tests
       run: composer run-script phpunit
 
+    - name: Run PHPStan tests
+      run: composer run-script phpstan
+
     - name: Check code style
       if: matrix.php-versions == env.code-coverage-version && github.event_name != 'schedule'
       run: composer run-script phpcs -- --report=checkstyle | cs2pr

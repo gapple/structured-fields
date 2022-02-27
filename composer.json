@@ -22,9 +22,14 @@
         }
     },
     "scripts": {
-        "phpcs": "phpcs",
+        "phpcs": "phpcs -v",
         "phpunit": "phpunit --coverage-text",
-        "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit 192M"
+        "phpstan": "phpstan analyse -c phpstan.neon --ansi --memory-limit 192M",
+        "test": [
+            "@phpunit",
+            "@phpstan",
+            "@phpcs"
+        ]
     },
     "require": {
         "php": "^8.0",
