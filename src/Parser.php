@@ -151,7 +151,7 @@ class Parser
     /**
      * @param string $string
      *
-     * @return bool|float|int|string|\gapple\StructuredFields\Bytes|\gapple\StructuredFields\Token
+     * @return bool|float|int|string|\gapple\StructuredFields\Bytes|\gapple\StructuredFields\Token|\gapple\StructuredFields\Date
      */
     private static function parseBareItem(string &$string)
     {
@@ -167,6 +167,8 @@ class Parser
             $value = self::parseByteSequence($string);
         } elseif ($string[0] == '?') {
             $value = self::parseBoolean($string);
+        } elseif ($string[0] == '@') {
+            $value = self::parseDate($string);
         } elseif (preg_match('/^([a-z*])/i', $string)) {
             $value = self::parseToken($string);
         } else {
@@ -306,5 +308,17 @@ class Parser
         }
 
         throw new ParseException('Invalid character in byte sequence');
+    }
+
+    private static function parseDate(string &$string): Date
+    {
+        $string = substr($string, 1);
+        $value = self::parseNumber($string);
+
+        if (is_int($value)) {
+            return new Date($value);
+        }
+
+        throw new ParseException("Invalid Date format");
     }
 }

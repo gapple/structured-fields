@@ -82,6 +82,8 @@ class Serializer
             return self::serializeToken($value);
         } elseif ($value instanceof Bytes) {
             return self::serializeByteSequence($value);
+        } elseif ($value instanceof Date) {
+            return self::serializeDate($value);
         } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
             return self::serializeString($value);
         }
@@ -160,6 +162,11 @@ class Serializer
         }
 
         return $returnValue;
+    }
+
+    private static function serializeDate(Date $value): string
+    {
+        return '@' . self::serializeInteger($value->toInt());
     }
 
     private static function serializeKey(string $value): string

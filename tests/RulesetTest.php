@@ -3,6 +3,7 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Bytes;
+use gapple\StructuredFields\Date;
 use gapple\StructuredFields\ParseException;
 use gapple\StructuredFields\Parser;
 use gapple\StructuredFields\SerializeException;
@@ -35,7 +36,7 @@ abstract class RulesetTest extends TestCase
      */
     protected $skipSerializingRules = [];
 
-    private function rulesetDataProvider()
+    protected function rulesetDataProvider(): array
     {
         $path = __DIR__ . '/../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';
         if (!file_exists($path)) {
@@ -77,7 +78,7 @@ abstract class RulesetTest extends TestCase
         return $dataset;
     }
 
-    public function parseRulesetDataProvider()
+    public function parseRulesetDataProvider(): array
     {
         return array_filter(
             static::rulesetDataProvider(),
@@ -87,7 +88,7 @@ abstract class RulesetTest extends TestCase
         );
     }
 
-    public function serializeRulesetDataProvider()
+    public function serializeRulesetDataProvider(): array
     {
         return array_filter(
             static::rulesetDataProvider(),
@@ -284,6 +285,8 @@ abstract class RulesetTest extends TestCase
                     return new Token($data->value);
                 case 'binary':
                     return new Bytes(Base32::decodeUpper($data->value));
+                case 'date':
+                    return new Date($data->value);
             }
         }
 
