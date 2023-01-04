@@ -80,22 +80,34 @@ abstract class RulesetTest extends TestCase
 
     public function parseRulesetDataProvider(): array
     {
-        return array_filter(
+        $tests = array_filter(
             static::rulesetDataProvider(),
             function ($params) {
                 return !empty($params[0]->raw);
             }
         );
+
+        if (empty($tests)) {
+            $this->markTestSkipped("No parse rules");
+        }
+
+        return $tests;
     }
 
     public function serializeRulesetDataProvider(): array
     {
-        return array_filter(
+        $tests = array_filter(
             static::rulesetDataProvider(),
             function ($params) {
                 return !empty($params[0]->expected);
             }
         );
+
+        if (empty($tests)) {
+            $this->markTestSkipped("No serialize rules");
+        }
+
+        return $tests;
     }
 
     /**
