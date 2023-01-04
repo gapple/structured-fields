@@ -35,11 +35,11 @@ abstract class RulesetTest extends TestCase
      */
     protected $skipSerializingRules = [];
 
-    private function rulesetDataProvider()
+    private function rulesetDataProvider(): array
     {
         $path = __DIR__ . '/../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';
         if (!file_exists($path)) {
-            throw new \RuntimeException('Ruleset file does not exist');
+            $this->markTestSkipped('Ruleset file does not exist');
         }
 
         $rulesJson = file_get_contents($path);
@@ -77,24 +77,36 @@ abstract class RulesetTest extends TestCase
         return $dataset;
     }
 
-    public function parseRulesetDataProvider()
+    public function parseRulesetDataProvider(): array
     {
-        return array_filter(
+        $tests = array_filter(
             static::rulesetDataProvider(),
             function ($params) {
                 return !empty($params[0]->raw);
             }
         );
+
+        if (empty($tests)) {
+            $this->markTestSkipped("No parse rules");
+        }
+
+        return $tests;
     }
 
-    public function serializeRulesetDataProvider()
+    public function serializeRulesetDataProvider(): array
     {
-        return array_filter(
+        $tests = array_filter(
             static::rulesetDataProvider(),
             function ($params) {
                 return !empty($params[0]->expected);
             }
         );
+
+        if (empty($tests)) {
+            $this->markTestSkipped("No serialize rules");
+        }
+
+        return $tests;
     }
 
     /**
