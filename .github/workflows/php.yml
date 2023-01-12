@@ -26,14 +26,14 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup PHP ${{ matrix.php-versions }} without code coverage
-      if: matrix.php-versions != env.code-coverage-version || github.event_name == 'schedule'
+      if: matrix.php-versions != env.code-coverage-version
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
         coverage: none
         tools: cs2pr
     - name: Setup PHP ${{ matrix.php-versions }} with code coverage
-      if: matrix.php-versions == env.code-coverage-version && github.event_name != 'schedule'
+      if: matrix.php-versions == env.code-coverage-version
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php-versions }}
@@ -42,7 +42,7 @@ jobs:
 
     - name: Setup problem matchers for PHP
       run: echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-      
+
     - name: Setup Problem Matchers for PHPUnit
       run: echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
 
@@ -78,7 +78,7 @@ jobs:
       run: composer run-script phpunit
 
     - name: Check code style
-      if: matrix.php-versions == env.code-coverage-version && github.event_name != 'schedule'
+      if: matrix.php-versions == env.code-coverage-version
       run: composer run-script phpcs -- --report=checkstyle | cs2pr
 
     # Ensure the next test run fetches the latest test ruleset.
@@ -87,14 +87,14 @@ jobs:
       run: rm -rf $(composer config cache-files-dir)/httpwg
 
     - name: Upload code coverage report
-      if: matrix.php-versions == env.code-coverage-version && github.event_name != 'schedule'
+      if: matrix.php-versions == env.code-coverage-version
       uses: actions/upload-artifact@v1
       with:
         name: code-coverage
         path: tmp/code-coverage
 
     - name: Upload code coverage to codecov
-      if: matrix.php-versions == env.code-coverage-version && github.event_name != 'schedule'
+      if: matrix.php-versions == env.code-coverage-version
       uses: codecov/codecov-action@v1
       with:
         file: ./tmp/code-coverage/clover.xml
