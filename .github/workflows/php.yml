@@ -15,10 +15,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-versions: ['7.3', '7.4', '8.0', '8.1']
+        php-versions: ['7.3', '7.4', '8.0', '8.1', '8.2']
         experimental: [false]
     env:
-      code-coverage-version: '7.4'
+      code-coverage-version: '8.2' # Most recent stable PHP version.
 
     name: PHP ${{ matrix.php-versions }}
 
