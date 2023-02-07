@@ -57,17 +57,18 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         return new \ArrayIterator($this->value);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->value[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->value[$offset] ?? null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         static::validateItemType($value);
 
@@ -78,7 +79,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->value[$offset]);
     }

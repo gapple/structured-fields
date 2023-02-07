@@ -23,6 +23,7 @@ trait TupleTrait
         return $offset == 0 || $offset == 1;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($offset == 0) {
@@ -33,7 +34,7 @@ trait TupleTrait
         return null;
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if ($offset == 0) {
             $this->value = $value;
@@ -42,7 +43,7 @@ trait TupleTrait
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         if ($offset == 0) {
             $this->value = null;
