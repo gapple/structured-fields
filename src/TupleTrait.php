@@ -18,9 +18,19 @@ trait TupleTrait
      */
     protected $parameters;
 
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    public function getParameters(): object
+    {
+        return $this->parameters;
+    }
+
     public function offsetExists($offset): bool
     {
-        return $offset == 0 || $offset == 1;
+        return $offset === 0 || $offset === 1;
     }
 
     #[\ReturnTypeWillChange]
@@ -48,7 +58,7 @@ trait TupleTrait
         if ($offset == 0) {
             $this->value = null;
         } elseif ($offset == 1) {
-            $this->parameters = new \stdClass();
+            $this->parameters = new Parameters();
         }
     }
 }

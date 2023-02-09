@@ -16,6 +16,14 @@ class ItemTest extends TestCase
         $this->assertEmpty(get_object_vars($item[1]));
     }
 
+    public function testPropertyAccess()
+    {
+        $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
+
+        $this->assertEquals('Test Value', $item->getValue());
+        $this->assertEquals('param value', $item->getParameters()->paramKey);
+    }
+
     public function testArrayAccess()
     {
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
@@ -58,6 +66,6 @@ class ItemTest extends TestCase
         unset($item[1]);
 
         $this->assertEmpty($item[0]);
-        $this->assertEquals(new \stdClass(), $item[1]);
+        $this->assertEquals(new Parameters(), $item[1]);
     }
 }

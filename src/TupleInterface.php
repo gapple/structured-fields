@@ -9,4 +9,6 @@ namespace gapple\StructuredFields;
  */
 interface TupleInterface extends \ArrayAccess
 {
+    public function getValue();
+    public function getParameters(): object;
 }

@@ -5,7 +5,7 @@ namespace gapple\StructuredFields;
 class Serializer
 {
     /**
-     * Serialize and item with optional parameters.
+     * Serialize an item with optional parameters.
      *
      * @param $value
      *   A bare value, or an Item object.
@@ -24,8 +24,8 @@ class Serializer
                 );
             }
 
-            $bareValue = $value[0];
-            $parameters = $value[1];
+            $bareValue = $value->getValue();
+            $parameters = $value->getParameters();
         } else {
             $bareValue = $value;
         }
@@ -39,6 +39,10 @@ class Serializer
         return $output;
     }
 
+    /**
+     * @param OuterList|array $value
+     * @return string
+     */
     public static function serializeList($value): string
     {
         if ($value instanceof OuterList) {
@@ -46,21 +50,37 @@ class Serializer
         }
 
         $returnValue = array_map(function ($item) {
-            if (is_array($item[0])) {
-                return self::serializeInnerList($item[0], $item[1]);
+            if ($item instanceof TupleInterface) {
+                $itemValue = $item->getValue();
+                $itemParameters = $item->getParameters();
             } else {
-                return self::serializeItem($item[0], $item[1]);
+                $itemValue = $item[0];
+                $itemParameters = $item[1];
+            }
+
+            if (is_array($itemValue)) {
+                return self::serializeInnerList($itemValue, $itemParameters);
+            } else {
+                return self::serializeItem($itemValue, $itemParameters);
             }
         }, $value);
 
         return implode(', ', $returnValue);
     }
 
+    /**
+     * Serialize an object as a dictionary.
+     *
+     * Either a Traversable object can be provided, or the public properties of the object will be extracted.
+     *
+     * @param Dictionary|object $value
+     * @return string
+     */
     public static function serializeDictionary(object $value): string
     {
         $returnValue = '';
 
-        if (!$value instanceof Dictionary) {
+        if (!$value instanceof \Traversable) {
             $value = get_object_vars($value);
         }
 
@@ -71,12 +91,20 @@ class Serializer
 
             $returnValue .= self::serializeKey($key);
 
-            if ($item[0] === true) {
-                $returnValue .= self::serializeParameters($item[1]);
-            } elseif (is_array($item[0])) {
-                $returnValue .= '=' . self::serializeInnerList($item[0], $item[1]);
+            if ($item instanceof TupleInterface) {
+                $itemValue = $item->getValue();
+                $itemParameters = $item->getParameters();
             } else {
-                $returnValue .= '=' . self::serializeItem($item[0], $item[1]);
+                $itemValue = $item[0];
+                $itemParameters = $item[1];
+            }
+
+            if ($itemValue === true) {
+                $returnValue .= self::serializeParameters($itemParameters);
+            } elseif (is_array($itemValue)) {
+                $returnValue .= '=' . self::serializeInnerList($itemValue, $itemParameters);
+            } else {
+                $returnValue .= '=' . self::serializeItem($itemValue, $itemParameters);
             }
         }
 
@@ -88,7 +116,11 @@ class Serializer
         $returnValue = '(';
 
         while ($item = array_shift($value)) {
-            $returnValue .= self::serializeItem($item[0], $item[1]);
+            if ($item instanceof TupleInterface) {
+                $returnValue .= self::serializeItem($item);
+            } else {
+                $returnValue .= self::serializeItem($item[0], $item[1]);
+            }
 
             if (!empty($value)) {
                 $returnValue .= ' ';
@@ -191,11 +223,11 @@ class Serializer
             $value = get_object_vars($value);
         }
 
-        foreach ($value as $key => $value) {
+        foreach ($value as $key => $item) {
             $returnValue .= ';' . self::serializeKey($key);
 
-            if ($value !== true) {
-                $returnValue .= '=' . self::serializeBareItem($value);
+            if ($item !== true) {
+                $returnValue .= '=' . self::serializeBareItem($item);
             }
         }
 

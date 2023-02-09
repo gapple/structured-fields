@@ -98,7 +98,7 @@ abstract class HttpwgTest extends RulesetTest
      * @param  array  $innerList
      * @return InnerList
      */
-    private static function convertInnerList(array $innerList)
+    private static function convertInnerList(array $innerList): InnerList
     {
         $outputList = [];
 

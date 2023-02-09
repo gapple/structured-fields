@@ -3,6 +3,7 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\InnerList;
+use gapple\StructuredFields\Parameters;
 use PHPUnit\Framework\TestCase;
 
 class InnerListTest extends TestCase
@@ -11,7 +12,7 @@ class InnerListTest extends TestCase
     {
         $item = new InnerList([]);
 
-        $this->assertInstanceOf(\stdClass::class, $item[1]);
+        $this->assertInstanceOf(Parameters::class, $item[1]);
         $this->assertEmpty(get_object_vars($item[1]));
     }
 
@@ -29,7 +30,7 @@ class InnerListTest extends TestCase
         $this->assertEquals('param value', $list[1]->paramKey);
     }
 
-    public function invalidItemProvider()
+    public function invalidItemProvider(): array
     {
         $items = [];
 
@@ -56,5 +57,12 @@ class InnerListTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         new InnerList([$value]);
+    }
+
+    public function testFromArrayNestedList()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        InnerList::fromArray([new InnerList([])]);
     }
 }

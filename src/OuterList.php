@@ -18,7 +18,13 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         $this->value = $value;
     }
 
-    public static function fromArray($array): OuterList
+    /**
+     * Create an OuterList from an array of bare values.
+     *
+     * @param array $array
+     * @return OuterList
+     */
+    public static function fromArray(array $array): OuterList
     {
         $list = new static();
         foreach ($array as $value) {

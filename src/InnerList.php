@@ -13,24 +13,29 @@ class InnerList implements TupleInterface
         $this->value = $value;
 
         if (is_null($parameters)) {
-            $this->parameters = new \stdClass();
+            $this->parameters = new Parameters();
         } else {
             $this->parameters = $parameters;
         }
     }
 
+    /**
+     * Create an InnerList from an array of bare values.
+     *
+     * @param array $array
+     *   An array of bare items or TupleInterface objects.
+     * @return InnerList
+     */
     public static function fromArray(array $array): InnerList
     {
-        $list = new static([]);
-
-        foreach ($array as $item) {
+        array_walk($array, function (&$item) {
             if (!$item instanceof TupleInterface) {
                 $item = new Item($item);
             }
-            $list->value[] = $item;
-        }
+            self::validateItemType($item);
+        });
 
-        return $list;
+        return new static($array);
     }
 
     private static function validateItemType($value): void
