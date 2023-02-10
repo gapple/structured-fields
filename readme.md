@@ -28,7 +28,7 @@ Parser::parseList(string): OuterList;
 Parser::parseDictionary(string): Dictionary;
 ```
 
-The `Serializer` class provides static methods to convert structured data to a header sting.  
+The `Serializer` class provides static methods to convert structured data to a header string.  
 If the input cannot be serialized, a `SerializeException` is thrown.
 
 ```
