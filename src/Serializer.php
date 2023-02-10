@@ -40,13 +40,16 @@ class Serializer
     }
 
     /**
-     * @param OuterList|array $value
+     * @param iterable $value
      * @return string
      */
-    public static function serializeList($value): string
+    public static function serializeList(iterable $value): string
     {
-        if ($value instanceof OuterList) {
-            $value = iterator_to_array($value->getIterator());
+        if ($value instanceof \Traversable) {
+            if ($value instanceof \IteratorAggregate) {
+                $value = $value->getIterator();
+            }
+            $value = iterator_to_array($value);
         }
 
         $returnValue = array_map(function ($item) {
