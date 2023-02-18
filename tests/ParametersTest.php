@@ -30,7 +30,7 @@ class ParametersTest extends TestCase
             'two' => 'false',
         ]);
 
-        $this->assertSame(true, $parameters->one);
+        $this->assertTrue($parameters->one);
         $this->assertSame('false', $parameters->two);
     }
 }
