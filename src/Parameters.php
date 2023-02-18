@@ -11,7 +11,7 @@ class Parameters implements \IteratorAggregate
 
     public static function fromArray(array $array): Parameters
     {
-        $parameters = new static();
+        $parameters = new self();
         $parameters->value = $array;
 
         return $parameters;

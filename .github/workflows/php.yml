@@ -74,6 +74,10 @@ jobs:
     - name: Run PHPUnit tests
       run: composer run-script phpunit
 
+    - name: Run PHPStan
+      if: matrix.php-versions == env.code-coverage-version
+      run: composer run-script phpstan -- --no-progress
+
     - name: Check code style
       if: matrix.php-versions == env.code-coverage-version
       run: composer run-script phpcs -- --report=checkstyle | cs2pr

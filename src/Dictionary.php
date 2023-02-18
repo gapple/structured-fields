@@ -11,7 +11,7 @@ class Dictionary implements \IteratorAggregate
 
     public static function fromArray(array $array): Dictionary
     {
-        $dictionary = new static();
+        $dictionary = new self();
 
         foreach ($array as $key => $value) {
             if (!$value instanceof TupleInterface) {

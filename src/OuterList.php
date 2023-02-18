@@ -26,7 +26,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      */
     public static function fromArray(array $array): OuterList
     {
-        $list = new static();
+        $list = new self();
         foreach ($array as $value) {
             if (!$value instanceof TupleInterface) {
                 if (is_array($value)) {
@@ -76,7 +76,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     public function offsetSet($offset, $value): void
     {
-        static::validateItemType($value);
+        self::validateItemType($value);
 
         if (is_null($offset)) {
             $this->value[] = $value;
