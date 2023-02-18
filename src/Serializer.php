@@ -170,7 +170,7 @@ class Serializer
         if ($value > 999999999999999 || $value < -999999999999999) {
             throw new SerializeException("Integers are limited to 15 digits");
         }
-        return $value;
+        return (string) $value;
     }
 
     private static function serializeDecimal(float $value): string

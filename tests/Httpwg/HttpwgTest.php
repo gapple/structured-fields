@@ -32,6 +32,7 @@ abstract class HttpwgTest extends RulesetTest
         }
 
         $dataset = [];
+        /** @var \stdClass $rule */
         foreach ($rules as $rule) {
             if (isset($rule->expected)) {
                 try {
@@ -166,6 +167,7 @@ abstract class HttpwgTest extends RulesetTest
     private static function convertValue($data)
     {
         if (is_object($data) && property_exists($data, '__type')) {
+            /** @var \stdClass $data */
             switch ($data->__type) {
                 case 'token':
                     return new Token($data->value);
