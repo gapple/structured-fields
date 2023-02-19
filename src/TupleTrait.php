@@ -46,9 +46,9 @@ trait TupleTrait
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        if ($offset == 0) {
+        if ($offset === 0) {
             return $this->value;
-        } elseif ($offset == 1) {
+        } elseif ($offset === 1) {
             return $this->parameters;
         }
         return null;
@@ -60,9 +60,9 @@ trait TupleTrait
      */
     public function offsetSet($offset, $value): void
     {
-        if ($offset == 0) {
+        if ($offset === 0) {
             $this->value = $value;
-        } elseif ($offset == 1) {
+        } elseif ($offset === 1) {
             $this->parameters = $value;
         }
     }
@@ -72,9 +72,9 @@ trait TupleTrait
      */
     public function offsetUnset($offset): void
     {
-        if ($offset == 0) {
+        if ($offset === 0) {
             $this->value = null;
-        } elseif ($offset == 1) {
+        } elseif ($offset === 1) {
             $this->parameters = new Parameters();
         }
     }
