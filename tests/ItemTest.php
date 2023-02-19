@@ -48,14 +48,14 @@ class ItemTest extends TestCase
 
         $this->assertTrue(isset($item[0]));
         $this->assertTrue(isset($item[1]));
-        $this->assertFalse(isset($item[2]));
+        $this->assertFalse(isset($item[2])); // @phpstan-ignore-line
     }
 
     public function testArrayOutOfBounds(): void
     {
         $item = new Item(true);
 
-        $this->assertEmpty($item[2]);
+        $this->assertEmpty($item[2]); // @phpstan-ignore-line
     }
 
     public function testArrayUnset(): void

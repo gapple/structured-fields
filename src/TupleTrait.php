@@ -40,7 +40,7 @@ trait TupleTrait
     }
 
     /**
-     * @param int $offset
+     * @param 0|1 $offset
      * @return mixed|object|null
      */
     #[\ReturnTypeWillChange]
@@ -55,7 +55,7 @@ trait TupleTrait
     }
 
     /**
-     * @param int $offset
+     * @param 0|1 $offset
      * @param mixed|object $value
      */
     public function offsetSet($offset, $value): void
@@ -68,7 +68,7 @@ trait TupleTrait
     }
 
     /**
-     * @param int $offset
+     * @param 0|1 $offset
      */
     public function offsetUnset($offset): void
     {
