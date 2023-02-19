@@ -10,7 +10,10 @@ use PHPUnit\Framework\TestCase;
 
 class ParseListTest extends TestCase
 {
-    public function multipleStringProvider()
+    /**
+     * @return array<array{'raw': string, 'expected': OuterList}>
+     */
+    public function multipleStringProvider(): array
     {
         $dataset = [];
 
@@ -38,7 +41,7 @@ class ParseListTest extends TestCase
     /**
      * @dataProvider multipleStringProvider
      */
-    public function testListWithMultipleStrings($raw, $expected)
+    public function testListWithMultipleStrings(string $raw, OuterList $expected): void
     {
         $this->assertEquals($expected, Parser::parseList($raw));
     }

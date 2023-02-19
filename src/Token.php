@@ -4,6 +4,7 @@ namespace gapple\StructuredFields;
 
 class Token
 {
+    /** @var string */
     private $value;
 
     public function __construct(string $value)

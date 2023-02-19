@@ -16,7 +16,7 @@ abstract class RulesetTest extends TestCase
      * The element key should be the name of the rule, and the value should be
      * the message to provide for skipping the rule.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $skipParsingRules = [];
 
@@ -26,12 +26,18 @@ abstract class RulesetTest extends TestCase
      * The element key should be the name of the rule, and the value should be
      * the message to provide for skipping the rule.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $skipSerializingRules = [];
 
+    /**
+     * @return array<string, array<\stdClass>>
+     */
     abstract protected function rulesetDataProvider(): array;
 
+    /**
+     * @return array<string, array<\stdClass>>
+     */
     public function parseRulesetDataProvider(): array
     {
         $tests = array_filter(
@@ -48,6 +54,9 @@ abstract class RulesetTest extends TestCase
         return $tests;
     }
 
+    /**
+     * @return array<string, array<\stdClass>>
+     */
     public function serializeRulesetDataProvider(): array
     {
         $tests = array_filter(
@@ -66,10 +75,8 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider parseRulesetDataProvider
-     *
-     * @param $record
      */
-    public function testParsing($record)
+    public function testParsing(object $record): void
     {
         if (array_key_exists($record->name, $this->skipParsingRules)) {
             $this->markTestSkipped(
@@ -102,10 +109,8 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider serializeRulesetDataProvider
-     *
-     * @param $record
      */
-    public function testSerializing($record)
+    public function testSerializing(object $record): void
     {
         if (array_key_exists($record->name, $this->skipSerializingRules)) {
             $this->markTestSkipped(

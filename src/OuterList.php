@@ -2,16 +2,23 @@
 
 namespace gapple\StructuredFields;
 
+/**
+ * @implements \IteratorAggregate<int, TupleInterface|array{mixed, object}>
+ * @implements \ArrayAccess<int, TupleInterface|array{mixed, object}>
+ */
 class OuterList implements \IteratorAggregate, \ArrayAccess
 {
     /**
      * The array of values.
      *
-     * @var array
+     * @var array<TupleInterface|array{mixed, object}>
      */
     public $value;
 
-    public function __construct($value = [])
+    /**
+     * @param array<TupleInterface|array{mixed, object}> $value
+     */
+    public function __construct(array $value = [])
     {
         array_walk($value, [$this, 'validateItemType']);
 
@@ -21,7 +28,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
     /**
      * Create an OuterList from an array of bare values.
      *
-     * @param array $array
+     * @param array<mixed> $array
      * @return OuterList
      */
     public static function fromArray(array $array): OuterList
@@ -41,6 +48,10 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         return $list;
     }
 
+    /**
+     * @param TupleInterface|array{mixed, object} $value
+     * @return void
+     */
     private static function validateItemType($value): void
     {
         if (is_object($value)) {
@@ -50,7 +61,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
                 );
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) {
+            if (count($value) != 2) { // @phpstan-ignore-line
                 throw new \InvalidArgumentException();
             }
         } else {
@@ -63,17 +74,30 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         return new \ArrayIterator($this->value);
     }
 
+    /**
+     * @param int $offset
+     * @return bool
+     */
     public function offsetExists($offset): bool
     {
         return isset($this->value[$offset]);
     }
 
+    /**
+     * @param int $offset
+     * @return TupleInterface|array{mixed, object}|null
+     */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->value[$offset] ?? null;
     }
 
+    /**
+     * @param int|null $offset
+     * @param TupleInterface|array{mixed, object} $value
+     * @return void
+     */
     public function offsetSet($offset, $value): void
     {
         self::validateItemType($value);
@@ -85,6 +109,10 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         }
     }
 
+    /**
+     * @param int $offset
+     * @return void
+     */
     public function offsetUnset($offset): void
     {
         unset($this->value[$offset]);

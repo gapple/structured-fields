@@ -4,6 +4,9 @@ namespace gapple\StructuredFields;
 
 class Bytes
 {
+    /**
+     * @var string
+     */
     private $value;
 
     public function __construct(string $value)

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class DictionaryTest extends TestCase
 {
-    public function testPropertyAccess()
+    public function testPropertyAccess(): void
     {
         $dictionary = new Dictionary();
 
@@ -23,7 +23,7 @@ class DictionaryTest extends TestCase
         $this->assertFalse(isset($dictionary->key));
     }
 
-    public function testFromArray()
+    public function testFromArray(): void
     {
         $dictionary = Dictionary::fromArray([
             'one' => true,

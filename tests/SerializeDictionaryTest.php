@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeDictionaryTest extends TestCase
 {
-    public function testUntyped()
+    public function testUntyped(): void
     {
         $dictionary = (object) [
             'one' => [true, (object) []],

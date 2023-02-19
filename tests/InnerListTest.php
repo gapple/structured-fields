@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class InnerListTest extends TestCase
 {
-    public function testDefaultParameters()
+    public function testDefaultParameters(): void
     {
         $item = new InnerList([]);
 
@@ -16,7 +16,7 @@ class InnerListTest extends TestCase
         $this->assertEmpty(get_object_vars($item[1]));
     }
 
-    public function testArrayAccess()
+    public function testArrayAccess(): void
     {
         $list = new InnerList(
             [
@@ -30,6 +30,9 @@ class InnerListTest extends TestCase
         $this->assertEquals('param value', $list[1]->paramKey);
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function invalidItemProvider(): array
     {
         $items = [];
@@ -51,15 +54,16 @@ class InnerListTest extends TestCase
 
     /**
      * @dataProvider invalidItemProvider
+     * @param mixed $value
      */
-    public function testConstructInvalidItem($value)
+    public function testConstructInvalidItem($value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         new InnerList([$value]);
     }
 
-    public function testFromArrayNestedList()
+    public function testFromArrayNestedList(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

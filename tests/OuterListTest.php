@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class OuterListTest extends TestCase
 {
-    public function testArrayAccess()
+    public function testArrayAccess(): void
     {
         $item = new OuterList([
             ['Test Value One', (object) []],
@@ -19,7 +19,7 @@ class OuterListTest extends TestCase
         $this->assertEquals('Test Value One', $item[0][0]);
     }
 
-    public function testArrayIsset()
+    public function testArrayIsset(): void
     {
         $item = new OuterList([
             ['Test Value One', (object) []],
@@ -31,7 +31,7 @@ class OuterListTest extends TestCase
         $this->assertFalse(isset($item[2]));
     }
 
-    public function testArrayAppend()
+    public function testArrayAppend(): void
     {
         $item = new OuterList([
             ['Test Value One', (object) []],
@@ -42,7 +42,7 @@ class OuterListTest extends TestCase
         $this->assertEquals('Test Value Three', $item[2][0]);
     }
 
-    public function testArrayOverwrite()
+    public function testArrayOverwrite(): void
     {
         $item = new OuterList([
             ['Test Value One', (object) []],
@@ -54,7 +54,7 @@ class OuterListTest extends TestCase
         $this->assertEquals('Test Value Three', $item[1][0]);
     }
 
-    public function testArrayUnset()
+    public function testArrayUnset(): void
     {
         $item = new OuterList([
             ['Test Value One', (object) []],
@@ -66,7 +66,7 @@ class OuterListTest extends TestCase
         $this->assertEmpty($item[1]);
     }
 
-    public function testIteration()
+    public function testIteration(): void
     {
         $listValues = [
             ['Test Value One', (object) []],
@@ -84,7 +84,10 @@ class OuterListTest extends TestCase
         $this->assertEquals(count($listValues), $iterated);
     }
 
-    public function invalidItemProvider()
+    /**
+     * @return array<string, array<mixed>>
+     */
+    public function invalidItemProvider(): array
     {
         $items = [];
 
@@ -106,8 +109,9 @@ class OuterListTest extends TestCase
 
     /**
      * @dataProvider invalidItemProvider
+     * @param mixed $value
      */
-    public function testConstructInvalidItem($value)
+    public function testConstructInvalidItem($value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -116,8 +120,9 @@ class OuterListTest extends TestCase
 
     /**
      * @dataProvider invalidItemProvider
+     * @param mixed $value
      */
-    public function testAppendInvalidItem($value)
+    public function testAppendInvalidItem($value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -125,7 +130,7 @@ class OuterListTest extends TestCase
         $list[] = $value;
     }
 
-    public function testFromArray()
+    public function testFromArray(): void
     {
         $dictionary = OuterList::fromArray([
             true,

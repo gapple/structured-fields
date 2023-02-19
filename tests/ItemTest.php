@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class ItemTest extends TestCase
 {
-    public function testDefaultParameters()
+    public function testDefaultParameters(): void
     {
         $item = new Item(true);
 
@@ -16,7 +16,7 @@ class ItemTest extends TestCase
         $this->assertEmpty(get_object_vars($item[1]));
     }
 
-    public function testPropertyAccess()
+    public function testPropertyAccess(): void
     {
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 
@@ -24,7 +24,7 @@ class ItemTest extends TestCase
         $this->assertEquals('param value', $item->getParameters()->paramKey);
     }
 
-    public function testArrayAccess()
+    public function testArrayAccess(): void
     {
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 
@@ -32,7 +32,7 @@ class ItemTest extends TestCase
         $this->assertEquals('param value', $item[1]->paramKey);
     }
 
-    public function testArraySet()
+    public function testArraySet(): void
     {
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 
@@ -42,7 +42,7 @@ class ItemTest extends TestCase
         $this->assertEquals('Modified param value', $item[1]->paramKey);
     }
 
-    public function testArrayIndexIsset()
+    public function testArrayIndexIsset(): void
     {
         $item = new Item(true);
 
@@ -51,14 +51,14 @@ class ItemTest extends TestCase
         $this->assertFalse(isset($item[2]));
     }
 
-    public function testArrayOutOfBounds()
+    public function testArrayOutOfBounds(): void
     {
         $item = new Item(true);
 
         $this->assertEmpty($item[2]);
     }
 
-    public function testArrayUnset()
+    public function testArrayUnset(): void
     {
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 

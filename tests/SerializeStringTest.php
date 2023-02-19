@@ -11,7 +11,7 @@ class SerializeStringTest extends TestCase
     /**
      * Only printable ASCII is allowed in strings.
      */
-    public function testInvalidCharacter()
+    public function testInvalidCharacter(): void
     {
         $this->expectException(SerializeException::class);
         $this->expectExceptionMessage("Invalid characters in string");
@@ -19,7 +19,7 @@ class SerializeStringTest extends TestCase
         Serializer::serializeItem("🙁");
     }
 
-    public function testStringableObject()
+    public function testStringableObject(): void
     {
         $stringable = new class {
             public function __toString(): string
@@ -31,7 +31,7 @@ class SerializeStringTest extends TestCase
         $this->assertEquals('"Don\'t Panic"', Serializer::serializeItem($stringable));
     }
 
-    public function testInvalidStringableObject()
+    public function testInvalidStringableObject(): void
     {
         $this->expectException(SerializeException::class);
         $this->expectExceptionMessage("Invalid characters in string");

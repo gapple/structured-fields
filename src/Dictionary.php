@@ -2,13 +2,20 @@
 
 namespace gapple\StructuredFields;
 
+/**
+ * @implements \IteratorAggregate<string, TupleInterface|array{mixed, object}>
+ */
 class Dictionary implements \IteratorAggregate
 {
     /**
-     * @var array
+     * @var array<string, TupleInterface|array{mixed, object}>
      */
     protected $value = [];
 
+    /**
+     * @param array<mixed> $array
+     * @return Dictionary
+     */
     public static function fromArray(array $array): Dictionary
     {
         $dictionary = new self();
@@ -27,22 +34,31 @@ class Dictionary implements \IteratorAggregate
         return $dictionary;
     }
 
-    public function __get($name)
+    /**
+     * @param string $name
+     * @return TupleInterface|array{mixed, object}|null
+     */
+    public function __get(string $name)
     {
         return $this->value[$name] ?? null;
     }
 
-    public function __set($name, $value)
+    /**
+     * @param string $name
+     * @param TupleInterface|array{mixed, object} $value
+     * @return void
+     */
+    public function __set(string $name, $value)
     {
         $this->value[$name] = $value;
     }
 
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return isset($this->value[$name]);
     }
 
-    public function __unset($name)
+    public function __unset(string $name): void
     {
         unset($this->value[$name]);
     }

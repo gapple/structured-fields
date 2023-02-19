@@ -18,6 +18,9 @@ trait TupleTrait
      */
     protected $parameters;
 
+    /**
+     * @return mixed
+     */
     public function getValue()
     {
         return $this->value;
@@ -28,11 +31,18 @@ trait TupleTrait
         return $this->parameters;
     }
 
+    /**
+     * @param int $offset
+     */
     public function offsetExists($offset): bool
     {
         return $offset === 0 || $offset === 1;
     }
 
+    /**
+     * @param int $offset
+     * @return mixed|object|null
+     */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
@@ -44,6 +54,10 @@ trait TupleTrait
         return null;
     }
 
+    /**
+     * @param int $offset
+     * @param mixed|object $value
+     */
     public function offsetSet($offset, $value): void
     {
         if ($offset == 0) {
@@ -53,6 +67,9 @@ trait TupleTrait
         }
     }
 
+    /**
+     * @param int $offset
+     */
     public function offsetUnset($offset): void
     {
         if ($offset == 0) {

@@ -6,6 +6,10 @@ class InnerList implements TupleInterface
 {
     use TupleTrait;
 
+    /**
+     * @param array<TupleInterface|array{mixed, object}> $value
+     * @param object|null $parameters
+     */
     public function __construct(array $value, ?object $parameters = null)
     {
         array_walk($value, [$this, 'validateItemType']);
@@ -22,7 +26,7 @@ class InnerList implements TupleInterface
     /**
      * Create an InnerList from an array of bare values.
      *
-     * @param array $array
+     * @param array<mixed> $array
      *   An array of bare items or TupleInterface objects.
      * @return InnerList
      */
@@ -38,6 +42,10 @@ class InnerList implements TupleInterface
         return new self($array);
     }
 
+    /**
+     * @param TupleInterface|array{mixed, object} $value
+     * @return void
+     */
     private static function validateItemType($value): void
     {
         if (is_object($value)) {
@@ -50,7 +58,7 @@ class InnerList implements TupleInterface
                 throw new \InvalidArgumentException('InnerList objects cannot be nested');
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) {
+            if (count($value) != 2) { // @phpstan-ignore-line
                 throw new \InvalidArgumentException();
             }
         } else {

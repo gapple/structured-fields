@@ -12,7 +12,7 @@ class SerializeListTest extends TestCase
     /**
      * A list with bare tuples.
      */
-    public function testUntypedList()
+    public function testUntypedList(): void
     {
         $itemParam = new \stdClass();
         $itemParam->item_param = 32;

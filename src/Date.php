@@ -4,6 +4,9 @@ namespace gapple\StructuredFields;
 
 class Date
 {
+    /**
+     * @var int
+     */
     private $value;
 
     public function __construct(int $value)

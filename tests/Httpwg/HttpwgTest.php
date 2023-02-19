@@ -15,6 +15,9 @@ use ParagonIE\ConstantTime\Base32;
 
 abstract class HttpwgTest extends RulesetTest
 {
+    /**
+     * @var string
+     */
     protected $ruleset;
 
     protected function rulesetDataProvider(): array
@@ -63,7 +66,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected value of an item tuple.
      *
-     * @param  array  $item
+     * @param  array{mixed, array<string, mixed>} $item
      * @return \gapple\StructuredFields\Item
      */
     private static function convertExpectedItem(array $item): Item
@@ -74,7 +77,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a parameters map.
      *
-     * @param  array  $parameters
+     * @param  array<string, mixed> $parameters
      * @return Parameters
      */
     private static function convertParameters(array $parameters): Parameters
@@ -96,7 +99,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of an inner list tuple.
      *
-     * @param  array  $innerList
+     * @param  array{array{mixed, array<string, mixed>}, array<string, mixed>} $innerList
      * @return InnerList
      */
     private static function convertInnerList(array $innerList): InnerList
@@ -113,7 +116,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a list.
      *
-     * @param  array  $list
+     * @param  array{array{mixed, array<string, mixed>}} $list
      * @return OuterList
      */
     private static function convertExpectedList(array $list): OuterList
@@ -134,7 +137,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a dictionary.
      *
-     * @param  array  $dictionary
+     * @param  array<array{string, array{mixed, array<string, mixed>}}>  $dictionary
      * @return Dictionary
      */
     private static function convertExpectedDictionary(array $dictionary): Dictionary

@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeTokenTest extends TestCase
 {
-    public function testNumericFirstCharacter()
+    public function testNumericFirstCharacter(): void
     {
         $this->expectException(SerializeException::class);
 
@@ -19,14 +19,14 @@ class SerializeTokenTest extends TestCase
     /**
      * Test a symbol that is allowed after the first character of a token.
      */
-    public function testSymbolFirstCharacter()
+    public function testSymbolFirstCharacter(): void
     {
         $this->expectException(SerializeException::class);
 
         Serializer::serializeItem(new Token('$123abc'));
     }
 
-    public function testInvalidCharacter()
+    public function testInvalidCharacter(): void
     {
         $this->expectException(SerializeException::class);
 

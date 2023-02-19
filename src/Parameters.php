@@ -2,13 +2,20 @@
 
 namespace gapple\StructuredFields;
 
+/**
+ * @implements \IteratorAggregate<string, mixed>
+ */
 class Parameters implements \IteratorAggregate
 {
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $value = [];
 
+    /**
+     * @param array<mixed> $array
+     * @return Parameters
+     */
     public static function fromArray(array $array): Parameters
     {
         $parameters = new self();
@@ -17,22 +24,31 @@ class Parameters implements \IteratorAggregate
         return $parameters;
     }
 
-    public function __get($name)
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
+    public function __get(string $name)
     {
         return $this->value[$name] ?? null;
     }
 
-    public function __set($name, $value)
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return void
+     */
+    public function __set(string $name, $value)
     {
         $this->value[$name] = $value;
     }
 
-    public function __isset($name)
+    public function __isset(string $name): bool
     {
         return isset($this->value[$name]);
     }
 
-    public function __unset($name)
+    public function __unset(string $name): void
     {
         unset($this->value[$name]);
     }

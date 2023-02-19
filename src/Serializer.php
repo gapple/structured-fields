@@ -7,7 +7,7 @@ class Serializer
     /**
      * Serialize an item with optional parameters.
      *
-     * @param $value
+     * @param mixed $value
      *   A bare value, or an Item object.
      * @param object|null $parameters
      *   An optional object containing parameter values if a bare value is provided.
@@ -40,7 +40,7 @@ class Serializer
     }
 
     /**
-     * @param iterable $value
+     * @param iterable<TupleInterface|array{mixed, object}> $value
      * @return string
      */
     public static function serializeList(iterable $value): string
@@ -114,6 +114,10 @@ class Serializer
         return $returnValue;
     }
 
+    /**
+     * @param array<TupleInterface|array{mixed, object}> $value
+     * @param object|null $parameters
+     */
     private static function serializeInnerList(array $value, ?object $parameters = null): string
     {
         $returnValue = '(';
@@ -139,6 +143,9 @@ class Serializer
         return $returnValue;
     }
 
+    /**
+     * @param mixed $value
+     */
     private static function serializeBareItem($value): string
     {
         if (is_int($value)) {
@@ -154,7 +161,7 @@ class Serializer
         } elseif ($value instanceof Date) {
             return self::serializeDate($value);
         } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
-            return self::serializeString($value);
+            return self::serializeString((string) $value);
         }
 
         throw new SerializeException("Unrecognized type");
@@ -181,6 +188,7 @@ class Serializer
 
         // Casting to a string loses a digit on long numbers, but is preserved
         // by json_encode (e.g. 111111111111.111).
+        /** @var string $result */
         $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
 
         if (strpos($result, '.') === false) {

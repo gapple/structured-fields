@@ -9,14 +9,14 @@ use PHPUnit\Framework\TestCase;
 
 class SerializeItemTest extends TestCase
 {
-    public function testUnknownType()
+    public function testUnknownType(): void
     {
         $this->expectException(SerializeException::class);
 
         Serializer::serializeItem(new \stdClass());
     }
 
-    public function testNullValueItem()
+    public function testNullValueItem(): void
     {
         $this->expectException(SerializeException::class);
         $this->expectExceptionMessage('Unrecognized type');
@@ -24,7 +24,7 @@ class SerializeItemTest extends TestCase
         Serializer::serializeItem(new Item(null));
     }
 
-    public function testNoParameters()
+    public function testNoParameters(): void
     {
         $item = new Item(true);
 
@@ -33,7 +33,7 @@ class SerializeItemTest extends TestCase
         $this->assertEquals('?1', $result);
     }
 
-    public function testItemObjectWithParameters()
+    public function testItemObjectWithParameters(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

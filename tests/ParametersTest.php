@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
 {
-    public function testPropertyAccess()
+    public function testPropertyAccess(): void
     {
         $parameters = new Parameters();
 
@@ -23,7 +23,7 @@ class ParametersTest extends TestCase
         $this->assertFalse(isset($parameters->key));
     }
 
-    public function testFromArray()
+    public function testFromArray(): void
     {
         $parameters = Parameters::fromArray([
             'one' => true,
