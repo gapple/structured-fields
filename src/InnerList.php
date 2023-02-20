@@ -39,6 +39,7 @@ class InnerList implements TupleInterface
             self::validateItemType($item);
         });
 
+        /** @var TupleInterface[] $array */
         return new self($array);
     }
 

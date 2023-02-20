@@ -31,12 +31,12 @@ abstract class RulesetTest extends TestCase
     protected $skipSerializingRules = [];
 
     /**
-     * @return array<string, array<\stdClass>>
+     * @return array<string, array{Rule}>
      */
     abstract protected function rulesetDataProvider(): array;
 
     /**
-     * @return array<string, array<\stdClass>>
+     * @return array<string, array{Rule}>
      */
     public function parseRulesetDataProvider(): array
     {
@@ -55,7 +55,7 @@ abstract class RulesetTest extends TestCase
     }
 
     /**
-     * @return array<string, array<\stdClass>>
+     * @return array<string, array{Rule}>
      */
     public function serializeRulesetDataProvider(): array
     {
@@ -75,8 +75,9 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider parseRulesetDataProvider
+     * @param Rule $record
      */
-    public function testParsing(object $record): void
+    public function testParsing(Rule $record): void
     {
         if (array_key_exists($record->name, $this->skipParsingRules)) {
             $this->markTestSkipped(
@@ -109,8 +110,9 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider serializeRulesetDataProvider
+     * @param Rule $record
      */
-    public function testSerializing(object $record): void
+    public function testSerializing(Rule $record): void
     {
         if (array_key_exists($record->name, $this->skipSerializingRules)) {
             $this->markTestSkipped(

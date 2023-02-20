@@ -16,6 +16,7 @@ class OuterListTest extends TestCase
             ['Test Value Two', (object) []],
         ]);
 
+        $this->assertNotNull($item[0]);
         $this->assertEquals('Test Value One', $item[0][0]);
     }
 
@@ -39,6 +40,7 @@ class OuterListTest extends TestCase
         ]);
         $item[] = ['Test Value Three', (object) []];
 
+        $this->assertNotNull($item[2]);
         $this->assertEquals('Test Value Three', $item[2][0]);
     }
 
@@ -50,6 +52,8 @@ class OuterListTest extends TestCase
         ]);
         $item[1] = ['Test Value Three', (object) []];
 
+        $this->assertNotNull($item[0]);
+        $this->assertNotNull($item[1]);
         $this->assertEquals('Test Value One', $item[0][0]);
         $this->assertEquals('Test Value Three', $item[1][0]);
     }
@@ -62,6 +66,7 @@ class OuterListTest extends TestCase
         ]);
         unset($item[1]);
 
+        $this->assertNotNull($item[0]);
         $this->assertEquals('Test Value One', $item[0][0]);
         $this->assertEmpty($item[1]);
     }
@@ -115,7 +120,7 @@ class OuterListTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        new OuterList([$value]);
+        new OuterList([$value]); // @phpstan-ignore-line
     }
 
     /**

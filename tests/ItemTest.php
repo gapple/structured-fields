@@ -21,7 +21,7 @@ class ItemTest extends TestCase
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 
         $this->assertEquals('Test Value', $item->getValue());
-        $this->assertEquals('param value', $item->getParameters()->paramKey);
+        $this->assertEquals('param value', $item->getParameters()->paramKey); // @phpstan-ignore-line
     }
 
     public function testArrayAccess(): void
@@ -29,7 +29,7 @@ class ItemTest extends TestCase
         $item = new Item('Test Value', (object) ['paramKey' => 'param value']);
 
         $this->assertEquals('Test Value', $item[0]);
-        $this->assertEquals('param value', $item[1]->paramKey);
+        $this->assertEquals('param value', $item[1]->paramKey); // @phpstan-ignore-line
     }
 
     public function testArraySet(): void
@@ -39,7 +39,7 @@ class ItemTest extends TestCase
         $item[0] = 'Modified Value';
         $item[1] = (object) ['paramKey' => 'Modified param value'];
         $this->assertEquals('Modified Value', $item[0]);
-        $this->assertEquals('Modified param value', $item[1]->paramKey);
+        $this->assertEquals('Modified param value', $item[1]->paramKey); // @phpstan-ignore-line
     }
 
     public function testArrayIndexIsset(): void

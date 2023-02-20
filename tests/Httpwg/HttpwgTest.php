@@ -10,6 +10,7 @@ use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Parameters;
 use gapple\StructuredFields\Token;
+use gapple\Tests\StructuredFields\Rule;
 use gapple\Tests\StructuredFields\RulesetTest;
 use ParagonIE\ConstantTime\Base32;
 
@@ -28,14 +29,17 @@ abstract class HttpwgTest extends RulesetTest
         }
 
         $rulesJson = file_get_contents($path);
+        if (!$rulesJson) {
+            throw new \RuntimeException("Unable to read ruleset JSON file.");
+        }
 
+        /** @var array<\stdClass>|null $rules */
         $rules = json_decode($rulesJson);
         if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
             throw new \RuntimeException("Unable to parse ruleset JSON file.");
         }
 
         $dataset = [];
-        /** @var \stdClass $rule */
         foreach ($rules as $rule) {
             if (isset($rule->expected)) {
                 try {
@@ -45,10 +49,7 @@ abstract class HttpwgTest extends RulesetTest
                     continue;
                 }
             }
-
-            // Set default values for optional keys.
-            $rule->must_fail = $rule->must_fail ?? false;
-            $rule->can_fail = $rule->can_fail ?? false;
+            $rule = Rule::fromClass($rule);
 
             if (isset($dataset[$rule->name])) {
                 user_error(
@@ -66,7 +67,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected value of an item tuple.
      *
-     * @param  array{mixed, array<string, mixed>} $item
+     * @param  array{mixed, array<array{string, mixed}>} $item
      * @return \gapple\StructuredFields\Item
      */
     private static function convertExpectedItem(array $item): Item
@@ -77,7 +78,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a parameters map.
      *
-     * @param  array<string, mixed> $parameters
+     * @param  array<array{string, mixed}> $parameters
      * @return Parameters
      */
     private static function convertParameters(array $parameters): Parameters
@@ -99,7 +100,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of an inner list tuple.
      *
-     * @param  array{array{mixed, array<string, mixed>}, array<string, mixed>} $innerList
+     * @param  array{array<array{mixed, array<array{string, mixed}>}>, array<array{string, mixed}>} $innerList
      * @return InnerList
      */
     private static function convertInnerList(array $innerList): InnerList
@@ -116,7 +117,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a list.
      *
-     * @param  array{array{mixed, array<string, mixed>}} $list
+     * @param  array<array{mixed, array<array{string, mixed}>}> $list
      * @return OuterList
      */
     private static function convertExpectedList(array $list): OuterList
@@ -137,7 +138,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a dictionary.
      *
-     * @param  array<array{string, array{mixed, array<string, mixed>}}>  $dictionary
+     * @param  array<array{string, array{mixed, array<array{string, mixed}>}}>  $dictionary
      * @return Dictionary
      */
     private static function convertExpectedDictionary(array $dictionary): Dictionary

@@ -26,8 +26,8 @@ class InnerListTest extends TestCase
             (object) ['paramKey' => 'param value']
         );
 
-        $this->assertEquals('Test Value One', $list[0][0][0]);
-        $this->assertEquals('param value', $list[1]->paramKey);
+        $this->assertEquals('Test Value One', $list[0][0][0]); // @phpstan-ignore-line
+        $this->assertEquals('param value', $list[1]->paramKey); // @phpstan-ignore-line
     }
 
     /**
@@ -60,7 +60,7 @@ class InnerListTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        new InnerList([$value]);
+        new InnerList([$value]); // @phpstan-ignore-line
     }
 
     public function testFromArrayNestedList(): void

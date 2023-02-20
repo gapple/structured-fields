@@ -41,7 +41,7 @@ trait TupleTrait
 
     /**
      * @param 0|1 $offset
-     * @return mixed|object|null
+     * @return ($offset is 0 ? mixed : $offset is 1 ? object : null)
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
@@ -63,6 +63,9 @@ trait TupleTrait
         if ($offset === 0) {
             $this->value = $value;
         } elseif ($offset === 1) {
+            if (!is_object($value)) {
+                throw new \InvalidArgumentException('Tuple parameters must be an object');
+            }
             $this->parameters = $value;
         }
     }

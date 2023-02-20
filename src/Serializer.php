@@ -56,9 +56,11 @@ class Serializer
             if ($item instanceof TupleInterface) {
                 $itemValue = $item->getValue();
                 $itemParameters = $item->getParameters();
-            } else {
+            } elseif (is_array($item) && count($item) == 2) {
                 $itemValue = $item[0];
                 $itemParameters = $item[1];
+            } else {
+                throw new SerializeException("Invalid item in list");
             }
 
             if (is_array($itemValue)) {
@@ -230,7 +232,7 @@ class Serializer
     {
         $returnValue = '';
 
-        if (!$value instanceof Parameters) {
+        if (!$value instanceof \Traversable) {
             $value = get_object_vars($value);
         }
 
