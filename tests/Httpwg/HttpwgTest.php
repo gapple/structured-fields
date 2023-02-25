@@ -14,6 +14,13 @@ use gapple\Tests\StructuredFields\Rule;
 use gapple\Tests\StructuredFields\RulesetTest;
 use ParagonIE\ConstantTime\Base32;
 
+/**
+ * @phpstan-type ExpectedParameters array<array{string, mixed}>
+ * @phpstan-type ExpectedTuple array{mixed, ExpectedParameters}
+ * @phpstan-type ExpectedInnerList array{array<ExpectedTuple>, ExpectedParameters}
+ * @phpstan-type ExpectedOuterList array<ExpectedTuple>
+ * @phpstan-type ExpectedDictionary array<array{string, ExpectedTuple}>
+ */
 abstract class HttpwgTest extends RulesetTest
 {
     /**
@@ -67,7 +74,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected value of an item tuple.
      *
-     * @param  array{mixed, array<array{string, mixed}>} $item
+     * @param  ExpectedTuple $item
      * @return \gapple\StructuredFields\Item
      */
     private static function convertExpectedItem(array $item): Item
@@ -78,7 +85,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a parameters map.
      *
-     * @param  array<array{string, mixed}> $parameters
+     * @param  ExpectedParameters $parameters
      * @return Parameters
      */
     private static function convertParameters(array $parameters): Parameters
@@ -100,7 +107,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of an inner list tuple.
      *
-     * @param  array{array<array{mixed, array<array{string, mixed}>}>, array<array{string, mixed}>} $innerList
+     * @param  ExpectedInnerList $innerList
      * @return InnerList
      */
     private static function convertInnerList(array $innerList): InnerList
@@ -117,7 +124,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a list.
      *
-     * @param  array<array{mixed, array<array{string, mixed}>}> $list
+     * @param  ExpectedOuterList $list
      * @return OuterList
      */
     private static function convertExpectedList(array $list): OuterList
@@ -138,7 +145,7 @@ abstract class HttpwgTest extends RulesetTest
     /**
      * Convert the expected values of a dictionary.
      *
-     * @param  array<array{string, array{mixed, array<array{string, mixed}>}}>  $dictionary
+     * @param  ExpectedDictionary $dictionary
      * @return Dictionary
      */
     private static function convertExpectedDictionary(array $dictionary): Dictionary
