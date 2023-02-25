@@ -2,7 +2,9 @@
 
 namespace gapple\Tests\StructuredFields;
 
-// phpcs:disable Generic.Files.LineLength.TooLong
+use gapple\StructuredFields\Dictionary;
+use gapple\StructuredFields\Item;
+use gapple\StructuredFields\OuterList;
 
 class Rule
 {
@@ -25,7 +27,7 @@ class Rule
     public $raw;
 
     /**
-     * @var null|array{mixed, array<string, mixed>}|array<array{mixed, array<string, mixed>}>|array<array{string, array{mixed, array<string, mixed>}}>
+     * @var null|Item|Dictionary|OuterList
      * @readonly
      */
     public $expected;
