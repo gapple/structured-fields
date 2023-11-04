@@ -6,7 +6,7 @@
 |--------:|---------------------|
 |   `2.0` | :white_check_mark:  |
 |   `1.1` | 🟨 Until 2024-02-31 |
-|   `1.0` | 🟨 Until 2023-07-31 |
+|   `1.0` | :x: Ended 2023-07-31 |
 |   `0.x` | :x:                 |
 
 Minor versions will be supported for 6 months after a newer minor release is available.  
