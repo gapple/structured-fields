@@ -280,32 +280,43 @@ class Parser
 
     private static function parseDisplayString(string &$string): DisplayString
     {
-        $string = substr($string, 1);
+        if (strpos($string, '%"') !== 0) {
+            throw new ParseException("Invalid start of display string");
+        }
 
-        $output_string = '';
+        $string = substr($string, 2);
+
+        $encoded_string = '';
         while (strlen($string)) {
             $char = $string[0];
             $string = substr($string, 1);
 
-            // @todo properly parse value
-
-            if ($char == '\\') {
-                if ($string == '') {
-                    throw new ParseException("Invalid end of string");
+            if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+                throw new ParseException('Invalid character in display string');
+            } elseif ($char == '%') {
+                if (strlen($string) < 2) {
+                    throw new ParseException("Invalid end of display string");
                 }
 
-                $char = $string[0];
-                $string = substr($string, 1);
-                if ($char != '"' && $char != '\\') {
-                    throw new ParseException('Invalid escaped character in string');
+                $hex = substr($string, 0, 2);
+                $string = substr($string, 2);
+
+                if (!preg_match('/^[0-9a-z]{2}$/', $hex)) {
+                    throw new ParseException('Invalid hex values in display string');
                 }
+
+                $encoded_string .= $char . $hex;
             } elseif ($char == '"') {
-                return new DisplayString($output_string);
-            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
-                throw new ParseException('Invalid character in string');
+                $display_string = new DisplayString(rawurldecode($encoded_string));
+                // An invalid UTF-8 subject will cause the preg_* function to match nothing.
+                // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
+                if (!preg_match('/^\X*$/u', $display_string)) {
+                    throw new ParseException("Invalid byte sequence in display string");
+                }
+                return $display_string;
+            } else {
+                $encoded_string .= $char;
             }
-
-            $output_string .= $char;
         }
 
         throw new ParseException("Invalid end of display string");
