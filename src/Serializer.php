@@ -211,10 +211,14 @@ class Serializer
         return '"' . preg_replace('/(["\\\])/', '\\\$1', $value) . '"';
     }
 
-    private static function serializeDisplayString(string $value): string
+    private static function serializeDisplayString(DisplayString $value): string
     {
-        // @todo properly encode value.
-        return '%"' . $value . '"';
+        $encode_pattern = '/[%"\x00-\x1F\x7F-\xFF]/';
+        $encode_callback = function ($matches) {
+            return strtolower(rawurlencode($matches[0]));
+        };
+
+        return '%"' . preg_replace_callback($encode_pattern, $encode_callback, $value) . '"';
     }
 
     private static function serializeToken(Token $value): string
