@@ -162,6 +162,8 @@ class Serializer
             return self::serializeByteSequence($value);
         } elseif ($value instanceof Date) {
             return self::serializeDate($value);
+        } elseif ($value instanceof DisplayString) {
+            return self::serializeDisplayString($value);
         } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
             return self::serializeString((string) $value);
         }
@@ -207,6 +209,16 @@ class Serializer
         }
 
         return '"' . preg_replace('/(["\\\])/', '\\\$1', $value) . '"';
+    }
+
+    private static function serializeDisplayString(DisplayString $value): string
+    {
+        $encode_pattern = '/[%"\x00-\x1F\x7F-\xFF]/';
+        $encode_callback = function ($matches) {
+            return strtolower(rawurlencode($matches[0]));
+        };
+
+        return '%"' . preg_replace_callback($encode_pattern, $encode_callback, $value) . '"';
     }
 
     private static function serializeToken(Token $value): string

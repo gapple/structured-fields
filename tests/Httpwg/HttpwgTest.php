@@ -5,6 +5,7 @@ namespace gapple\Tests\StructuredFields\Httpwg;
 use gapple\StructuredFields\Bytes;
 use gapple\StructuredFields\Date;
 use gapple\StructuredFields\Dictionary;
+use gapple\StructuredFields\DisplayString;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
@@ -186,6 +187,8 @@ abstract class HttpwgTest extends RulesetTest
                     return new Bytes(Base32::decodeUpper($data->value));
                 case 'date':
                     return new Date($data->value);
+                case 'displaystring':
+                    return new DisplayString($data->value);
             }
         }
 

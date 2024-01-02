@@ -169,6 +169,8 @@ class Parser
             $value = self::parseBoolean($string);
         } elseif ($string[0] == '@') {
             $value = self::parseDate($string);
+        } elseif ($string[0] == '%') {
+            $value = self::parseDisplayString($string);
         } elseif (preg_match('/^([a-z*])/i', $string)) {
             $value = self::parseToken($string);
         } else {
@@ -274,6 +276,50 @@ class Parser
         }
 
         throw new ParseException("Invalid end of string");
+    }
+
+    private static function parseDisplayString(string &$string): DisplayString
+    {
+        if (strpos($string, '%"') !== 0) {
+            throw new ParseException("Invalid start of display string");
+        }
+
+        $string = substr($string, 2);
+
+        $encoded_string = '';
+        while (strlen($string)) {
+            $char = $string[0];
+            $string = substr($string, 1);
+
+            if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+                throw new ParseException('Invalid character in display string');
+            } elseif ($char == '%') {
+                if (strlen($string) < 2) {
+                    throw new ParseException("Invalid end of display string");
+                }
+
+                $hex = substr($string, 0, 2);
+                $string = substr($string, 2);
+
+                if (!preg_match('/^[0-9a-z]{2}$/', $hex)) {
+                    throw new ParseException('Invalid hex values in display string');
+                }
+
+                $encoded_string .= $char . $hex;
+            } elseif ($char == '"') {
+                $display_string = new DisplayString(rawurldecode($encoded_string));
+                // An invalid UTF-8 subject will cause the preg_* function to match nothing.
+                // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
+                if (!preg_match('/^\X*$/u', $display_string)) {
+                    throw new ParseException("Invalid byte sequence in display string");
+                }
+                return $display_string;
+            } else {
+                $encoded_string .= $char;
+            }
+        }
+
+        throw new ParseException("Invalid end of display string");
     }
 
     private static function parseToken(string &$string): Token
