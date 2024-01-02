@@ -169,6 +169,8 @@ class Parser
             $value = self::parseBoolean($string);
         } elseif ($string[0] == '@') {
             $value = self::parseDate($string);
+        } elseif ($string[0] == '%') {
+            $value = self::parseDisplayString($string);
         } elseif (preg_match('/^([a-z*])/i', $string)) {
             $value = self::parseToken($string);
         } else {
@@ -274,6 +276,39 @@ class Parser
         }
 
         throw new ParseException("Invalid end of string");
+    }
+
+    private static function parseDisplayString(string &$string): DisplayString
+    {
+        $string = substr($string, 1);
+
+        $output_string = '';
+        while (strlen($string)) {
+            $char = $string[0];
+            $string = substr($string, 1);
+
+            // @todo properly parse value
+
+            if ($char == '\\') {
+                if ($string == '') {
+                    throw new ParseException("Invalid end of string");
+                }
+
+                $char = $string[0];
+                $string = substr($string, 1);
+                if ($char != '"' && $char != '\\') {
+                    throw new ParseException('Invalid escaped character in string');
+                }
+            } elseif ($char == '"') {
+                return new DisplayString($output_string);
+            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+                throw new ParseException('Invalid character in string');
+            }
+
+            $output_string .= $char;
+        }
+
+        throw new ParseException("Invalid end of display string");
     }
 
     private static function parseToken(string &$string): Token
