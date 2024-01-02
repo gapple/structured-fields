@@ -2,12 +2,13 @@
 
 ## Supported Versions
 
-| Version | Supported           |
-|--------:|---------------------|
-|   `2.0` | :white_check_mark:  |
-|   `1.1` | 🟨 Until 2024-02-31 |
+| Version | Supported            |
+|--------:|----------------------|
+|   `2.1` | :white_check_mark:   |
+|   `2.0` | 🟨 Until 2024-07-31  |
+|   `1.1` | 🟨 Until 2024-02-29  |
 |   `1.0` | :x: Ended 2023-07-31 |
-|   `0.x` | :x:                 |
+|   `0.x` | :x:                  |
 
 Minor versions will be supported for 6 months after a newer minor release is available.  
 Major versions will be supported for 1 year after a newer major release is available.
