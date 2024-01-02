@@ -103,7 +103,7 @@ abstract class RulesetTest extends TestCase
                 $this->addToAssertionCount(1);
                 return;
             } elseif (!$record->can_fail) {
-                $this->fail('"' . $record->name . '" must not fail parsing');
+                $this->fail('"' . $record->name . '" failed parsing with exception: ' . $e->getMessage());
             }
         }
     }
@@ -137,7 +137,7 @@ abstract class RulesetTest extends TestCase
                 $this->addToAssertionCount(1);
                 return;
             } else {
-                $this->fail('"' . $record->name . '"  failed serializing');
+                $this->fail('"' . $record->name . '"  failed serializing with exception: ' . $e->getMessage());
             }
         }
     }
