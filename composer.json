@@ -2,6 +2,7 @@
     "name": "gapple/structured-fields",
     "description": "Library for Structured Field Values for HTTP ",
     "type": "library",
+    "keywords": ["http", "rfc8941"],
     "license": [
         "MIT",
         "GPL-2.0-or-later"
@@ -43,7 +44,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-develop": "2.0.x-dev"
+            "dev-develop": "2.x-dev"
         }
     },
     "repositories": [
