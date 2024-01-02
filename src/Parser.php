@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
 
 class Parser
@@ -310,7 +312,7 @@ class Parser
                 $display_string = new DisplayString(rawurldecode($encoded_string));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
                 // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
-                if (!preg_match('/^\X*$/u', $display_string)) {
+                if (!preg_match('/^\X*$/u', (string) $display_string)) {
                     throw new ParseException("Invalid byte sequence in display string");
                 }
                 return $display_string;

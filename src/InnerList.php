@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
 
 class InnerList implements TupleInterface
