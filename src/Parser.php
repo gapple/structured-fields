@@ -117,7 +117,7 @@ class Parser
     /**
      * @param string $string
      *
-     * @return \gapple\StructuredFields\Item
+     * @return Item
      *  A [value, parameters] tuple.
      */
     public static function parseItem(string $string): Item
@@ -139,7 +139,7 @@ class Parser
      *
      * @param string $string
      *
-     * @return \gapple\StructuredFields\Item
+     * @return Item
      *  A [value, parameters] tuple.
      */
     private static function doParseItem(string &$string): Item
@@ -153,7 +153,7 @@ class Parser
     /**
      * @param string $string
      *
-     * @return bool|float|int|string|\gapple\StructuredFields\Bytes|\gapple\StructuredFields\Token|\gapple\StructuredFields\Date
+     * @return bool|float|int|string|Bytes|Date|DisplayString|Token
      */
     private static function parseBareItem(string &$string)
     {
@@ -182,7 +182,7 @@ class Parser
         return $value;
     }
 
-    private static function parseParameters(string &$string): object
+    private static function parseParameters(string &$string): Parameters
     {
         $parameters = new Parameters();
 
@@ -346,7 +346,7 @@ class Parser
      *
      * @param string $string
      *
-     * @return \gapple\StructuredFields\Bytes
+     * @return Bytes
      */
     private static function parseByteSequence(string &$string): Bytes
     {
