@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace gapple\StructuredFields;
 
 class Serializer
@@ -218,7 +220,7 @@ class Serializer
             return strtolower(rawurlencode($matches[0]));
         };
 
-        return '%"' . preg_replace_callback($encode_pattern, $encode_callback, $value) . '"';
+        return '%"' . preg_replace_callback($encode_pattern, $encode_callback, (string) $value) . '"';
     }
 
     private static function serializeToken(Token $value): string
@@ -228,16 +230,16 @@ class Serializer
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
 
-        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', $value)) {
+        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', (string) $value)) {
             throw new SerializeException('Invalid characters in token');
         }
 
-        return $value;
+        return (string) $value;
     }
 
     private static function serializeByteSequence(Bytes $value): string
     {
-        return ':' . base64_encode($value) . ':';
+        return ':' . base64_encode((string) $value) . ':';
     }
 
     private static function serializeParameters(object $value): string
