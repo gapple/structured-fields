@@ -10,6 +10,7 @@ class TupleTraitTest extends TestCase
     public function testSetInvalidParameterValue(): void
     {
         $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Tuple parameters must be an object');
 
         $item = new Item('test');
 
