@@ -157,29 +157,25 @@ class Parser
      */
     private static function parseBareItem(string &$string)
     {
-        $value = null;
-
         if ($string === "") {
             throw new ParseException('Unexpected empty input');
         } elseif (preg_match('/^(-|\d)/', $string)) {
-            $value = self::parseNumber($string);
+            return self::parseNumber($string);
         } elseif ($string[0] == '"') {
-            $value = self::parseString($string);
+            return self::parseString($string);
         } elseif ($string[0] == ':') {
-            $value = self::parseByteSequence($string);
+            return self::parseByteSequence($string);
         } elseif ($string[0] == '?') {
-            $value = self::parseBoolean($string);
+            return self::parseBoolean($string);
         } elseif ($string[0] == '@') {
-            $value = self::parseDate($string);
+            return self::parseDate($string);
         } elseif ($string[0] == '%') {
-            $value = self::parseDisplayString($string);
+            return self::parseDisplayString($string);
         } elseif (preg_match('/^([a-z*])/i', $string)) {
-            $value = self::parseToken($string);
-        } else {
-            throw new ParseException('Unknown item type');
+            return self::parseToken($string);
         }
 
-        return $value;
+        throw new ParseException('Unknown item type');
     }
 
     private static function parseParameters(string &$string): Parameters
