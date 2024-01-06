@@ -2,8 +2,6 @@
 
 namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredFields\Item;
-use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
 use PHPUnit\Framework\TestCase;
 

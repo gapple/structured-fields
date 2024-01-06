@@ -2,9 +2,7 @@
 
 namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredFields\Dictionary;
 use gapple\StructuredFields\Parameters;
-use PhpParser\Node\Param;
 use PHPUnit\Framework\TestCase;
 
 class ParametersTest extends TestCase
