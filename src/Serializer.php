@@ -48,9 +48,7 @@ class Serializer
     public static function serializeList(iterable $value): string
     {
         if ($value instanceof \Traversable) {
-            if ($value instanceof \IteratorAggregate) {
-                $value = $value->getIterator();
-            }
+            // @todo Checking for Traversable is not required for PHP ^8.2.0.
             $value = iterator_to_array($value);
         }
 

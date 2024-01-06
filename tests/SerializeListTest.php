@@ -65,4 +65,19 @@ class SerializeListTest extends TestCase
             $serialized
         );
     }
+
+    public function testArray(): void
+    {
+        $list = [
+            new Item('test'),
+            new Item(42),
+        ];
+
+        $serialized = Serializer::serializeList($list);
+
+        $this->assertEquals(
+            '"test", 42',
+            $serialized
+        );
+    }
 }
