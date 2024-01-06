@@ -8,6 +8,7 @@ class Date
 {
     /**
      * @var int
+     * @readonly
      */
     private $value;
 

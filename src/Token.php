@@ -6,7 +6,10 @@ namespace gapple\StructuredFields;
 
 class Token
 {
-    /** @var string */
+    /**
+     * @var string
+     * @readonly
+     */
     private $value;
 
     public function __construct(string $value)

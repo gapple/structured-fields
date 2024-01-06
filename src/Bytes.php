@@ -8,6 +8,7 @@ class Bytes
 {
     /**
      * @var string
+     * @readonly
      */
     private $value;
 

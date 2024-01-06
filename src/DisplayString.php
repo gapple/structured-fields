@@ -8,6 +8,7 @@ class DisplayString
 {
     /**
      * @var string
+     * @readonly
      */
     private $value;
 
