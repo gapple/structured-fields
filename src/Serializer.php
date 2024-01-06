@@ -79,7 +79,6 @@ class Serializer
      * Either a Traversable object can be provided, or the public properties of the object will be extracted.
      *
      * @param Dictionary|object $value
-     * @return string
      */
     public static function serializeDictionary(object $value): string
     {
@@ -118,7 +117,6 @@ class Serializer
 
     /**
      * @param array<TupleInterface|array{mixed, object}> $value
-     * @param object|null $parameters
      */
     private static function serializeInnerList(array $value, ?object $parameters = null): string
     {

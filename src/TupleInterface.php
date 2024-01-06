@@ -7,7 +7,7 @@ namespace gapple\StructuredFields;
 /**
  * Interface for objects that represent a [value, parameters] tuple.
  *
- * @see \gapple\StructuredFields\TupleTrait
+ * @see TupleTrait
  * @extends \ArrayAccess<int, mixed>
  */
 interface TupleInterface extends \ArrayAccess

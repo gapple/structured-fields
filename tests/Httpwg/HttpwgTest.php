@@ -76,7 +76,7 @@ abstract class HttpwgTest extends RulesetTest
      * Convert the expected value of an item tuple.
      *
      * @param  ExpectedTuple $item
-     * @return \gapple\StructuredFields\Item
+     * @return Item
      */
     private static function convertExpectedItem(array $item): Item
     {
