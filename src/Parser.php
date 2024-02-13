@@ -299,7 +299,7 @@ class Parser
                 $hex = substr($string, 0, 2);
                 $string = substr($string, 2);
 
-                if (!preg_match('/^[0-9a-z]{2}$/', $hex)) {
+                if (!preg_match('/^[0-9a-f]{2}$/', $hex)) {
                     throw new ParseException('Invalid hex values in display string');
                 }
 
