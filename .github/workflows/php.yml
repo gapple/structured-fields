@@ -23,7 +23,7 @@ jobs:
     name: PHP ${{ matrix.php-versions }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Setup PHP ${{ matrix.php-versions }} without code coverage
       if: matrix.php-versions != env.code-coverage-version
@@ -50,7 +50,7 @@ jobs:
       id: composer-cache
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       id: cache
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
