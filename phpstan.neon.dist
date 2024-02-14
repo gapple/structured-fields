@@ -8,10 +8,6 @@ parameters:
         - src
         - tests
 
-    universalObjectCratesClasses:
-        - gapple\StructuredFields\Dictionary
-        - gapple\StructuredFields\Parameters
-
     featureToggles:
       readOnlyByPhpDoc: true
 
@@ -19,3 +15,8 @@ parameters:
         -
             message: '#Unreachable statement - code above always terminates.#'
             path: src/TupleTrait.php
+
+services:
+  - class: gapple\StructuredFields\PHPStan\DynamicPropertiesClassReflectionExtension
+    tags:
+      - phpstan.broker.propertiesClassReflectionExtension
