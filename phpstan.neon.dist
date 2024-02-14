@@ -8,10 +8,12 @@ parameters:
         - src
         - tests
     treatPhpDocTypesAsCertain: false
-    universalObjectCratesClasses:
-        - gapple\StructuredFields\Dictionary
-        - gapple\StructuredFields\Parameters
 
     ignoreErrors:
-      - message: '#Class gapple\\Tests\\StructuredFields\\Rule has an uninitialized readonly property#'
-        path: tests/Rule.php
+        - message: '#Class gapple\\Tests\\StructuredFields\\Rule has an uninitialized readonly property#'
+          path: tests/Rule.php
+
+services:
+    - class: gapple\StructuredFields\PHPStan\DynamicPropertiesClassReflectionExtension
+      tags:
+          - phpstan.broker.propertiesClassReflectionExtension
