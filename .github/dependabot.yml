@@ -7,3 +7,10 @@ updates:
       day: "saturday"
     reviewers:
       - "gapple"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+    reviewers:
+      - "gapple"
