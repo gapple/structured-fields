@@ -29,6 +29,9 @@ abstract class HttpwgTest extends RulesetTest
      */
     protected $ruleset;
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     protected function rulesetDataProvider(): array
     {
         $path = __DIR__ . '/../../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';

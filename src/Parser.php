@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Parser
 {
     public static function parseDictionary(string $string): Dictionary
@@ -276,6 +279,9 @@ class Parser
         throw new ParseException("Invalid end of string");
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
     private static function parseDisplayString(string &$string): DisplayString
     {
         if (strpos($string, '%"') !== 0) {

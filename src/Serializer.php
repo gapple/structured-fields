@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
+/**
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ */
 class Serializer
 {
     /**
@@ -145,6 +148,8 @@ class Serializer
 
     /**
      * @param mixed $value
+     *
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private static function serializeBareItem($value): string
     {
