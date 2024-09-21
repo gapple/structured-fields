@@ -52,6 +52,9 @@ class ParsingInput
         return $this->value[$this->position];
     }
 
+    /**
+     * @phpstan-impure
+     */
     public function consume(int $length, string $expected = null): string
     {
         assert($length > 0);
@@ -68,6 +71,9 @@ class ParsingInput
         return $output;
     }
 
+    /**
+     * @phpstan-impure
+     */
     public function consumeChar(string $value = null): string
     {
         assert($value === null || strlen($value) === 1);
@@ -75,11 +81,17 @@ class ParsingInput
         return $this->consume(1, $value);
     }
 
+    /**
+     * @phpstan-impure
+     */
     public function consumeString(string $value): void
     {
         $this->consume(strlen($value), $value);
     }
 
+    /**
+     * @phpstan-impure
+     */
     public function consumeRegex(string $pattern): string
     {
         assert(str_starts_with($pattern, '/^'));

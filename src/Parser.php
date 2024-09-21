@@ -23,7 +23,6 @@ class Parser
         while (true) {
             $key = self::parseKey($input);
 
-            // @phpstan-ignore booleanNot.alwaysTrue
             if (!$input->empty() && $input->getChar() === '=') {
                 $input->consumeChar('=');
                 $value->{$key} = self::parseItemOrInnerList($input);
@@ -96,6 +95,9 @@ class Parser
         }
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseInnerList(ParsingInput $input): InnerList
     {
         $startPosition = $input->position();
@@ -162,6 +164,8 @@ class Parser
 
     /**
      * @return bool|float|int|string|Bytes|Date|DisplayString|Token
+     *
+     * @phpstan-impure
      */
     private static function parseBareItem(ParsingInput $input): mixed
     {
@@ -178,6 +182,9 @@ class Parser
         };
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseParameters(ParsingInput $input): Parameters
     {
         $parameters = new Parameters();
@@ -197,6 +204,9 @@ class Parser
         return $parameters;
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseKey(ParsingInput $input): string
     {
         try {
@@ -206,6 +216,9 @@ class Parser
         }
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseBoolean(ParsingInput $input): bool
     {
         try {
@@ -216,6 +229,9 @@ class Parser
         }
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseNumber(ParsingInput $input): int|float
     {
         $startPosition = $input->position();
@@ -233,6 +249,9 @@ class Parser
         throw new ParseException('Number contains too many digits at position ' . $startPosition);
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseString(ParsingInput $input): string
     {
         $output = '';
@@ -242,7 +261,6 @@ class Parser
             $char = $input->consumeChar();
 
             if ($char === '\\') {
-                // @phpstan-ignore if.alwaysFalse
                 if ($input->empty()) {
                     throw new ParseException("Invalid end of string");
                 }
@@ -266,6 +284,7 @@ class Parser
     }
 
     /**
+     * @phpstan-impure
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private static function parseDisplayString(ParsingInput $string): DisplayString
@@ -309,6 +328,9 @@ class Parser
         throw new ParseException('Invalid end of display string started at position ' . $startPosition);
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseToken(ParsingInput $input): Token
     {
         // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
@@ -328,6 +350,8 @@ class Parser
 
     /**
      * Parse Base64-encoded data.
+     *
+     * @phpstan-impure
      */
     private static function parseByteSequence(ParsingInput $input): Bytes
     {
@@ -342,6 +366,9 @@ class Parser
         }
     }
 
+    /**
+     * @phpstan-impure
+     */
     private static function parseDate(ParsingInput $input): Date
     {
         $startPosition = $input->position();
