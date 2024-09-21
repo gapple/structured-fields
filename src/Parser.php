@@ -13,108 +13,113 @@ class Parser
     {
         $value = new Dictionary();
 
-        $string = ltrim($string, ' ');
+        $input = new ParsingInput($string);
+        $input->trim();
 
-        while (!empty($string)) {
-            $key = self::parseKey($string);
+        if ($input->empty()) {
+            return $value;
+        }
 
-            if (!empty($string) && $string[0] === '=') {
-                $string = substr($string, 1);
-                $value->{$key} = self::parseItemOrInnerList($string);
+        while (true) {
+            $key = self::parseKey($input);
+
+            if (!$input->empty() && $input->getChar() === '=') {
+                $input->consumeChar('=');
+                $value->{$key} = self::parseItemOrInnerList($input);
             } else {
                 // Bare boolean true value.
-                $value->{$key} = new Item(true, self::parseParameters($string));
+                $value->{$key} = new Item(true, self::parseParameters($input));
             }
 
-            // OWS (optional whitespace) before comma.
-            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
-            $string = ltrim($string, " \t");
+            // Optional whitespace before comma or at end of string.
+            $input->trim(true);
 
-            if (empty($string)) {
+            if ($input->empty()) {
                 return $value;
             }
 
-            // OWS (optional whitespace) after comma.
-            if (!preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
-                throw new ParseException('Expected comma');
+            try {
+                $input->consumeChar(',');
+            } catch (\RuntimeException) {
+                throw new ParseException('Expected comma at position ' . $input->position());
             }
+            // Optional whitespace after comma.
+            $input->trim(true);
 
-            $string = substr($string, strlen($comma_matches[1]));
-
-            if (empty($string)) {
+            if ($input->empty()) {
                 throw new ParseException('Unexpected end of input');
             }
         }
-
-        return $value;
     }
 
     public static function parseList(string $string): OuterList
     {
         $value = new OuterList();
+        $input = new ParsingInput($string);
+        $input->trim();
 
-        $string = ltrim($string, ' ');
+        if ($input->empty()) {
+            return $value;
+        }
 
-        while (!empty($string)) {
-            $value[] = self::parseItemOrInnerList($string);
+        while (true) {
+            $value[] = self::parseItemOrInnerList($input);
 
-            // OWS (optional whitespace) before comma.
-            // @see https://tools.ietf.org/html/rfc7230#section-3.2.3
-            $string = ltrim($string, " \t");
+            // Optional whitespace before comma or at end of string.
+            $input->trim(true);
 
-            if (empty($string)) {
+            if ($input->empty()) {
                 return $value;
             }
 
-            // OWS (optional whitespace) after comma.
-            if (!preg_match('/^(,[ \t]*)/', $string, $comma_matches)) {
-                throw new ParseException('Expected comma');
+            try {
+                $input->consumeChar(',');
+            } catch (\RuntimeException) {
+                throw new ParseException('Expected comma at position ' . $input->position());
             }
+            // Optional whitespace after comma.
+            $input->trim(true);
 
-            $string = substr($string, strlen($comma_matches[1]));
-
-            if (empty($string)) {
+            if ($input->empty()) {
                 throw new ParseException('Unexpected end of input');
             }
         }
-
-        return $value;
     }
 
-    private static function parseItemOrInnerList(string &$string): TupleInterface
+    private static function parseItemOrInnerList(ParsingInput $input): TupleInterface
     {
-        if ($string[0] === '(') {
-            return self::parseInnerList($string);
+        if ($input->getChar() === '(') {
+            return self::parseInnerList($input);
         } else {
-            return self::doParseItem($string);
+            return self::doParseItem($input);
         }
     }
 
-    private static function parseInnerList(string &$string): InnerList
+    private static function parseInnerList(ParsingInput $input): InnerList
     {
+        $startPosition = $input->position();
         $value = [];
 
-        $string = substr($string, 1);
+        $input->consumeChar('(');
+        while (!$input->empty()) {
+            $input->trim();
 
-        while (!empty($string)) {
-            $string = ltrim($string, ' ');
-
-            if ($string[0] === ')') {
-                $string = substr($string, 1);
+            if ($input->getChar() === ')') {
+                $input->consumeChar(')');
                 return new InnerList(
                     $value,
-                    self::parseParameters($string)
+                    self::parseParameters($input)
                 );
             }
 
-            $value[] = self::doParseItem($string);
+            $value[] = self::doParseItem($input);
 
-            if (!empty($string) && !in_array($string[0], [' ', ')'])) {
-                throw new ParseException('Unexpected character in inner list');
+            if (!$input->empty() && !in_array($input->getChar(), [' ', ')'])) {
+                throw new ParseException('Unexpected character in inner list at position ' . $input->position());
             }
         }
 
-        throw new ParseException('Unexpected end of input');
+        throw new ParseException('Unexpected end of list started at position ' . $startPosition);
     }
 
     /**
@@ -125,155 +130,134 @@ class Parser
      */
     public static function parseItem(string $string): Item
     {
-        $string = ltrim($string, ' ');
+        $input = new ParsingInput($string);
 
-        $value = self::doParseItem($string);
+        $input->trim();
+        if ($input->empty()) {
+            throw new ParseException('Unexpected empty input');
+        }
 
-        if (empty(ltrim($string, ' '))) {
+        $value = self::doParseItem($input);
+        $input->trim();
+
+        if ($input->empty()) {
             return $value;
         }
 
-        throw new ParseException('Unexpected characters at end of input');
+        throw new ParseException('Unexpected characters at position ' . $input->position());
     }
 
     /**
      * Internal implementation of parseItem that doesn't fail if input string
-     * has unparsed characters after parsing.
-     *
-     * @param string $string
-     *
-     * @return Item
-     *  A [value, parameters] tuple.
+     * has remaining characters after parsing.
      */
-    private static function doParseItem(string &$string): Item
+    private static function doParseItem(ParsingInput $input): Item
     {
         return new Item(
-            self::parseBareItem($string),
-            self::parseParameters($string)
+            self::parseBareItem($input),
+            self::parseParameters($input),
         );
     }
 
     /**
-     * @param string $string
-     *
      * @return bool|float|int|string|Bytes|Date|DisplayString|Token
      */
-    private static function parseBareItem(string &$string)
+    private static function parseBareItem(ParsingInput $input): mixed
     {
-        if ($string === "") {
-            throw new ParseException('Unexpected empty input');
-        } elseif (preg_match('/^(-|\d)/', $string)) {
-            return self::parseNumber($string);
-        } elseif ($string[0] == '"') {
-            return self::parseString($string);
-        } elseif ($string[0] == ':') {
-            return self::parseByteSequence($string);
-        } elseif ($string[0] == '?') {
-            return self::parseBoolean($string);
-        } elseif ($string[0] == '@') {
-            return self::parseDate($string);
-        } elseif ($string[0] == '%') {
-            return self::parseDisplayString($string);
-        } elseif (preg_match('/^([a-z*])/i', $string)) {
-            return self::parseToken($string);
-        }
-
-        throw new ParseException('Unknown item type');
+        $char = $input->getChar();
+        return match (true) {
+            preg_match('/(-|\d)/', $char) == 1  => self::parseNumber($input),
+            '"' === $char                       => self::parseString($input),
+            preg_match('/[a-z*]/i', $char) == 1 => self::parseToken($input),
+            ':' === $char                       => self::parseByteSequence($input),
+            '?' === $char                       => self::parseBoolean($input),
+            '@' === $char                       => self::parseDate($input),
+            '%' === $char                       => self::parseDisplayString($input),
+            default => throw new ParseException('Unknown item type at position ' . $input->position()),
+        };
     }
 
-    private static function parseParameters(string &$string): Parameters
+    private static function parseParameters(ParsingInput $input): Parameters
     {
         $parameters = new Parameters();
+        while (!$input->empty() && $input->getChar() === ';') {
+            $input->consumeChar(';');
+            $input->trim();
 
-        while (!empty($string) && $string[0] === ';') {
-            $string = ltrim(substr($string, 1), ' ');
-
-            $key = self::parseKey($string);
+            $key = self::parseKey($input);
             $parameters->{$key} = true;
 
-            if (!empty($string) && $string[0] === '=') {
-                $string = substr($string, 1);
-                $parameters->{$key} = self::parseBareItem($string);
+            if (!$input->empty() && $input->getChar() === '=') {
+                $input->consumeChar('=');
+                $parameters->{$key} = self::parseBareItem($input);
             }
         }
 
         return $parameters;
     }
 
-    private static function parseKey(string &$string): string
+    private static function parseKey(ParsingInput $input): string
     {
-        if (preg_match('/^[a-z*][a-z0-9.*_-]*/', $string, $matches)) {
-            $string = substr($string, strlen($matches[0]));
-
-            return $matches[0];
+        try {
+            return $input->consumeRegex('/^[a-z*][a-z0-9.*_-]*/');
+        } catch (\RuntimeException) {
+            throw new ParseException('Invalid key at position ' . $input->position());
         }
-
-        throw new ParseException('Invalid character in key');
     }
 
-    private static function parseBoolean(string &$string): bool
+    private static function parseBoolean(ParsingInput $input): bool
     {
-        if (!preg_match('/^\?[01]/', $string)) {
-            throw new ParseException('Invalid character in boolean');
+        try {
+            $input->consumeChar('?');
+            return '1' === $input->consumeRegex('/^[01]/');
+        } catch (\RuntimeException) {
+            throw new ParseException('Invalid boolean at position ' . $input->position());
         }
-
-        $value = $string[1] === '1';
-
-        $string = substr($string, 2);
-
-        return $value;
     }
 
-    /**
-     * @param string $string
-     * @return int|float
-     */
-    private static function parseNumber(string &$string)
+    private static function parseNumber(ParsingInput $input): int|float
     {
-        if (preg_match('/^(-?\d+(?:\.\d+)?)(?:[^\d.]|$)/', $string, $number_matches)) {
-            $input_number = $number_matches[1];
-            $string = substr($string, strlen($input_number));
-
-            if (preg_match('/^-?\d{1,12}\.\d{1,3}$/', $input_number)) {
-                return (float) $input_number;
-            } elseif (preg_match('/^-?\d{1,15}$/', $input_number)) {
-                return (int) $input_number;
-            }
-            throw new ParseException('Number contains too many digits');
+        $startPosition = $input->position();
+        try {
+            $number = $input->consumeRegex('/^(-?\d+(?:\.\d+)?)/');
+        } catch (\RuntimeException) {
+            throw new ParseException('Invalid number format at position ' . $startPosition);
         }
 
-        throw new ParseException('Invalid number format');
+        if (preg_match('/^-?\d{1,12}\.\d{1,3}$/', $number)) {
+            return (float) $number;
+        } elseif (preg_match('/^-?\d{1,15}$/', $number)) {
+            return (int) $number;
+        }
+        throw new ParseException('Number contains too many digits at position ' . $startPosition);
     }
 
-    private static function parseString(string &$string): string
+    private static function parseString(ParsingInput $input): string
     {
-        // parseString is only called if first character is a double quote, so
-        // don't need to validate it here.
-        $string = substr($string, 1);
+        $output = '';
 
-        $output_string = '';
+        $input->consumeChar('"');
+        while (!$input->empty()) {
+            $char = $input->consumeChar();
 
-        while (strlen($string)) {
-            $char = $string[0];
-            $string = substr($string, 1);
-
-            if ($char == '\\') {
-                if ($string == '') {
+            if ($char === '\\') {
+                if ($input->empty()) {
                     throw new ParseException("Invalid end of string");
                 }
 
-                $char = $string[0];
-                $string = substr($string, 1);
+                $char = $input->consumeChar();
                 if ($char != '"' && $char != '\\') {
-                    throw new ParseException('Invalid escaped character in string');
+                    throw new ParseException(
+                        'Invalid escaped character in string at position ' . ($input->position() - 1)
+                    );
                 }
             } elseif ($char == '"') {
-                return $output_string;
+                return $output;
             } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
-                throw new ParseException('Invalid character in string');
+                throw new ParseException('Invalid character in string at position ' . ($input->position() - 1));
             }
 
-            $output_string .= $char;
+            $output .= $char;
         }
 
         throw new ParseException("Invalid end of string");
@@ -282,40 +266,37 @@ class Parser
     /**
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private static function parseDisplayString(string &$string): DisplayString
+    private static function parseDisplayString(ParsingInput $string): DisplayString
     {
-        if (strpos($string, '%"') !== 0) {
-            throw new ParseException("Invalid start of display string");
+        $startPosition = $string->position();
+        try {
+            $string->consumeString('%"');
+        } catch (\RuntimeException) {
+            throw new ParseException('Invalid start of display string at position ' . $startPosition);
         }
 
-        $string = substr($string, 2);
-
         $encoded_string = '';
-        while (strlen($string)) {
-            $char = $string[0];
-            $string = substr($string, 1);
+        while (!$string->empty()) {
+            $char = $string->consumeChar();
 
             if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
-                throw new ParseException('Invalid character in display string');
+                throw new ParseException(
+                    'Invalid character in display string at position ' . ($string->position() - 1)
+                );
             } elseif ($char == '%') {
-                if (strlen($string) < 2) {
-                    throw new ParseException("Invalid end of display string");
+                try {
+                    $encoded_string .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
+                } catch (\RuntimeException) {
+                    throw new ParseException(
+                        'Invalid hex values in display string at position ' . ($string->position() - 1)
+                    );
                 }
-
-                $hex = substr($string, 0, 2);
-                $string = substr($string, 2);
-
-                if (!preg_match('/^[0-9a-f]{2}$/', $hex)) {
-                    throw new ParseException('Invalid hex values in display string');
-                }
-
-                $encoded_string .= $char . $hex;
             } elseif ($char == '"') {
                 $display_string = new DisplayString(rawurldecode($encoded_string));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
                 // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
                 if (!preg_match('/^\X*$/u', (string) $display_string)) {
-                    throw new ParseException("Invalid byte sequence in display string");
+                    throw new ParseException('Invalid byte sequence in display string at position ' . $startPosition);
                 }
                 return $display_string;
             } else {
@@ -323,52 +304,55 @@ class Parser
             }
         }
 
-        throw new ParseException("Invalid end of display string");
+        throw new ParseException('Invalid end of display string started at position ' . $startPosition);
     }
 
-    private static function parseToken(string &$string): Token
+    private static function parseToken(ParsingInput $input): Token
     {
         // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
         // 3.2.6. Field Value Components
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
-
-        preg_match('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i', $string, $matches);
-        $string = substr($string, strlen($matches[1]));
-
-        // parseToken is only called by parseBareItem if the initial character
-        // is valid, so a Token object is always returned.  If there is an
-        // invalid character in the token, the public function that was called
-        // will detect that the remainder of the input string is invalid.
-        return new Token($matches[1]);
+        try {
+            return new Token($input->consumeRegex('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i'));
+        } catch (\RuntimeException) {
+            // parseToken is only called by parseBareItem if the initial character
+            // is valid, so a Token object is always returned.  If there is an
+            // invalid character in the token, the public function that was called
+            // will detect that the remainder of the input string is invalid.
+            throw new ParseException('Invalid token at position ' . $input->position());
+        }
     }
 
     /**
      * Parse Base64-encoded data.
-     *
-     * @param string $string
-     *
-     * @return Bytes
      */
-    private static function parseByteSequence(string &$string): Bytes
+    private static function parseByteSequence(ParsingInput $input): Bytes
     {
-        if (preg_match('/^:([a-z0-9+\/=]*):/i', $string, $matches)) {
-            $string = substr($string, strlen($matches[0]));
-            return new Bytes(base64_decode($matches[1]));
+        $startPosition = $input->position();
+        $input->consumeChar(':');
+        try {
+            $bytes = $input->consumeRegex('/^([a-z0-9+\/=]*)/i');
+            $input->consumeChar(':');
+            return new Bytes(base64_decode($bytes));
+        } catch (\RuntimeException) {
+            throw new ParseException('Invalid byte sequence at position ' . $startPosition);
         }
-
-        throw new ParseException('Invalid character in byte sequence');
     }
 
-    private static function parseDate(string &$string): Date
+    private static function parseDate(ParsingInput $input): Date
     {
-        $string = substr($string, 1);
-        $value = self::parseNumber($string);
+        $startPosition = $input->position();
+        $input->consumeChar('@');
+        try {
+            $value = self::parseNumber($input);
 
-        if (is_int($value)) {
-            return new Date($value);
+            if (is_int($value)) {
+                return new Date($value);
+            }
+        } catch (ParseException) {
         }
 
-        throw new ParseException("Invalid Date format");
+        throw new ParseException('Invalid Date format at position ' . $startPosition);
     }
 }
