@@ -337,15 +337,12 @@ class Parser
         // 3.2.6. Field Value Components
         // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
         $tchar = preg_quote("!#$%&'*+-.^_`|~");
-        try {
-            return new Token($input->consumeRegex('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i'));
-        } catch (\RuntimeException) {
-            // parseToken is only called by parseBareItem if the initial character
-            // is valid, so a Token object is always returned.  If there is an
-            // invalid character in the token, the public function that was called
-            // will detect that the remainder of the input string is invalid.
-            throw new ParseException('Invalid token at position ' . $input->position());
-        }
+
+        // parseToken is only called by parseBareItem if the initial character
+        // is valid, so a Token object is always returned.  If there is an
+        // invalid character in the token, the public function that was called
+        // will detect that the remainder of the input string is invalid.
+        return new Token($input->consumeRegex('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i'));
     }
 
     /**
