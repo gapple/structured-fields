@@ -58,6 +58,7 @@ class ParsingInput
     public function consume(int $length, string $expected = null): string
     {
         assert($length > 0);
+        assert($expected === null || strlen($expected) === $length);
 
         if ($length > strlen($this->value) - $this->position) {
             throw new \RuntimeException('Reached end of value');
