@@ -23,6 +23,7 @@ class Parser
         while (true) {
             $key = self::parseKey($input);
 
+            // @phpstan-ignore booleanNot.alwaysTrue
             if (!$input->empty() && $input->getChar() === '=') {
                 $input->consumeChar('=');
                 $value->{$key} = self::parseItemOrInnerList($input);
@@ -241,6 +242,7 @@ class Parser
             $char = $input->consumeChar();
 
             if ($char === '\\') {
+                // @phpstan-ignore if.alwaysFalse
                 if ($input->empty()) {
                     throw new ParseException("Invalid end of string");
                 }
