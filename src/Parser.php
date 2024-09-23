@@ -23,8 +23,8 @@ class Parser
         while (true) {
             $key = self::parseKey($input);
 
-            if (!$input->empty() && $input->getChar() === '=') {
-                $input->consumeChar('=');
+            if ($input->isChar('=')) {
+                $input->consumeChar();
                 $value->{$key} = self::parseItemOrInnerList($input);
             } else {
                 // Bare boolean true value.
@@ -88,7 +88,7 @@ class Parser
 
     private static function parseItemOrInnerList(ParsingInput $input): TupleInterface
     {
-        if ($input->getChar() === '(') {
+        if ($input->isChar('(')) {
             return self::parseInnerList($input);
         } else {
             return self::doParseItem($input);
@@ -107,8 +107,8 @@ class Parser
         while (!$input->empty()) {
             $input->trim();
 
-            if ($input->getChar() === ')') {
-                $input->consumeChar(')');
+            if ($input->isChar(')')) {
+                $input->consumeChar();
                 return new InnerList(
                     $value,
                     self::parseParameters($input)
@@ -117,7 +117,10 @@ class Parser
 
             $value[] = self::doParseItem($input);
 
-            if (!$input->empty() && !in_array($input->getChar(), [' ', ')'])) {
+            if (!($input->isChar(' ') || $input->isChar(')'))) {
+                if ($input->empty()) {
+                    break;
+                }
                 throw new ParseException('Unexpected character in inner list at position ' . $input->position());
             }
         }
@@ -153,6 +156,8 @@ class Parser
     /**
      * Internal implementation of parseItem that doesn't fail if input string
      * has remaining characters after parsing.
+     *
+     * @phpstan-impure
      */
     private static function doParseItem(ParsingInput $input): Item
     {
@@ -171,13 +176,13 @@ class Parser
     {
         $char = $input->getChar();
         return match (true) {
-            preg_match('/(-|\d)/', $char) == 1  => self::parseNumber($input),
-            '"' === $char                       => self::parseString($input),
-            preg_match('/[a-z*]/i', $char) == 1 => self::parseToken($input),
-            ':' === $char                       => self::parseByteSequence($input),
-            '?' === $char                       => self::parseBoolean($input),
-            '@' === $char                       => self::parseDate($input),
-            '%' === $char                       => self::parseDisplayString($input),
+            preg_match('/(-|\d)/', $char) === 1  => self::parseNumber($input),
+            '"' === $char                        => self::parseString($input),
+            preg_match('/[a-z*]/i', $char) === 1 => self::parseToken($input),
+            ':' === $char                        => self::parseByteSequence($input),
+            '?' === $char                        => self::parseBoolean($input),
+            '@' === $char                        => self::parseDate($input),
+            '%' === $char                        => self::parseDisplayString($input),
             default => throw new ParseException('Unknown item type at position ' . $input->position()),
         };
     }
@@ -188,15 +193,15 @@ class Parser
     private static function parseParameters(ParsingInput $input): Parameters
     {
         $parameters = new Parameters();
-        while (!$input->empty() && $input->getChar() === ';') {
-            $input->consumeChar(';');
+        while ($input->isChar(';')) {
+            $input->consumeChar();
             $input->trim();
 
             $key = self::parseKey($input);
             $parameters->{$key} = true;
 
-            if (!$input->empty() && $input->getChar() === '=') {
-                $input->consumeChar('=');
+            if ($input->isChar('=')) {
+                $input->consumeChar();
                 $parameters->{$key} = self::parseBareItem($input);
             }
         }
@@ -221,12 +226,12 @@ class Parser
      */
     private static function parseBoolean(ParsingInput $input): bool
     {
-        try {
-            $input->consumeChar('?');
-            return '1' === $input->consumeRegex('/^[01]/');
-        } catch (\RuntimeException) {
-            throw new ParseException('Invalid boolean at position ' . $input->position());
-        }
+        $input->consumeChar('?');
+        return match ($input->consumeChar()) {
+            '0' => false,
+            '1' => true,
+            default => throw new ParseException('Invalid boolean at position ' . $input->position()),
+        };
     }
 
     /**
@@ -266,12 +271,12 @@ class Parser
                 }
 
                 $char = $input->consumeChar();
-                if ($char != '"' && $char != '\\') {
+                if ($char !== '"' && $char !== '\\') {
                     throw new ParseException(
                         'Invalid escaped character in string at position ' . ($input->position() - 1)
                     );
                 }
-            } elseif ($char == '"') {
+            } elseif ($char === '"') {
                 return $output;
             } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
                 throw new ParseException('Invalid character in string at position ' . ($input->position() - 1));
@@ -304,7 +309,7 @@ class Parser
                 throw new ParseException(
                     'Invalid character in display string at position ' . ($string->position() - 1)
                 );
-            } elseif ($char == '%') {
+            } elseif ($char === '%') {
                 try {
                     $encoded_string .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
                 } catch (\RuntimeException) {
@@ -312,7 +317,7 @@ class Parser
                         'Invalid hex values in display string at position ' . ($string->position() - 1)
                     );
                 }
-            } elseif ($char == '"') {
+            } elseif ($char === '"') {
                 $display_string = new DisplayString(rawurldecode($encoded_string));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
                 // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php

@@ -9,11 +9,13 @@ namespace gapple\StructuredFields;
  */
 class ParsingInput
 {
+    private readonly int $length;
     private int $position = 0;
 
     public function __construct(
         private readonly string $value,
     ) {
+        $this->length = strlen($this->value);
     }
 
     public function position(): int
@@ -23,7 +25,7 @@ class ParsingInput
 
     public function empty(): bool
     {
-        return $this->position >= strlen($this->value);
+        return $this->position >= $this->length;
     }
 
     public function remaining(): string
@@ -41,12 +43,28 @@ class ParsingInput
      */
     public function trim(bool $ows = false): void
     {
-        $this->consumeRegex('/^[' . ($ows ? ' \t' : ' ') . ']*/');
+        while (
+            $this->position < $this->length
+            && (
+                $this->value[$this->position] === ' '
+                || ($ows && $this->value[$this->position] === "\t")
+            )
+        ) {
+            $this->position++;
+        }
+    }
+
+    public function isChar(string $char): bool
+    {
+        assert(strlen($char) === 1);
+
+        return $this->position < $this->length
+            && $this->value[$this->position] === $char;
     }
 
     public function getChar(): string
     {
-        if ($this->empty()) {
+        if ($this->position >= $this->length) {
             throw new \RuntimeException('Reached end of value');
         }
         return $this->value[$this->position];
@@ -60,7 +78,7 @@ class ParsingInput
         assert($length > 0);
         assert($expected === null || strlen($expected) === $length);
 
-        if ($length > strlen($this->value) - $this->position) {
+        if ($length > $this->length - $this->position) {
             throw new \RuntimeException('Reached end of value');
         }
 
@@ -102,6 +120,6 @@ class ParsingInput
             return $matches[0];
         }
 
-        throw new \RuntimeException();
+        throw new \RuntimeException('Expression did not match');
     }
 }
