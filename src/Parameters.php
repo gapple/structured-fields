@@ -12,13 +12,13 @@ class Parameters implements \IteratorAggregate
     /**
      * @var array<string, mixed>
      */
-    protected $value = [];
+    protected array $value = [];
 
     /**
-     * @param array<mixed> $array
+     * @param array<string, mixed> $array
      * @return Parameters
      */
-    public static function fromArray(array $array): Parameters
+    public static function fromArray(array $array): self
     {
         $parameters = new self();
         $parameters->value = $array;
@@ -30,7 +30,7 @@ class Parameters implements \IteratorAggregate
      * @param string $name
      * @return mixed|null
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return $this->value[$name] ?? null;
     }
@@ -40,7 +40,7 @@ class Parameters implements \IteratorAggregate
      * @param mixed $value
      * @return void
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value): void
     {
         $this->value[$name] = $value;
     }

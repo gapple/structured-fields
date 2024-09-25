@@ -12,13 +12,13 @@ class Dictionary implements \IteratorAggregate
     /**
      * @var array<string, TupleInterface|array{mixed, object}>
      */
-    protected $value = [];
+    protected array $value = [];
 
     /**
      * @param array<mixed> $array
      * @return Dictionary
      */
-    public static function fromArray(array $array): Dictionary
+    public static function fromArray(array $array): self
     {
         $dictionary = new self();
 
@@ -40,7 +40,7 @@ class Dictionary implements \IteratorAggregate
      * @param string $name
      * @return TupleInterface|array{mixed, object}|null
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         return $this->value[$name] ?? null;
     }
@@ -50,7 +50,7 @@ class Dictionary implements \IteratorAggregate
      * @param TupleInterface|array{mixed, object} $value
      * @return void
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value): void
     {
         $this->value[$name] = $value;
     }

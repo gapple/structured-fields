@@ -17,12 +17,7 @@ class InnerList implements TupleInterface
         array_walk($value, [$this, 'validateItemType']);
 
         $this->value = $value;
-
-        if (is_null($parameters)) {
-            $this->parameters = new Parameters();
-        } else {
-            $this->parameters = $parameters;
-        }
+        $this->parameters = $parameters ?? new Parameters();
     }
 
     /**
@@ -37,8 +32,9 @@ class InnerList implements TupleInterface
         array_walk($array, function (&$item) {
             if (!$item instanceof TupleInterface) {
                 $item = new Item($item);
+            } elseif ($item instanceof InnerList) {
+                throw new \InvalidArgumentException('InnerList objects cannot be nested');
             }
-            self::validateItemType($item);
         });
 
         /** @var TupleInterface[] $array */
@@ -49,7 +45,7 @@ class InnerList implements TupleInterface
      * @param TupleInterface|array{mixed, object} $value
      * @return void
      */
-    private static function validateItemType($value): void
+    private static function validateItemType(mixed $value): void
     {
         if (is_object($value)) {
             if (!($value instanceof TupleInterface)) {
@@ -61,7 +57,7 @@ class InnerList implements TupleInterface
                 throw new \InvalidArgumentException('InnerList objects cannot be nested');
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) { // @phpstan-ignore-line
+            if (count($value) != 2) {
                 throw new \InvalidArgumentException();
             }
         } else {

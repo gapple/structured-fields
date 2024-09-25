@@ -4,26 +4,22 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
+/**
+ * Trait for implementing TupleInterface, including ArrayAccess methods.
+ */
 trait TupleTrait
 {
     /**
      * The tuple's value.
-     *
-     * @var mixed
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * The tuple's parameters
-     *
-     * @var object
      */
-    protected $parameters;
+    protected object $parameters;
 
-    /**
-     * @return mixed
-     */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -43,17 +39,17 @@ trait TupleTrait
 
     /**
      * @param 0|1 $offset
-     * @return ($offset is 0 ? mixed : $offset is 1 ? object : null)
+     * @return mixed
+     * @phpstan-return ($offset is 0 ? mixed : $offset is 1 ? object : null)
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
-        if ($offset === 0) {
-            return $this->value;
-        } elseif ($offset === 1) {
-            return $this->parameters;
-        }
-        return null;
+        assert($offset === 0 || $offset === 1);
+
+        return match ($offset) {
+            0 => $this->value,
+            1 => $this->parameters,
+        };
     }
 
     /**
@@ -62,6 +58,8 @@ trait TupleTrait
      */
     public function offsetSet($offset, $value): void
     {
+        assert($offset === 0 || $offset === 1);
+
         if ($offset === 0) {
             $this->value = $value;
         } elseif ($offset === 1) {
@@ -77,6 +75,8 @@ trait TupleTrait
      */
     public function offsetUnset($offset): void
     {
+        assert($offset === 0 || $offset === 1);
+
         if ($offset === 0) {
             $this->value = null;
         } elseif ($offset === 1) {

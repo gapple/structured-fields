@@ -7,15 +7,8 @@ parameters:
     paths:
         - src
         - tests
-
+    treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         - gapple\StructuredFields\Dictionary
         - gapple\StructuredFields\Parameters
 
-    featureToggles:
-      readOnlyByPhpDoc: true
-
-    ignoreErrors:
-        -
-            message: '#Unreachable statement - code above always terminates.#'
-            path: src/TupleTrait.php
