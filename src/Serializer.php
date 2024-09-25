@@ -127,8 +127,14 @@ class Serializer
 
         while ($item = array_shift($value)) {
             if ($item instanceof TupleInterface) {
+                if ($item instanceof InnerList) {
+                    throw new SerializeException("Inner lists cannot be nested");
+                }
                 $returnValue .= self::serializeItem($item);
             } else {
+                if (is_array($item[0])) {
+                    throw new SerializeException("Inner lists cannot be nested");
+                }
                 $returnValue .= self::serializeItem($item[0], $item[1]);
             }
 
