@@ -44,11 +44,10 @@ trait TupleTrait
      */
     public function offsetGet($offset): mixed
     {
-        assert($offset === 0 || $offset === 1);
-
         return match ($offset) {
             0 => $this->value,
             1 => $this->parameters,
+            default => null,
         };
     }
 
@@ -58,8 +57,6 @@ trait TupleTrait
      */
     public function offsetSet($offset, $value): void
     {
-        assert($offset === 0 || $offset === 1);
-
         if ($offset === 0) {
             $this->value = $value;
         } elseif ($offset === 1) {
@@ -75,8 +72,6 @@ trait TupleTrait
      */
     public function offsetUnset($offset): void
     {
-        assert($offset === 0 || $offset === 1);
-
         if ($offset === 0) {
             $this->value = null;
         } elseif ($offset === 1) {

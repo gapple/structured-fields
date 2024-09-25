@@ -54,13 +54,7 @@ class ItemTest extends TestCase
     public function testArrayOutOfBounds(): void
     {
         $item = new Item(true);
-        try {
-            $this->assertEmpty($item[2]); // @phpstan-ignore-line
-        } catch (\AssertionError) { // @phpstan-ignore-line
-            $this->addToAssertionCount(1);
-            return;
-        }
-        $this->fail();
+        $this->assertEmpty($item[2]); // @phpstan-ignore-line
     }
 
     public function testArrayUnset(): void
