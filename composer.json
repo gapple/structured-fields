@@ -19,6 +19,7 @@
     "autoload": {
         "psr-4": {
             "gapple\\StructuredFields\\": "src/",
+            "gapple\\StructuredFields\\PHPStan\\": "phpstan-extension/src/",
             "gapple\\Tests\\StructuredFields\\": "tests/"
         }
     },
