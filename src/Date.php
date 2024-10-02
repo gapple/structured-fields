@@ -6,15 +6,8 @@ namespace gapple\StructuredFields;
 
 class Date
 {
-    /**
-     * @var int
-     * @readonly
-     */
-    private $value;
-
-    public function __construct(int $value)
+    public function __construct(private readonly int $value)
     {
-        $this->value = $value;
     }
 
     public function toInt(): int

@@ -20,7 +20,7 @@ class Serializer
      * @return string
      *   The serialized value.
      */
-    public static function serializeItem($value, ?object $parameters = null): string
+    public static function serializeItem(mixed $value, ?object $parameters = null): string
     {
         if ($value instanceof Item) {
             if (!is_null($parameters)) {
@@ -153,11 +153,9 @@ class Serializer
     }
 
     /**
-     * @param mixed $value
-     *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    private static function serializeBareItem($value): string
+    private static function serializeBareItem(mixed $value): string
     {
         if (is_int($value)) {
             return self::serializeInteger($value);
@@ -173,7 +171,7 @@ class Serializer
             return self::serializeDate($value);
         } elseif ($value instanceof DisplayString) {
             return self::serializeDisplayString($value);
-        } elseif (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
+        } elseif (is_string($value) || $value instanceof \Stringable) {
             return self::serializeString((string) $value);
         }
 
@@ -204,7 +202,7 @@ class Serializer
         /** @var string $result */
         $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
 
-        if (strpos($result, '.') === false) {
+        if (!str_contains($result, '.')) {
             $result .= '.0';
         }
 

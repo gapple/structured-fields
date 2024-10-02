@@ -49,14 +49,15 @@ class InnerListTest extends TestCase
         $items['array1'] = [[1]];
         $items['array3'] = [[1,2,3]];
 
+        $items['nested inner list'] = [InnerList::fromArray(['test'])];
+
         return $items;
     }
 
     /**
      * @dataProvider invalidItemProvider
-     * @param mixed $value
      */
-    public function testConstructInvalidItem($value): void
+    public function testConstructInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

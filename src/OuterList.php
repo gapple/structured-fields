@@ -15,7 +15,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      *
      * @var array<TupleInterface|array{mixed, object}>
      */
-    public $value;
+    public array $value;
 
     /**
      * @param array<TupleInterface|array{mixed, object}> $value
@@ -35,26 +35,25 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      */
     public static function fromArray(array $array): OuterList
     {
-        $list = new self();
-        foreach ($array as $value) {
-            if (!$value instanceof TupleInterface) {
-                if (is_array($value)) {
-                    $value = InnerList::fromArray($value);
+        array_walk($array, function (&$item) {
+            if (!$item instanceof TupleInterface) {
+                if (is_array($item)) {
+                    $item = InnerList::fromArray($item);
                 } else {
-                    $value = new Item($value);
+                    $item = new Item($item);
                 }
             }
-            $list[] = $value;
-        }
+        });
 
-        return $list;
+        /** @var TupleInterface[] $array */
+        return new self($array);
     }
 
     /**
      * @param TupleInterface|array{mixed, object} $value
      * @return void
      */
-    private static function validateItemType($value): void
+    private static function validateItemType(mixed $value): void
     {
         if (is_object($value)) {
             if (!($value instanceof TupleInterface)) {
@@ -63,7 +62,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
                 );
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) { // @phpstan-ignore-line
+            if (count($value) != 2) {
                 throw new \InvalidArgumentException();
             }
         } else {
@@ -87,10 +86,10 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return TupleInterface|array{mixed, object}|null
+     * @return mixed
+     * @phpstan-return TupleInterface|array{mixed, object}|null
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->value[$offset] ?? null;
     }

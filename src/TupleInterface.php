@@ -12,9 +12,6 @@ namespace gapple\StructuredFields;
  */
 interface TupleInterface extends \ArrayAccess
 {
-    /**
-     * @return mixed
-     */
-    public function getValue();
+    public function getValue(): mixed;
     public function getParameters(): object;
 }

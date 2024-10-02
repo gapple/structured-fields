@@ -116,7 +116,7 @@ class OuterListTest extends TestCase
      * @dataProvider invalidItemProvider
      * @param mixed $value
      */
-    public function testConstructInvalidItem($value): void
+    public function testConstructInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -127,7 +127,7 @@ class OuterListTest extends TestCase
      * @dataProvider invalidItemProvider
      * @param mixed $value
      */
-    public function testAppendInvalidItem($value): void
+    public function testAppendInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
 

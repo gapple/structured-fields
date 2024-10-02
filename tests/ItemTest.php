@@ -54,7 +54,6 @@ class ItemTest extends TestCase
     public function testArrayOutOfBounds(): void
     {
         $item = new Item(true);
-
         $this->assertEmpty($item[2]); // @phpstan-ignore-line
     }
 
