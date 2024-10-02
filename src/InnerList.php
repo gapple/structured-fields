@@ -14,7 +14,7 @@ class InnerList implements TupleInterface
      */
     public function __construct(array $value, ?object $parameters = null)
     {
-        array_walk($value, [$this, 'validateItemType']);
+        array_walk($value, self::validateItemType(...));
 
         $this->value = $value;
         $this->parameters = $parameters ?? new Parameters();

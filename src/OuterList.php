@@ -22,7 +22,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      */
     public function __construct(array $value = [])
     {
-        array_walk($value, [$this, 'validateItemType']);
+        array_walk($value, self::validateItemType(...));
 
         $this->value = $value;
     }
