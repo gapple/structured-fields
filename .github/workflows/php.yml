@@ -98,7 +98,7 @@ jobs:
 
     - name: Upload code coverage to codecov
       if: matrix.php-versions == env.code-coverage-version
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./tmp/code-coverage/clover.xml
