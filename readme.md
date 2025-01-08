@@ -3,8 +3,10 @@ Structured Field Values for PHP
 
 Parser and serializer for the [Structured Field Values for HTTP][1] specification.
 
-[![Build Status](https://github.com/gapple/structured-fields/workflows/PHP%20Composer/badge.svg)](https://github.com/gapple/structured-fields/actions)
-[![codecov](https://codecov.io/gh/gapple/structured-fields/branch/develop/graph/badge.svg)](https://codecov.io/gh/gapple/structured-fields)
+[![Build Status](https://github.com/gapple/structured-fields/actions/workflows/php.yml/badge.svg)](https://github.com/gapple/structured-fields/actions/workflows/php.yml)
+[![Code Coverage](https://codecov.io/gh/gapple/structured-fields/branch/develop/graph/badge.svg)](https://codecov.io/gh/gapple/structured-fields)
+[![Latest Release](https://img.shields.io/github/v/release/gapple/structured-fields)](https://github.com/gapple/structured-fields/releases)
+[![Packagist Downloads](https://img.shields.io/packagist/dm/gapple/structured-fields)](https://packagist.org/packages/gapple/structured-fields)
 
 
 Installation
