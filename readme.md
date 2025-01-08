@@ -37,4 +37,4 @@ Serializer::serializeList(iterable): string;
 Serializer::serializeDictionary(object): string;
 ```
 
-[1]: https://www.rfc-editor.org/rfc/rfc8941.html
+[1]: https://www.rfc-editor.org/rfc/rfc9651.html
