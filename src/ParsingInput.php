@@ -73,7 +73,7 @@ class ParsingInput
     /**
      * @phpstan-impure
      */
-    public function consume(int $length, string $expected = null): string
+    public function consume(int $length, ?string $expected = null): string
     {
         assert($length > 0);
         assert($expected === null || strlen($expected) === $length);
@@ -93,7 +93,7 @@ class ParsingInput
     /**
      * @phpstan-impure
      */
-    public function consumeChar(string $value = null): string
+    public function consumeChar(?string $value = null): string
     {
         assert($value === null || strlen($value) === 1);
 
