@@ -1,8 +1,8 @@
 {
     "name": "gapple/structured-fields",
-    "description": "Library for Structured Field Values for HTTP ",
+    "description": "Library for Structured Field Values for HTTP",
     "type": "library",
-    "keywords": ["http", "rfc8941"],
+    "keywords": ["http", "rfc8941", "rfc9651"],
     "license": [
         "MIT",
         "GPL-2.0-or-later"
@@ -29,8 +29,7 @@
         "phpmd": "phpmd src,tests ansi phpmd.ruleset.xml"
     },
     "require": {
-        "php": "^8.1",
-        "ext-json": "*"
+        "php": "^8.1"
     },
     "require-dev": {
         "httpwg/structured-field-tests": "*@dev",
