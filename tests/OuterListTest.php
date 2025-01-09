@@ -92,7 +92,7 @@ class OuterListTest extends TestCase
     /**
      * @return array<string, array<mixed>>
      */
-    public function invalidItemProvider(): array
+    public static function invalidItemProvider(): array
     {
         $items = [];
 

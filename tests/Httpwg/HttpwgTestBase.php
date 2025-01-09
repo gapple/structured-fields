@@ -7,14 +7,14 @@ use gapple\Tests\StructuredFields\RulesetTestBase;
 
 abstract class HttpwgTestBase extends RulesetTestBase
 {
-    protected string $ruleset;
+    protected static string $ruleset;
 
     /**
      * @return array<string, array{Rule}>
      */
-    protected function rulesetDataProvider(): array
+    protected static function rulesetDataProvider(): array
     {
-        $path = __DIR__ . '/../../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';
+        $path = __DIR__ . '/../../vendor/httpwg/structured-field-tests/' . static::$ruleset . '.json';
         if (!file_exists($path)) {
             throw new \RuntimeException('Ruleset file does not exist');
         }
@@ -49,7 +49,7 @@ abstract class HttpwgTestBase extends RulesetTestBase
 
             if (isset($dataset[$rule->name])) {
                 user_error(
-                    'Ruleset "' . $this->ruleset . '" contains duplicate rule name "' . $rule->name . '"',
+                    'Ruleset "' . static::$ruleset . '" contains duplicate rule name "' . $rule->name . '"',
                     E_USER_WARNING
                 );
             }

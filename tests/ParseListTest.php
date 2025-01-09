@@ -13,7 +13,7 @@ class ParseListTest extends TestCase
     /**
      * @return array<array{'raw': string, 'expected': OuterList}>
      */
-    public function multipleStringProvider(): array
+    public static function multipleStringProvider(): array
     {
         $dataset = [];
 
