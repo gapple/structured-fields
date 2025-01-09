@@ -2,7 +2,13 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class NumberTest extends HttpwgTest
+use gapple\Tests\StructuredFields\ParsingRulesetTrait;
+use gapple\Tests\StructuredFields\SerializingRulesetTrait;
+
+class NumberTest extends HttpwgTestBase
 {
-    protected $ruleset = 'number';
+    use ParsingRulesetTrait;
+    use SerializingRulesetTrait;
+
+    protected static string $ruleset = 'number';
 }

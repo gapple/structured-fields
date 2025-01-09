@@ -2,7 +2,13 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class ListListTest extends HttpwgTest
+use gapple\Tests\StructuredFields\ParsingRulesetTrait;
+use gapple\Tests\StructuredFields\SerializingRulesetTrait;
+
+class ListListTest extends HttpwgTestBase
 {
-    protected $ruleset = 'listlist';
+    use ParsingRulesetTrait;
+    use SerializingRulesetTrait;
+
+    protected static string $ruleset = 'listlist';
 }

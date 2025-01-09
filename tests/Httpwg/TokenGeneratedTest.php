@@ -2,7 +2,13 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class TokenGeneratedTest extends HttpwgTest
+use gapple\Tests\StructuredFields\ParsingRulesetTrait;
+use gapple\Tests\StructuredFields\SerializingRulesetTrait;
+
+class TokenGeneratedTest extends HttpwgTestBase
 {
-    protected $ruleset = 'token-generated';
+    use ParsingRulesetTrait;
+    use SerializingRulesetTrait;
+
+    protected static string $ruleset = 'token-generated';
 }

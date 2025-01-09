@@ -3,18 +3,18 @@
 namespace gapple\Tests\StructuredFields\Httpwg;
 
 use gapple\Tests\StructuredFields\Rule;
-use gapple\Tests\StructuredFields\RulesetTest;
+use gapple\Tests\StructuredFields\RulesetTestBase;
 
-abstract class HttpwgTest extends RulesetTest
+abstract class HttpwgTestBase extends RulesetTestBase
 {
-    /**
-     * @var string
-     */
-    protected $ruleset;
+    protected static string $ruleset;
 
-    protected function rulesetDataProvider(): array
+    /**
+     * @return array<string, array{Rule}>
+     */
+    protected static function rulesetDataProvider(): array
     {
-        $path = __DIR__ . '/../../vendor/httpwg/structured-field-tests/' . $this->ruleset . '.json';
+        $path = __DIR__ . '/../../vendor/httpwg/structured-field-tests/' . static::$ruleset . '.json';
         if (!file_exists($path)) {
             throw new \RuntimeException('Ruleset file does not exist');
         }
@@ -34,29 +34,22 @@ abstract class HttpwgTest extends RulesetTest
         foreach ($rules as $rawRule) {
             if (isset($rawRule->expected)) {
                 try {
-                    switch ($rawRule->header_type) {
-                        case 'item':
-                            $rawRule->expected = HttpwgRuleExpectedConverter::item($rawRule->expected);
-                            break;
-                        case 'list':
-                            $rawRule->expected = HttpwgRuleExpectedConverter::list($rawRule->expected);
-                            break;
-                        case 'dictionary':
-                            $rawRule->expected = HttpwgRuleExpectedConverter::dictionary($rawRule->expected);
-                            break;
-                        default:
-                            throw new \UnexpectedValueException('Unknown header type');
-                    }
+                    $rawRule->expected = match ($rawRule->header_type) {
+                        'item' => HttpwgRuleExpectedConverter::item($rawRule->expected),
+                        'list' => HttpwgRuleExpectedConverter::list($rawRule->expected),
+                        'dictionary' => HttpwgRuleExpectedConverter::dictionary($rawRule->expected),
+                        default => throw new \UnexpectedValueException('Unknown header type'),
+                    };
                 } catch (\UnexpectedValueException | \AssertionError $e) {
                     // Skip rules that cannot be parsed.
                     continue;
                 }
             }
-            $rule = Rule::fromClass($rawRule);
+            $rule = Rule::fromClass($rawRule); // @phpstan-ignore argument.type
 
             if (isset($dataset[$rule->name])) {
                 user_error(
-                    'Ruleset "' . $this->ruleset . '" contains duplicate rule name "' . $rule->name . '"',
+                    'Ruleset "' . static::$ruleset . '" contains duplicate rule name "' . $rule->name . '"',
                     E_USER_WARNING
                 );
             }

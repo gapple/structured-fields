@@ -5,6 +5,7 @@ namespace gapple\Tests\StructuredFields;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class OuterListTest extends TestCase
@@ -92,7 +93,7 @@ class OuterListTest extends TestCase
     /**
      * @return array<string, array<mixed>>
      */
-    public function invalidItemProvider(): array
+    public static function invalidItemProvider(): array
     {
         $items = [];
 
@@ -112,10 +113,7 @@ class OuterListTest extends TestCase
         return $items;
     }
 
-    /**
-     * @dataProvider invalidItemProvider
-     * @param mixed $value
-     */
+    #[DataProvider('invalidItemProvider')]
     public function testConstructInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -123,10 +121,7 @@ class OuterListTest extends TestCase
         new OuterList([$value]); // @phpstan-ignore-line
     }
 
-    /**
-     * @dataProvider invalidItemProvider
-     * @param mixed $value
-     */
+    #[DataProvider('invalidItemProvider')]
     public function testAppendInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);

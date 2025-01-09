@@ -2,7 +2,13 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class DateTest extends HttpwgTest
+use gapple\Tests\StructuredFields\ParsingRulesetTrait;
+use gapple\Tests\StructuredFields\SerializingRulesetTrait;
+
+class DateTest extends HttpwgTestBase
 {
-    protected $ruleset = 'date';
+    use ParsingRulesetTrait;
+    use SerializingRulesetTrait;
+
+    protected static string $ruleset = 'date';
 }

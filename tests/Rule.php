@@ -2,57 +2,63 @@
 
 namespace gapple\Tests\StructuredFields;
 
+use gapple\StructuredFields\Dictionary;
+use gapple\StructuredFields\Item;
+use gapple\StructuredFields\OuterList;
+
+/**
+ * @phpstan-type RuleArray array{
+ *      "name": string,
+ *      "header_type": "item"|"list"|"dictionary",
+ *      "raw"?: string[],
+ *      "expected"?: Item|Dictionary|OuterList,
+ *      "canonical"?: array{string}|null,
+ *      "must_fail"?: bool,
+ *      "can_fail"?: bool,
+ *    }
+ * @phpstan-type RuleObject object{
+ *      "name": string,
+ *      "header_type": "item"|"list"|"dictionary",
+ *      "raw"?: string[],
+ *      "expected"?: Item|Dictionary|OuterList,
+ *      "canonical"?: array{string}|null,
+ *      "must_fail"?: bool,
+ *      "can_fail"?: bool,
+ *    }
+ */
 class Rule
 {
-    /**
-     * @var string
-     * @readonly
-     */
-    public $name;
+    public readonly string $name;
 
     /**
      * @var "item"|"list"|"dictionary"
-     * @readonly
      */
-    public $header_type;
+    public readonly string $header_type;
 
     /**
      * @var string[]|null
-     * @readonly
      */
-    public $raw;
+    public readonly ?array $raw;
 
-    /**
-     * @var null|\gapple\StructuredFields\Item|\gapple\StructuredFields\Dictionary|\gapple\StructuredFields\OuterList
-     * @readonly
-     */
-    public $expected;
-
+    public readonly Item|Dictionary|OuterList $expected;
     /**
      * @var array{string}|null
-     * @readonly
      */
-    public $canonical;
+    public readonly ?array $canonical;
+
+    public readonly bool $must_fail;
+
+    public readonly bool $can_fail;
 
     /**
-     * @var bool
-     * @readonly
-     */
-    public $must_fail;
-
-    /**
-     * @var bool
-     * @readonly
-     */
-    public $can_fail;
-
-    /**
-     * @param array<string, mixed> $properties
+     * @param RuleArray $properties
      */
     public function __construct(array $properties)
     {
-        $this->must_fail = false;
-        $this->can_fail = false;
+        $properties += [
+            'must_fail' => false,
+            'can_fail' => false,
+        ];
 
         foreach ($properties as $key => $value) {
             if (!property_exists($this, $key)) {
@@ -62,13 +68,16 @@ class Rule
         }
     }
 
+    /**
+     * @param RuleObject $stdClass
+     */
     public static function fromClass(object $stdClass): self
     {
-        return new self(get_object_vars($stdClass));
+        return new self(get_object_vars($stdClass)); // @phpstan-ignore argument.type
     }
 
     /**
-     * @param array<string, mixed> $array
+     * @param RuleArray $array
      */
     public static function fromArray(array $array): self
     {

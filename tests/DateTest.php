@@ -5,9 +5,14 @@ namespace gapple\Tests\StructuredFields;
 /**
  * Additional Date parsing and serializing tests.
  */
-class DateTest extends RulesetTest
+class DateTest extends RulesetTestBase
 {
-    protected function rulesetDataProvider(): array
+    use ParsingRulesetTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected static function rulesetDataProvider(): array
     {
         return [
             'date - large int' => [

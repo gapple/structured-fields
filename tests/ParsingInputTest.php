@@ -3,6 +3,7 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\ParsingInput;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ParsingInputTest extends TestCase
@@ -26,9 +27,7 @@ class ParsingInputTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider trimProvider
-     */
+    #[DataProvider('trimProvider')]
     public function testTrim(string $value, bool $ows, string $expected): void
     {
         $input = new ParsingInput($value);
