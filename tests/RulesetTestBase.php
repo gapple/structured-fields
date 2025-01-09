@@ -30,5 +30,4 @@ abstract class RulesetTestBase extends TestCase
      * @return array<string, array{Rule}>
      */
     abstract protected static function rulesetDataProvider(): array;
-
 }
