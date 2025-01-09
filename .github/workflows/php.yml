@@ -74,6 +74,11 @@ jobs:
       run: composer update --ignore-platform-reqs --prefer-dist --no-progress
 
     - name: Run PHPUnit tests
+      if: matrix.php-versions != env.code-coverage-version
+      run: composer run-script phpunit -- --no-coverage
+
+    - name: Run PHPUnit tests with coverage
+      if: matrix.php-versions == env.code-coverage-version
       run: composer run-script phpunit
 
     - name: Run PHPStan
