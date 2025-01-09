@@ -4,6 +4,7 @@ namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\ParseException;
 use gapple\StructuredFields\Parser;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait ParsingRulesetTrait
 {
@@ -20,10 +21,7 @@ trait ParsingRulesetTrait
         );
     }
 
-
-    /**
-     * @dataProvider parseRulesetDataProvider
-     */
+    #[DataProvider('parseRulesetDataProvider')]
     public function testParsing(Rule $record): void
     {
         if (array_key_exists($record->name, $this->skipParsingRules)) {

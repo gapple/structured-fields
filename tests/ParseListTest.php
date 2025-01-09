@@ -6,6 +6,7 @@ use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Parameters;
 use gapple\StructuredFields\Parser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ParseListTest extends TestCase
@@ -38,9 +39,7 @@ class ParseListTest extends TestCase
         return $dataset;
     }
 
-    /**
-     * @dataProvider multipleStringProvider
-     */
+    #[DataProvider('multipleStringProvider')]
     public function testListWithMultipleStrings(string $raw, OuterList $expected): void
     {
         $this->assertEquals($expected, Parser::parseList($raw));

@@ -4,6 +4,7 @@ namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 trait SerializingRulesetTrait
 {
@@ -20,9 +21,7 @@ trait SerializingRulesetTrait
         );
     }
 
-    /**
-     * @dataProvider serializeRulesetDataProvider
-     */
+    #[DataProvider('serializeRulesetDataProvider')]
     public function testSerializing(Rule $record): void
     {
         if (array_key_exists($record->name, $this->skipSerializingRules)) {

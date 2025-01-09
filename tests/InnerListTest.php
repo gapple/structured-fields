@@ -4,6 +4,7 @@ namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Parameters;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class InnerListTest extends TestCase
@@ -54,9 +55,7 @@ class InnerListTest extends TestCase
         return $items;
     }
 
-    /**
-     * @dataProvider invalidItemProvider
-     */
+    #[DataProvider('invalidItemProvider')]
     public function testConstructInvalidItem(mixed $value): void
     {
         $this->expectException(\InvalidArgumentException::class);
