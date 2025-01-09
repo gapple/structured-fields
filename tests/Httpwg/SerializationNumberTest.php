@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class SerializationNumberTest extends HttpwgTest
+class SerializationNumberTest extends HttpwgTestBase
 {
-    protected $ruleset = 'serialisation-tests/number';
+    protected string $ruleset = 'serialisation-tests/number';
 }

@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class ParamDictTest extends HttpwgTest
+class ParamDictTest extends HttpwgTestBase
 {
-    protected $ruleset = 'param-dict';
+    protected string $ruleset = 'param-dict';
 }

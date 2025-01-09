@@ -8,7 +8,7 @@ use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
 use PHPUnit\Framework\TestCase;
 
-abstract class RulesetTest extends TestCase
+abstract class RulesetTestBase extends TestCase
 {
     /**
      * An array of rules which should skip the parsing test.
@@ -18,7 +18,7 @@ abstract class RulesetTest extends TestCase
      *
      * @var array<string, string>
      */
-    protected $skipParsingRules = [];
+    protected array $skipParsingRules = [];
 
     /**
      * An array of rules which should skip the serializing test.
@@ -28,7 +28,7 @@ abstract class RulesetTest extends TestCase
      *
      * @var array<string, string>
      */
-    protected $skipSerializingRules = [];
+    protected array $skipSerializingRules = [];
 
     /**
      * @return array<string, array{Rule}>
@@ -75,7 +75,6 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider parseRulesetDataProvider
-     * @param Rule $record
      */
     public function testParsing(Rule $record): void
     {
@@ -110,7 +109,6 @@ abstract class RulesetTest extends TestCase
 
     /**
      * @dataProvider serializeRulesetDataProvider
-     * @param Rule $record
      */
     public function testSerializing(Rule $record): void
     {

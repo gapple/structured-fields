@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class DictionaryTest extends HttpwgTest
+class DictionaryTest extends HttpwgTestBase
 {
-    protected $ruleset = 'dictionary';
+    protected string $ruleset = 'dictionary';
 }

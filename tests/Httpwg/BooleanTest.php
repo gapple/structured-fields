@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class BooleanTest extends HttpwgTest
+class BooleanTest extends HttpwgTestBase
 {
-    protected $ruleset = 'boolean';
+    protected string $ruleset = 'boolean';
 }

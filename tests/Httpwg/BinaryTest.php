@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class BinaryTest extends HttpwgTest
+class BinaryTest extends HttpwgTestBase
 {
-    protected $ruleset = 'binary';
+    protected string $ruleset = 'binary';
 }

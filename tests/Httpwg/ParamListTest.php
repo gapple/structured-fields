@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class ParamListTest extends HttpwgTest
+class ParamListTest extends HttpwgTestBase
 {
-    protected $ruleset = 'param-list';
+    protected string $ruleset = 'param-list';
 }

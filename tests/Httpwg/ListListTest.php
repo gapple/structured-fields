@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class ListListTest extends HttpwgTest
+class ListListTest extends HttpwgTestBase
 {
-    protected $ruleset = 'listlist';
+    protected string $ruleset = 'listlist';
 }

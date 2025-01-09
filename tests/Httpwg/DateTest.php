@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class DateTest extends HttpwgTest
+class DateTest extends HttpwgTestBase
 {
-    protected $ruleset = 'date';
+    protected string $ruleset = 'date';
 }

@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class SerializationTokenGeneratedTest extends HttpwgTest
+class SerializationTokenGeneratedTest extends HttpwgTestBase
 {
-    protected $ruleset = 'serialisation-tests/token-generated';
+    protected string $ruleset = 'serialisation-tests/token-generated';
 }

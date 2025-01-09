@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class DisplayStringTest extends HttpwgTest
+class DisplayStringTest extends HttpwgTestBase
 {
-    protected $ruleset = 'display-string';
+    protected string $ruleset = 'display-string';
 }

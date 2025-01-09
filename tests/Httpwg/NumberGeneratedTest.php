@@ -2,7 +2,7 @@
 
 namespace gapple\Tests\StructuredFields\Httpwg;
 
-class NumberGeneratedTest extends HttpwgTest
+class NumberGeneratedTest extends HttpwgTestBase
 {
-    protected $ruleset = 'number-generated';
+    protected string $ruleset = 'number-generated';
 }
