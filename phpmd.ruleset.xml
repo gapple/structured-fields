@@ -8,6 +8,9 @@
                      http://pmd.sf.net/ruleset_xml_schema.xsd">
     <description>PHPMD Ruleset</description>
 
-    <rule ref="rulesets/codesize.xml"/>
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="CyclomaticComplexity" />
+        <exclude name="ExcessiveClassComplexity" />
+    </rule>
     <rule ref="rulesets/unusedcode.xml"/>
 </ruleset>

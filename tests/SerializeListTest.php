@@ -110,7 +110,7 @@ class SerializeListTest extends TestCase
                         ],
                         new \stdClass(), // Inner Inner List Parameters
                     ],
-                    new Item(42)
+                    new Item(42),
                 ],
                 new \stdClass(), // Outer Inner Parameters
             ],

@@ -21,7 +21,7 @@ class InnerListTest extends TestCase
         $list = new InnerList(
             [
                 ['Test Value One', (object) []],
-                ['Test Value Two', (object) []]
+                ['Test Value Two', (object) []],
             ],
             (object) ['paramKey' => 'param value']
         );

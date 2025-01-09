@@ -2,10 +2,6 @@
 
 namespace gapple\Tests\StructuredFields;
 
-use gapple\StructuredFields\Dictionary;
-use gapple\StructuredFields\Item;
-use gapple\StructuredFields\OuterList;
-
 class Rule
 {
     /**
@@ -27,7 +23,7 @@ class Rule
     public $raw;
 
     /**
-     * @var null|Item|Dictionary|OuterList
+     * @var null|\gapple\StructuredFields\Item|\gapple\StructuredFields\Dictionary|\gapple\StructuredFields\OuterList
      * @readonly
      */
     public $expected;

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
-/**
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- */
 class Serializer
 {
     /**
@@ -59,7 +56,7 @@ class Serializer
             if ($item instanceof TupleInterface) {
                 $itemValue = $item->getValue();
                 $itemParameters = $item->getParameters();
-            } elseif (is_array($item) && count($item) == 2) {
+            } elseif (is_array($item) && count($item) === 2) {
                 $itemValue = $item[0];
                 $itemParameters = $item[1];
             } else {
@@ -152,9 +149,6 @@ class Serializer
         return $returnValue;
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
-     */
     private static function serializeBareItem(mixed $value): string
     {
         if (is_int($value)) {
@@ -220,12 +214,12 @@ class Serializer
 
     private static function serializeDisplayString(DisplayString $value): string
     {
-        $encode_pattern = '/[%"\x00-\x1F\x7F-\xFF]/';
-        $encode_callback = function ($matches) {
+        $encodePattern = '/[%"\x00-\x1F\x7F-\xFF]/';
+        $encodeCallback = function ($matches) {
             return strtolower(rawurlencode($matches[0]));
         };
 
-        return '%"' . preg_replace_callback($encode_pattern, $encode_callback, (string) $value) . '"';
+        return '%"' . preg_replace_callback($encodePattern, $encodeCallback, (string) $value) . '"';
     }
 
     private static function serializeToken(Token $value): string

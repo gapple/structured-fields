@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
-/**
- * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- */
 class Parser
 {
     public static function parseDictionary(string $string): Dictionary
@@ -290,7 +287,6 @@ class Parser
 
     /**
      * @phpstan-impure
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     private static function parseDisplayString(ParsingInput $string): DisplayString
     {
@@ -301,7 +297,7 @@ class Parser
             throw new ParseException('Invalid start of display string at position ' . $startPosition);
         }
 
-        $encoded_string = '';
+        $encodedString = '';
         while (!$string->empty()) {
             $char = $string->consumeChar();
 
@@ -311,22 +307,22 @@ class Parser
                 );
             } elseif ($char === '%') {
                 try {
-                    $encoded_string .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
+                    $encodedString .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
                 } catch (\RuntimeException) {
                     throw new ParseException(
                         'Invalid hex values in display string at position ' . ($string->position() - 1)
                     );
                 }
             } elseif ($char === '"') {
-                $display_string = new DisplayString(rawurldecode($encoded_string));
+                $displayString = new DisplayString(rawurldecode($encodedString));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
                 // @see https://www.php.net/manual/en/reference.pcre.pattern.modifiers.php
-                if (!preg_match('/^\X*$/u', (string) $display_string)) {
+                if (!preg_match('/^\X*$/u', (string) $displayString)) {
                     throw new ParseException('Invalid byte sequence in display string at position ' . $startPosition);
                 }
-                return $display_string;
+                return $displayString;
             } else {
-                $encoded_string .= $char;
+                $encodedString .= $char;
             }
         }
 

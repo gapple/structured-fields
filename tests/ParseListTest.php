@@ -24,7 +24,7 @@ class ParseListTest extends TestCase
                 new Item(1),
                 new Item(42, Parameters::fromArray(['towel' => true, 'panic' => false])),
                 new Item('two'),
-            ])
+            ]),
         ];
 
         $dataset[] = [

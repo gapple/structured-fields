@@ -62,7 +62,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
                 );
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) {
+            if (count($value) !== 2) {
                 throw new \InvalidArgumentException();
             }
         } else {

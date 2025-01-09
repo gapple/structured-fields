@@ -57,7 +57,7 @@ class InnerList implements TupleInterface
                 throw new \InvalidArgumentException('InnerList objects cannot be nested');
             }
         } elseif (is_array($value)) {
-            if (count($value) != 2) {
+            if (count($value) !== 2) {
                 throw new \InvalidArgumentException();
             }
         } else {

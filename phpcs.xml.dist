@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="structured-fields">
-  <description>Default PHP CodeSniffer configuration for gapple/structured-fields.</description>
+    <description>Default PHP CodeSniffer configuration for gapple/structured-fields.</description>
 
-  <file>src</file>
-  <file>tests</file>
+    <file>src</file>
+    <file>tests</file>
 
-  <rule ref="PSR12"/>
+    <rule ref="PSR12"/>
+
+    <rule ref="Generic.PHP.DeprecatedFunctions"/>
+    <rule ref="Generic.PHP.RequireStrictTypes">
+        <exclude-pattern>tests/*\.php$</exclude-pattern>
+    </rule>
+    <rule ref="Generic.VersionControl.GitMergeConflict"/>
+    <rule ref="Squiz.NamingConventions.ValidVariableName">
+        <exclude-pattern>tests/*\.php$</exclude-pattern>
+    </rule>
+    <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore">
+        <severity>0</severity>
+    </rule>
+    <rule ref="SlevomatCodingStandard.Arrays.ArrayAccess"/>
+    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+    <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility"/>
+    <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+    <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
 </ruleset>
