@@ -153,14 +153,14 @@ class Serializer
             return self::serializeDecimal($value);
         } elseif (is_bool($value)) {
             return self::serializeBoolean($value);
-        } elseif ($value instanceof Token) {
-            return self::serializeToken($value);
+        } elseif ($value instanceof \DateTimeInterface) {
+            return self::serializeDate($value);
         } elseif ($value instanceof Bytes) {
             return self::serializeByteSequence($value);
-        } elseif ($value instanceof Date) {
-            return self::serializeDate($value);
         } elseif ($value instanceof DisplayString) {
             return self::serializeDisplayString($value);
+        } elseif ($value instanceof Token) {
+            return self::serializeToken($value);
         } elseif (is_string($value) || $value instanceof \Stringable) {
             return self::serializeString((string) $value);
         }
@@ -260,9 +260,9 @@ class Serializer
         return $returnValue;
     }
 
-    private static function serializeDate(Date $value): string
+    private static function serializeDate(\DateTimeInterface $value): string
     {
-        return '@' . self::serializeInteger($value->toInt());
+        return '@' . self::serializeInteger($value->getTimestamp());
     }
 
     private static function serializeKey(string $value): string

@@ -122,9 +122,9 @@ class HttpwgRuleExpectedConverter
      *
      * @param ExpectedBareValue $data
      *   The expected bare value.
-     * @return bool|int|float|string|Bytes|Date|DisplayString|Token
+     * @return bool|int|float|string|Bytes|\DateTimeInterface|DisplayString|Token
      */
-    private static function value($data)
+    private static function value($data): mixed
     {
         if (!is_object($data)) {
             return $data;
