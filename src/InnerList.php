@@ -10,7 +10,6 @@ class InnerList implements TupleInterface
 
     /**
      * @param array<TupleInterface|array{mixed, object}> $value
-     * @param object|null $parameters
      */
     public function __construct(array $value, ?object $parameters = null)
     {
@@ -25,11 +24,10 @@ class InnerList implements TupleInterface
      *
      * @param array<mixed> $array
      *   An array of bare items or TupleInterface objects.
-     * @return InnerList
      */
     public static function fromArray(array $array): InnerList
     {
-        array_walk($array, function (&$item) {
+        array_walk($array, function (&$item): void {
             if (!$item instanceof TupleInterface) {
                 $item = new Item($item);
             } elseif ($item instanceof InnerList) {
@@ -43,7 +41,6 @@ class InnerList implements TupleInterface
 
     /**
      * @param TupleInterface|array{mixed, object} $value
-     * @return void
      */
     private static function validateItemType(mixed $value): void
     {

@@ -9,13 +9,10 @@ class Serializer
     /**
      * Serialize an item with optional parameters.
      *
-     * @param mixed $value
+     * @param Item|mixed $value
      *   A bare value, or an Item object.
      * @param object|null $parameters
-     *   An optional object containing parameter values if a bare value is provided.
-     *
-     * @return string
-     *   The serialized value.
+     *   If a bare value is provided, an optional object containing parameter values.
      */
     public static function serializeItem(mixed $value, ?object $parameters = null): string
     {
@@ -43,7 +40,6 @@ class Serializer
 
     /**
      * @param iterable<TupleInterface|array{mixed, object}> $value
-     * @return string
      */
     public static function serializeList(iterable $value): string
     {

@@ -124,8 +124,6 @@ class Parser
     }
 
     /**
-     * @param string $string
-     *
      * @return Item
      *  A [value, parameters] tuple.
      */

@@ -26,20 +26,11 @@ class Parameters implements \IteratorAggregate
         return $parameters;
     }
 
-    /**
-     * @param string $name
-     * @return mixed|null
-     */
     public function __get(string $name): mixed
     {
         return $this->value[$name] ?? null;
     }
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return void
-     */
     public function __set(string $name, mixed $value): void
     {
         $this->value[$name] = $value;

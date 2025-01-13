@@ -44,7 +44,6 @@ class ParsingInput
      * @param bool $ows
      *   Whether all Optional Whitespace characters should be trimmed.  If false, only space characters are trimmed.
      *   @see https://tools.ietf.org/html/rfc7230#section-3.2.3
-     * @return void
      */
     public function trim(bool $ows = false): void
     {
