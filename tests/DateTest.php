@@ -2,12 +2,15 @@
 
 namespace gapple\Tests\StructuredFields;
 
+use gapple\StructuredFields\Item;
+
 /**
  * Additional Date parsing and serializing tests.
  */
 class DateTest extends RulesetTestBase
 {
     use ParsingRulesetTrait;
+    use SerializingRulesetTrait;
 
     /**
      * {@inheritdoc}
@@ -15,7 +18,7 @@ class DateTest extends RulesetTestBase
     protected static function rulesetDataProvider(): array
     {
         return [
-            'date - large int' => [
+            'large int' => [
                 Rule::fromArray([
                     'name' => 'date - large int',
                     'raw' => ['@1234567890123456'],
@@ -23,13 +26,22 @@ class DateTest extends RulesetTestBase
                     'must_fail' => true,
                 ]),
             ],
-            'date - hexadecimal' => [
+            'hexadecimal' => [
                 Rule::fromArray([
                     'name' => 'date - hexadecimal',
                     'raw' => ['@0x62EB2779'],
                     'header_type' => 'item',
                     'must_fail' => true,
                 ]),
+            ],
+            // Serialize any \DateTimeInterface object.
+            'DateTimeInterface' => [
+              Rule::fromArray([
+                  'name' => 'date - DateTimeInterface',
+                  'header_type' => 'item',
+                  'expected' => new Item(new \DateTimeImmutable('@629528400')),
+                  'canonical' => ['@629528400'],
+              ]),
             ],
         ];
     }
