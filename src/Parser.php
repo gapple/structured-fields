@@ -20,8 +20,7 @@ class Parser
         while (true) {
             $key = self::parseKey($input);
 
-            if ($input->isChar('=')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf('=')) {
                 $value->{$key} = self::parseItemOrInnerList($input);
             } else {
                 // Bare boolean true value.
@@ -85,7 +84,7 @@ class Parser
 
     private static function parseItemOrInnerList(ParsingInput $input): TupleInterface
     {
-        if ($input->isChar('(')) {
+        if ($input->isNextChar('(')) {
             return self::parseInnerList($input);
         } else {
             return self::doParseItem($input);
@@ -104,8 +103,7 @@ class Parser
         while (!$input->empty()) {
             $input->trim();
 
-            if ($input->isChar(')')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf(')')) {
                 return new InnerList(
                     $value,
                     self::parseParameters($input)
@@ -114,7 +112,7 @@ class Parser
 
             $value[] = self::doParseItem($input);
 
-            if (!($input->isChar(' ') || $input->isChar(')'))) {
+            if (!($input->isNextChar(' ') || $input->isNextChar(')'))) {
                 if ($input->empty()) {
                     break;
                 }
@@ -190,16 +188,15 @@ class Parser
     private static function parseParameters(ParsingInput $input): Parameters
     {
         $parameters = new Parameters();
-        while ($input->isChar(';')) {
-            $input->consumeChar();
+        while ($input->skipNextCharIf(';')) {
             $input->trim();
 
             $key = self::parseKey($input);
-            $parameters->{$key} = true;
 
-            if ($input->isChar('=')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf('=')) {
                 $parameters->{$key} = self::parseBareItem($input);
+            } else {
+                $parameters->{$key} = true;
             }
         }
 
