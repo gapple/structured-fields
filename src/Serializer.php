@@ -224,12 +224,17 @@ class Serializer
 
     private static function serializeToken(Token $value): string
     {
-        // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
-        // 3.2.6. Field Value Components
-        // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
-        $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        // RFC 9110: HTTP Semantics (5.6.2. Tokens)
+        // @see https://www.rfc-editor.org/rfc/rfc9110.html#name-tokens
+        // $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        $tchar = "!#$%&'*+\-.^_`|~";
 
-        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', (string) $value)) {
+        if (
+            !preg_match('/^(
+                (?:\*|[a-z])                # an alphabetic character or "*"
+                [a-z0-9:\/' . $tchar . ']*  # zero to many token characters
+            )$/ix', (string) $value)
+        ) {
             throw new SerializeException('Invalid characters in token');
         }
 
