@@ -60,6 +60,7 @@ class ParsingInput
 
     /**
      * @deprecated in 2.3.0 and will be removed in 3.0.0
+     * @codeCoverageIgnore
      */
     public function isChar(string $char): bool
     {
