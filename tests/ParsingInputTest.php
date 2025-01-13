@@ -4,6 +4,7 @@ namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\ParsingInput;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresSetting;
 use PHPUnit\Framework\TestCase;
 
 class ParsingInputTest extends TestCase
@@ -21,6 +22,7 @@ class ParsingInputTest extends TestCase
     public static function trimProvider(): array
     {
         return [
+            // [input string, trim optional white space, expected remaining string]
             'space' => ['  test ', false, 'test '],
             'ows' => [" \t test ", true, 'test '],
             'non-ows' => [" \t test ", false, "\t test "],
@@ -50,5 +52,38 @@ class ParsingInputTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Unexpected character');
         $input->consumeString('foo');
+    }
+
+    /**
+     * @return array<string, array{string, bool}>
+     */
+    public static function regexProvider(): array
+    {
+        return [
+            'Valid' => ['/^test/', true],
+            'Valid with modifier' => ['/^test/i', true],
+            'Missing start anchor' => ['/test/', false],
+            'End anchor' => ['/test$/', false],
+            'End anchor and modifier' => ['/test$/i', false],
+        ];
+    }
+
+    #[RequiresSetting('zend.assertions', '1')]
+    #[DataProvider('regexProvider')]
+    public function testConsumeRegex(string $regex, bool $expected): void
+    {
+        try {
+            $input = new ParsingInput('test');
+            $input->consumeRegex($regex);
+
+            if (!$expected) {
+                $this->fail('Expression should not have passed assertions');
+            }
+        } catch (\AssertionError $e) {
+            if ($expected) {
+                $this->fail('Expression failed assertion: ' . $e->getMessage());
+            }
+        }
+        $this->addToAssertionCount(1);
     }
 }

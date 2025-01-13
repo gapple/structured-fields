@@ -136,6 +136,7 @@ class ParsingInput
     public function consumeRegex(string $pattern): string
     {
         assert(str_starts_with($pattern, '/^'));
+        assert(!preg_match('/\$\/[a-z]+$/i', $pattern));
 
         if (preg_match($pattern, $this->remaining(), $matches)) {
             $this->position += strlen($matches[0]);
