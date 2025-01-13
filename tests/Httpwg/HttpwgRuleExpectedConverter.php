@@ -95,7 +95,7 @@ class HttpwgRuleExpectedConverter
 
         foreach ($parameters as $value) {
             // Null byte is not supported as first character of property name.
-            if (strpos($value[0], "\0") === 0) {
+            if (str_starts_with($value[0], "\0")) {
                 throw new \UnexpectedValueException();
             }
 
