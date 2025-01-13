@@ -205,7 +205,7 @@ class Serializer
 
     private static function serializeString(string $value): string
     {
-        if (preg_match('/[^\x20-\x7E]/i', $value)) {
+        if (!empty($value) && !ctype_print($value)) {
             throw new SerializeException("Invalid characters in string");
         }
 

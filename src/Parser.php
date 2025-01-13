@@ -272,7 +272,7 @@ class Parser
                 }
             } elseif ($char === '"') {
                 return $output;
-            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+            } elseif (!ctype_print($char)) {
                 throw new ParseException('Invalid character in string at position ' . ($input->position() - 1));
             }
 
@@ -298,18 +298,21 @@ class Parser
         while (!$string->empty()) {
             $char = $string->consumeChar();
 
-            if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+            if (!ctype_print($char)) {
                 throw new ParseException(
                     'Invalid character in display string at position ' . ($string->position() - 1)
                 );
             } elseif ($char === '%') {
-                try {
-                    $encodedString .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
-                } catch (\RuntimeException) {
+                if ($string->remainingLength() < 2) {
+                    break;
+                }
+                $encodedChar = $string->consume(2);
+                if (!ctype_xdigit($encodedChar) || ctype_upper($encodedChar)) {
                     throw new ParseException(
                         'Invalid hex values in display string at position ' . ($string->position() - 1)
                     );
                 }
+                $encodedString .= '%' . $encodedChar;
             } elseif ($char === '"') {
                 $displayString = new DisplayString(rawurldecode($encodedString));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
