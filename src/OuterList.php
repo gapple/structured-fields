@@ -31,11 +31,10 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      * Create an OuterList from an array of bare values.
      *
      * @param array<mixed> $array
-     * @return OuterList
      */
     public static function fromArray(array $array): OuterList
     {
-        array_walk($array, function (&$item) {
+        array_walk($array, function (&$item): void {
             if (!$item instanceof TupleInterface) {
                 if (is_array($item)) {
                     $item = InnerList::fromArray($item);
@@ -51,7 +50,6 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param TupleInterface|array{mixed, object} $value
-     * @return void
      */
     private static function validateItemType(mixed $value): void
     {
@@ -77,7 +75,6 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -86,7 +83,6 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return mixed
      * @phpstan-return TupleInterface|array{mixed, object}|null
      */
     public function offsetGet($offset): mixed
@@ -97,7 +93,6 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
     /**
      * @param int|null $offset
      * @param TupleInterface|array{mixed, object} $value
-     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -112,7 +107,6 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
 
     /**
      * @param int $offset
-     * @return void
      */
     public function offsetUnset($offset): void
     {

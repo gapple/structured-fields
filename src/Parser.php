@@ -20,8 +20,7 @@ class Parser
         while (true) {
             $key = self::parseKey($input);
 
-            if ($input->isChar('=')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf('=')) {
                 $value->{$key} = self::parseItemOrInnerList($input);
             } else {
                 // Bare boolean true value.
@@ -85,7 +84,7 @@ class Parser
 
     private static function parseItemOrInnerList(ParsingInput $input): TupleInterface
     {
-        if ($input->isChar('(')) {
+        if ($input->isNextChar('(')) {
             return self::parseInnerList($input);
         } else {
             return self::doParseItem($input);
@@ -104,8 +103,7 @@ class Parser
         while (!$input->empty()) {
             $input->trim();
 
-            if ($input->isChar(')')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf(')')) {
                 return new InnerList(
                     $value,
                     self::parseParameters($input)
@@ -114,7 +112,7 @@ class Parser
 
             $value[] = self::doParseItem($input);
 
-            if (!($input->isChar(' ') || $input->isChar(')'))) {
+            if (!($input->isNextChar(' ') || $input->isNextChar(')'))) {
                 if ($input->empty()) {
                     break;
                 }
@@ -126,8 +124,6 @@ class Parser
     }
 
     /**
-     * @param string $string
-     *
      * @return Item
      *  A [value, parameters] tuple.
      */
@@ -190,16 +186,15 @@ class Parser
     private static function parseParameters(ParsingInput $input): Parameters
     {
         $parameters = new Parameters();
-        while ($input->isChar(';')) {
-            $input->consumeChar();
+        while ($input->skipNextCharIf(';')) {
             $input->trim();
 
             $key = self::parseKey($input);
-            $parameters->{$key} = true;
 
-            if ($input->isChar('=')) {
-                $input->consumeChar();
+            if ($input->skipNextCharIf('=')) {
                 $parameters->{$key} = self::parseBareItem($input);
+            } else {
+                $parameters->{$key} = true;
             }
         }
 
@@ -275,7 +270,7 @@ class Parser
                 }
             } elseif ($char === '"') {
                 return $output;
-            } elseif (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+            } elseif (!ctype_print($char)) {
                 throw new ParseException('Invalid character in string at position ' . ($input->position() - 1));
             }
 
@@ -301,18 +296,21 @@ class Parser
         while (!$string->empty()) {
             $char = $string->consumeChar();
 
-            if (ord($char) <= 0x1f || ord($char) >= 0x7f) {
+            if (!ctype_print($char)) {
                 throw new ParseException(
                     'Invalid character in display string at position ' . ($string->position() - 1)
                 );
             } elseif ($char === '%') {
-                try {
-                    $encodedString .= '%' . $string->consumeRegex('/^[0-9a-f]{2}/');
-                } catch (\RuntimeException) {
+                if ($string->remainingLength() < 2) {
+                    break;
+                }
+                $encodedChar = $string->consume(2);
+                if (!ctype_xdigit($encodedChar) || ctype_upper($encodedChar)) {
                     throw new ParseException(
                         'Invalid hex values in display string at position ' . ($string->position() - 1)
                     );
                 }
+                $encodedString .= '%' . $encodedChar;
             } elseif ($char === '"') {
                 $displayString = new DisplayString(rawurldecode($encodedString));
                 // An invalid UTF-8 subject will cause the preg_* function to match nothing.
@@ -334,16 +332,19 @@ class Parser
      */
     private static function parseToken(ParsingInput $input): Token
     {
-        // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
-        // 3.2.6. Field Value Components
-        // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
-        $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        // RFC 9110: HTTP Semantics (5.6.2. Tokens)
+        // @see https://www.rfc-editor.org/rfc/rfc9110.html#name-tokens
+        // $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        $tchar = "!#$%&'*+\-.^_`|~";
 
         // parseToken is only called by parseBareItem if the initial character
         // is valid, so a Token object is always returned.  If there is an
         // invalid character in the token, the public function that was called
         // will detect that the remainder of the input string is invalid.
-        return new Token($input->consumeRegex('/^([a-z*][a-z0-9:\/' . $tchar . ']*)/i'));
+        return new Token($input->consumeRegex('/^(
+                (?:\*|[a-z])                # an alphabetic character or "*"
+                [a-z0-9:\/' . $tchar . ']*  # zero to many token characters
+            )/ix'));
     }
 
     /**

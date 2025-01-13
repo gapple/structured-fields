@@ -29,7 +29,6 @@ class HttpwgRuleExpectedConverter
      * Convert the expected value of an item tuple.
      *
      * @param  ExpectedItem $item
-     * @return Item
      */
     public static function item(array $item): Item
     {
@@ -40,7 +39,6 @@ class HttpwgRuleExpectedConverter
      * Convert the expected values of a dictionary.
      *
      * @param  ExpectedDictionary $dictionary
-     * @return Dictionary
      */
     public static function dictionary(array $dictionary): Dictionary
     {
@@ -66,7 +64,6 @@ class HttpwgRuleExpectedConverter
      * Convert the expected values of a list.
      *
      * @param  ExpectedOuterList $list
-     * @return OuterList
      */
     public static function list(array $list): OuterList
     {
@@ -86,8 +83,7 @@ class HttpwgRuleExpectedConverter
     /**
      * Convert the expected values of a parameters map.
      *
-     * @param  ExpectedParameters $parameters
-     * @return Parameters
+     * @param ExpectedParameters $parameters
      */
     private static function parameters(array $parameters): Parameters
     {
@@ -95,7 +91,7 @@ class HttpwgRuleExpectedConverter
 
         foreach ($parameters as $value) {
             // Null byte is not supported as first character of property name.
-            if (strpos($value[0], "\0") === 0) {
+            if (str_starts_with($value[0], "\0")) {
                 throw new \UnexpectedValueException();
             }
 
@@ -109,7 +105,6 @@ class HttpwgRuleExpectedConverter
      * Convert the expected values of an inner list tuple.
      *
      * @param  ExpectedInnerList $innerList
-     * @return InnerList
      */
     private static function innerList(array $innerList): InnerList
     {

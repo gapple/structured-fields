@@ -37,7 +37,6 @@ class Dictionary implements \IteratorAggregate
     }
 
     /**
-     * @param string $name
      * @return TupleInterface|array{mixed, object}|null
      */
     public function __get(string $name): mixed
@@ -46,9 +45,7 @@ class Dictionary implements \IteratorAggregate
     }
 
     /**
-     * @param string $name
      * @param TupleInterface|array{mixed, object} $value
-     * @return void
      */
     public function __set(string $name, mixed $value): void
     {

@@ -9,13 +9,10 @@ class Serializer
     /**
      * Serialize an item with optional parameters.
      *
-     * @param mixed $value
+     * @param Item|mixed $value
      *   A bare value, or an Item object.
      * @param object|null $parameters
-     *   An optional object containing parameter values if a bare value is provided.
-     *
-     * @return string
-     *   The serialized value.
+     *   If a bare value is provided, an optional object containing parameter values.
      */
     public static function serializeItem(mixed $value, ?object $parameters = null): string
     {
@@ -43,7 +40,6 @@ class Serializer
 
     /**
      * @param iterable<TupleInterface|array{mixed, object}> $value
-     * @return string
      */
     public static function serializeList(iterable $value): string
     {
@@ -205,11 +201,10 @@ class Serializer
 
     private static function serializeString(string $value): string
     {
-        if (preg_match('/[^\x20-\x7E]/i', $value)) {
+        if (!empty($value) && !ctype_print($value)) {
             throw new SerializeException("Invalid characters in string");
         }
-
-        return '"' . preg_replace('/(["\\\])/', '\\\$1', $value) . '"';
+        return '"' . str_replace(['\\', '"'], ['\\\\', '\"'], $value) . '"';
     }
 
     private static function serializeDisplayString(DisplayString $value): string
@@ -224,12 +219,17 @@ class Serializer
 
     private static function serializeToken(Token $value): string
     {
-        // Hypertext Transfer Protocol (HTTP/1.1): Message Syntax and Routing
-        // 3.2.6. Field Value Components
-        // @see https://tools.ietf.org/html/rfc7230#section-3.2.6
-        $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        // RFC 9110: HTTP Semantics (5.6.2. Tokens)
+        // @see https://www.rfc-editor.org/rfc/rfc9110.html#name-tokens
+        // $tchar = preg_quote("!#$%&'*+-.^_`|~");
+        $tchar = "!#$%&'*+\-.^_`|~";
 
-        if (!preg_match('/^((?:\*|[a-z])[a-z0-9:\/' . $tchar . ']*)$/i', (string) $value)) {
+        if (
+            !preg_match('/^(
+                (?:\*|[a-z])                # an alphabetic character or "*"
+                [a-z0-9:\/' . $tchar . ']*  # zero to many token characters
+            )$/ix', (string) $value)
+        ) {
             throw new SerializeException('Invalid characters in token');
         }
 

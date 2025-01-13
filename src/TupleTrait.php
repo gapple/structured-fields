@@ -39,7 +39,6 @@ trait TupleTrait
 
     /**
      * @param 0|1 $offset
-     * @return mixed
      * @phpstan-return ($offset is 0 ? mixed : $offset is 1 ? object : null)
      */
     public function offsetGet($offset): mixed

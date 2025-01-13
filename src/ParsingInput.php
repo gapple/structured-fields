@@ -33,13 +33,17 @@ class ParsingInput
         return substr($this->value, $this->position);
     }
 
+    public function remainingLength(): int
+    {
+        return $this->length - $this->position();
+    }
+
     /**
      * Trim whitespace from beginning of string.
      *
      * @param bool $ows
      *   Whether all Optional Whitespace characters should be trimmed.  If false, only space characters are trimmed.
      *   @see https://tools.ietf.org/html/rfc7230#section-3.2.3
-     * @return void
      */
     public function trim(bool $ows = false): void
     {
@@ -54,7 +58,16 @@ class ParsingInput
         }
     }
 
+    /**
+     * @deprecated in 2.3.0 and will be removed in 3.0.0
+     * @codeCoverageIgnore
+     */
     public function isChar(string $char): bool
+    {
+        return $this->isNextChar($char);
+    }
+
+    public function isNextChar(string $char): bool
     {
         assert(strlen($char) === 1);
 
@@ -68,6 +81,15 @@ class ParsingInput
             throw new \RuntimeException('Reached end of value');
         }
         return $this->value[$this->position];
+    }
+
+    public function skipNextCharIf(string $char): bool
+    {
+        if ($this->isNextChar($char)) {
+            $this->position++;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -114,6 +136,7 @@ class ParsingInput
     public function consumeRegex(string $pattern): string
     {
         assert(str_starts_with($pattern, '/^'));
+        assert(!preg_match('/\$\/[a-z]+$/i', $pattern));
 
         if (preg_match($pattern, $this->remaining(), $matches)) {
             $this->position += strlen($matches[0]);

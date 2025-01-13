@@ -8,10 +8,6 @@ class Item implements TupleInterface
 {
     use TupleTrait;
 
-    /**
-     * @param mixed $value
-     * @param object|null $parameters
-     */
     public function __construct(mixed $value, ?object $parameters = null)
     {
         $this->value = $value;
