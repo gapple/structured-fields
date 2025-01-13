@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace gapple\StructuredFields;
 
-class Bytes
+class Bytes implements \Stringable
 {
     public function __construct(private readonly string $value)
     {
