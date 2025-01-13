@@ -208,8 +208,7 @@ class Serializer
         if (!empty($value) && !ctype_print($value)) {
             throw new SerializeException("Invalid characters in string");
         }
-
-        return '"' . preg_replace('/(["\\\])/', '\\\$1', $value) . '"';
+        return '"' . str_replace(['\\', '"'], ['\\\\', '\"'], $value) . '"';
     }
 
     private static function serializeDisplayString(DisplayString $value): string
