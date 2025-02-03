@@ -4,7 +4,8 @@
 
 | Version | Supported            |
 |--------:|----------------------|
-|   `2.2` | :white_check_mark:   |
+|   `2.3` | :white_check_mark:   |
+|   `2.2` | 🟨 Until 2025-07-30  |
 |   `2.1` | 🟨 Until 2025-04-30  |
 |   `2.0` | :x: Ended 2024-07-31 |
 |   `1.x` | :x:                  |
