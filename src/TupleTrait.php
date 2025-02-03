@@ -29,6 +29,7 @@ trait TupleTrait
         return $this->parameters;
     }
 
+    // phpcs:disable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
     /**
      * @param int $offset
      */
@@ -77,4 +78,5 @@ trait TupleTrait
             $this->parameters = new Parameters();
         }
     }
+    // phpcs:enable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 }

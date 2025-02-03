@@ -73,6 +73,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
         return new \ArrayIterator($this->value);
     }
 
+    // phpcs:disable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
     /**
      * @param int $offset
      */
@@ -112,4 +113,5 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
     {
         unset($this->value[$offset]);
     }
+    // phpcs:enable SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
 }
