@@ -135,8 +135,8 @@ class ParsingInput
      */
     public function consumeRegex(string $pattern): string
     {
-        assert(str_starts_with($pattern, '/^'));
-        assert(!preg_match('/\$\/[a-z]+$/i', $pattern));
+        assert(str_starts_with($pattern, '/^'), "Regular expression must be anchored to beginning of string");
+        assert(!preg_match('/\$\/[a-z]+$/i', $pattern), "Regular expression must not be anchored to end of string");
 
         if (preg_match($pattern, $this->remaining(), $matches)) {
             $this->position += strlen($matches[0]);
