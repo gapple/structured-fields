@@ -357,7 +357,7 @@ class Parser
         $startPosition = $input->position();
         $input->consumeChar(':');
         try {
-            $bytes = $input->consumeRegex('/^([a-z0-9+\/=]*)/i');
+            $bytes = $input->consumeRegex('/^([a-z0-9+\/]*=*)(?=:)/i');
             $input->consumeChar(':');
             return new Bytes(base64_decode($bytes));
         } catch (\RuntimeException) {
