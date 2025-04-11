@@ -73,14 +73,6 @@ jobs:
       if: matrix.experimental
       run: composer update --ignore-platform-reqs --prefer-dist --no-progress
 
-    - name: Run PHPUnit tests
-      if: matrix.php-versions != env.code-coverage-version
-      run: composer run-script phpunit -- --no-coverage
-
-    - name: Run PHPUnit tests with coverage
-      if: matrix.php-versions == env.code-coverage-version
-      run: composer run-script phpunit
-
     - name: Run PHPStan
       if: matrix.php-versions == env.code-coverage-version
       run: composer run-script phpstan -- --no-progress
@@ -88,6 +80,14 @@ jobs:
     - name: Check code style
       if: matrix.php-versions == env.code-coverage-version
       run: composer run-script phpcs -- --report=checkstyle | cs2pr
+
+    - name: Run PHPUnit tests
+      if: matrix.php-versions != env.code-coverage-version
+      run: composer run-script phpunit -- --no-coverage
+
+    - name: Run PHPUnit tests with coverage
+      if: matrix.php-versions == env.code-coverage-version
+      run: composer run-script phpunit
 
     # Ensure the next test run fetches the latest test ruleset.
     - name: Cleanup composer cache
