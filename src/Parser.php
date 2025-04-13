@@ -270,7 +270,10 @@ class Parser
                 }
             } elseif ($char === '"') {
                 return $output;
-            } elseif (!ctype_print($char)) {
+            } elseif (
+                !ctype_print($char)
+                || (PHP_OS_FAMILY === 'Darwin' && mb_detect_encoding($char, ['ASCII'], true) === false)
+            ) {
                 throw new ParseException('Invalid character in string at position ' . ($input->position() - 1));
             }
 
@@ -296,7 +299,10 @@ class Parser
         while (!$string->empty()) {
             $char = $string->consumeChar();
 
-            if (!ctype_print($char)) {
+            if (
+                !ctype_print($char)
+                || (PHP_OS_FAMILY === 'Darwin' && mb_detect_encoding($char, ['ASCII'], true) === false)
+            ) {
                 throw new ParseException(
                     'Invalid character in display string at position ' . ($string->position() - 1)
                 );
