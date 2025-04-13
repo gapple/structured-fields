@@ -209,12 +209,13 @@ class Serializer
 
     private static function serializeDisplayString(DisplayString $value): string
     {
-        $encodePattern = '/[%"\x00-\x1F\x7F-\xFF]/';
-        $encodeCallback = function ($matches) {
-            return strtolower(rawurlencode($matches[0]));
-        };
-
-        return '%"' . preg_replace_callback($encodePattern, $encodeCallback, (string) $value) . '"';
+        return '%"'
+        . preg_replace_callback(
+            '/[%"\x00-\x1F\x7F-\xFF]/',
+            fn($matches) => strtolower(rawurlencode($matches[0])),
+            (string) $value
+        )
+        . '"';
     }
 
     private static function serializeToken(Token $value): string

@@ -15,9 +15,7 @@ trait SerializingRulesetTrait
     {
         return array_filter(
             static::rulesetDataProvider(),
-            function ($params) {
-                return !empty($params[0]->expected);
-            }
+            fn($params) => !empty($params[0]->expected)
         );
     }
 

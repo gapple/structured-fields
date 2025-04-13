@@ -15,9 +15,7 @@ trait ParsingRulesetTrait
     {
         return array_filter(
             static::rulesetDataProvider(),
-            function ($params) {
-                return !empty($params[0]->raw);
-            }
+            fn($params) => !empty($params[0]->raw)
         );
     }
 
