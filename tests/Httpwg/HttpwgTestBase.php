@@ -4,9 +4,12 @@ namespace gapple\Tests\StructuredFields\Httpwg;
 
 use gapple\Tests\StructuredFields\Rule;
 use gapple\Tests\StructuredFields\RulesetTestBase;
+use gapple\Tests\StructuredFields\SerializingRulesetTrait;
 
 abstract class HttpwgTestBase extends RulesetTestBase
 {
+    use SerializingRulesetTrait;
+
     protected static string $ruleset;
 
     /**
