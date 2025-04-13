@@ -38,7 +38,7 @@ trait SerializingRulesetTrait
             }
 
             $this->assertEquals(
-                implode(',', $record->canonical ?? $record->raw),
+                implode(', ', $record->canonical ?? $record->raw),
                 $serializedValue,
                 '"' . $record->name . '" was not serialized to expected value'
             );

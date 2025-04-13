@@ -31,7 +31,7 @@ trait ParsingRulesetTrait
         }
 
         try {
-            $raw = implode(',', $record->raw);
+            $raw = implode(', ', $record->raw);
             $parsedValue = Parser::{'parse' . ucfirst($record->header_type)}($raw);
 
             if ($record->must_fail) {
