@@ -117,7 +117,7 @@ class ParsingInputTest extends TestCase
             if ($expected) {
                 $this->fail('Expression failed assertion: ' . $e->getMessage());
             } else {
-                $this->assertNull($result);
+                $this->addToAssertionCount(1);
             }
         }
     }
