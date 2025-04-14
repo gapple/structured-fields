@@ -2,11 +2,18 @@
 
 namespace gapple\Tests\StructuredFields;
 
+use gapple\StructuredFields\Date;
 use gapple\StructuredFields\Item;
+use gapple\StructuredFields\Parser;
+use gapple\StructuredFields\Serializer;
+use PHPUnit\Framework\Attributes\CoversClass;
 
 /**
  * Additional Date parsing and serializing tests.
  */
+#[CoversClass(Serializer::class)]
+#[CoversClass(Parser::class)]
+#[CoversClass(Date::class)]
 class DateTest extends RulesetTestBase
 {
     use ParsingRulesetTrait;

@@ -6,9 +6,14 @@ use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Parameters;
 use gapple\StructuredFields\Parser;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Parser::class)]
+#[CoversClass(OuterList::class)]
+#[CoversClass(Item::class)]
+#[CoversClass(Parameters::class)]
 class ParseListTest extends TestCase
 {
     /**

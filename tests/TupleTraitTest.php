@@ -3,8 +3,11 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Item;
+use gapple\StructuredFields\TupleTrait;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(TupleTrait::class)]
 class TupleTraitTest extends TestCase
 {
     public function testSetInvalidParameterValue(): void

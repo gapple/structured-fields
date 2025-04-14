@@ -5,8 +5,10 @@ namespace gapple\Tests\StructuredFields;
 use gapple\StructuredFields\Dictionary;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Dictionary::class)]
 class DictionaryTest extends TestCase
 {
     public function testPropertyAccess(): void

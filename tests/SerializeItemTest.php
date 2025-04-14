@@ -5,8 +5,11 @@ namespace gapple\Tests\StructuredFields;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Serializer::class)]
+#[CoversClass(Item::class)]
 class SerializeItemTest extends TestCase
 {
     public function testUnknownType(): void

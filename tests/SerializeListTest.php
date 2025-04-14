@@ -8,8 +8,11 @@ use gapple\StructuredFields\OuterList;
 use gapple\StructuredFields\Parameters;
 use gapple\StructuredFields\SerializeException;
 use gapple\StructuredFields\Serializer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Serializer::class)]
+#[CoversClass(OuterList::class)]
 class SerializeListTest extends TestCase
 {
     /**

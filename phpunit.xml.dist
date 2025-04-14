@@ -5,6 +5,7 @@
 
         failOnWarning="true"
         cacheDirectory="tmp/.phpunit.cache"
+        requireCoverageMetadata="true"
 >
     <testsuites>
         <testsuite name="structured-fields tests">

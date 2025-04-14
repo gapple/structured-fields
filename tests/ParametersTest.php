@@ -3,8 +3,10 @@
 namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Parameters;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Parameters::class)]
 class ParametersTest extends TestCase
 {
     public function testPropertyAccess(): void
@@ -30,5 +32,14 @@ class ParametersTest extends TestCase
 
         $this->assertTrue($parameters->one);
         $this->assertSame('false', $parameters->two);
+    }
+
+    public function testIterable(): void
+    {
+        $parameters = new Parameters();
+
+        foreach ($parameters as $parameter) {
+        }
+        $this->addToAssertionCount(1);
     }
 }

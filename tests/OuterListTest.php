@@ -5,9 +5,11 @@ namespace gapple\Tests\StructuredFields;
 use gapple\StructuredFields\InnerList;
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\OuterList;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(OuterList::class)]
 class OuterListTest extends TestCase
 {
     public function testArrayAccess(): void

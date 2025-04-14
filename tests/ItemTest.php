@@ -4,8 +4,10 @@ namespace gapple\Tests\StructuredFields;
 
 use gapple\StructuredFields\Item;
 use gapple\StructuredFields\Parameters;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Item::class)]
 class ItemTest extends TestCase
 {
     public function testDefaultParameters(): void
