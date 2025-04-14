@@ -126,10 +126,9 @@ class ParsingInputTest extends TestCase
     {
         $input = new ParsingInput('test');
 
-        $this->expectException(\RuntimeException::class);
         $this->assertEquals(
             'te',
-            $input->consumeRegex('/^t.'),
+            $input->consumeRegex('/^t./'),
         );
     }
 
@@ -138,6 +137,6 @@ class ParsingInputTest extends TestCase
         $input = new ParsingInput('test');
 
         $this->expectException(\RuntimeException::class);
-        $input->consumeRegex('/^foo');
+        $input->consumeRegex('/^foo/');
     }
 }
