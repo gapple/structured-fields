@@ -22,12 +22,6 @@ trait SerializingRulesetTrait
     #[DataProvider('serializeRulesetDataProvider')]
     public function testSerializing(Rule $record): void
     {
-        if (array_key_exists($record->name, $this->skipSerializingRules)) {
-            $this->markTestSkipped(
-                'Skipped "' . $record->name . '": ' . $this->skipSerializingRules[$record->name]
-            );
-        }
-
         try {
             $serializedValue = Serializer::{'serialize' . ucfirst($record->header_type)}($record->expected);
 

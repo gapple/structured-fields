@@ -22,12 +22,6 @@ trait ParsingRulesetTrait
     #[DataProvider('parseRulesetDataProvider')]
     public function testParsing(Rule $record): void
     {
-        if (array_key_exists($record->name, $this->skipParsingRules)) {
-            $this->markTestSkipped(
-                'Skipped "' . $record->name . '": ' . $this->skipParsingRules[$record->name]
-            );
-        }
-
         try {
             $raw = implode(', ', $record->raw);
             $parsedValue = Parser::{'parse' . ucfirst($record->header_type)}($raw);
