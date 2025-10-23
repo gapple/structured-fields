@@ -29,4 +29,7 @@
     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
+
+    <config name="testVersion" value="8.1-"/>
+    <rule ref="PHPCompatibility"/>
 </ruleset>
