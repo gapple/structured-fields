@@ -23,6 +23,7 @@ trait SerializingRulesetTrait
     public function testSerializing(Rule $record): void
     {
         try {
+            // @phpstan-ignore argument.type
             $serializedValue = Serializer::{'serialize' . ucfirst($record->header_type)}($record->expected);
 
             if ($record->must_fail) {
@@ -30,7 +31,7 @@ trait SerializingRulesetTrait
             }
 
             $this->assertEquals(
-                implode(', ', $record->canonical ?? $record->raw),
+                implode(', ', $record->canonical ?? $record->raw ?? []),
                 $serializedValue,
                 '"' . $record->name . '" was not serialized to expected value'
             );

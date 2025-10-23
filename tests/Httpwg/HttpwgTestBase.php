@@ -6,6 +6,15 @@ use gapple\Tests\StructuredFields\Rule;
 use gapple\Tests\StructuredFields\RulesetTestBase;
 use gapple\Tests\StructuredFields\SerializingRulesetTrait;
 
+/**
+ * @phpstan-import-type ExpectedItem from HttpwgRuleExpectedConverter
+ * @phpstan-import-type ExpectedOuterList from HttpwgRuleExpectedConverter
+ * @phpstan-import-type ExpectedDictionary from HttpwgRuleExpectedConverter
+ * @phpstan-type RuleDefinition object{
+ *     header_type: 'item'|'list'|'dictionary',
+ *     expected: ExpectedItem|ExpectedOuterList|ExpectedDictionary
+ *   }
+ */
 abstract class HttpwgTestBase extends RulesetTestBase
 {
     use SerializingRulesetTrait;
@@ -27,7 +36,7 @@ abstract class HttpwgTestBase extends RulesetTestBase
             throw new \RuntimeException("Unable to read ruleset JSON file.");
         }
 
-        /** @var array<\stdClass>|null $rules */
+        /** @var array<RuleDefinition&\stdClass>|null $rules */
         $rules = json_decode($rulesJson);
         if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
             throw new \RuntimeException("Unable to parse ruleset JSON file.");
@@ -38,8 +47,11 @@ abstract class HttpwgTestBase extends RulesetTestBase
             if (isset($rawRule->expected)) {
                 try {
                     $rawRule->expected = match ($rawRule->header_type) {
+                        // @phpstan-ignore argument.type
                         'item' => HttpwgRuleExpectedConverter::item($rawRule->expected),
+                        // @phpstan-ignore argument.type
                         'list' => HttpwgRuleExpectedConverter::list($rawRule->expected),
+                        // @phpstan-ignore argument.type
                         'dictionary' => HttpwgRuleExpectedConverter::dictionary($rawRule->expected),
                         default => throw new \UnexpectedValueException('Unknown header type'),
                     };

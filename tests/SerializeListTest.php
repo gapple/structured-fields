@@ -140,6 +140,6 @@ class SerializeListTest extends TestCase
 
         $this->expectException(SerializeException::class);
         $this->expectExceptionMessage("Inner lists cannot be nested");
-        Serializer::serializeList($list);
+        Serializer::serializeList($list); // @phpstan-ignore argument.type
     }
 }

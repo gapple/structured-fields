@@ -23,6 +23,9 @@ trait ParsingRulesetTrait
     public function testParsing(Rule $record): void
     {
         try {
+            if (is_null($record->raw)) {
+                throw new \RuntimeException("Raw value not defined for parsing test");
+            }
             $raw = implode(', ', $record->raw);
             $parsedValue = Parser::{'parse' . ucfirst($record->header_type)}($raw);
 

@@ -41,7 +41,7 @@ class ItemTest extends TestCase
         $item[0] = 'Modified Value';
         $item[1] = (object) ['paramKey' => 'Modified param value'];
         $this->assertEquals('Modified Value', $item[0]);
-        $this->assertEquals('Modified param value', $item[1]->paramKey); // @phpstan-ignore-line
+        $this->assertEquals('Modified param value', $item[1]->paramKey);
     }
 
     public function testArrayIndexIsset(): void
