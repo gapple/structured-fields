@@ -85,6 +85,7 @@ class OuterListTest extends TestCase
         $this->assertIsIterable($list);
 
         $iterated = 0;
+        /** @var int $key */
         foreach ($list as $key => $value) {
             $this->assertEquals($listValues[$key], $value);
             $iterated++;
