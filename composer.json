@@ -35,8 +35,6 @@
         "httpwg/structured-field-tests": "*@dev",
         "paragonie/constant_time_encoding": "^3.0.0",
         "phpmd/phpmd": "^2.15",
-        "phpstan/phpstan": "^1.12",
-        "phpstan/phpstan-phpunit": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^10.5",
