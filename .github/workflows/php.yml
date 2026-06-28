@@ -87,11 +87,11 @@ jobs:
 
     - name: Run PHPUnit tests
       if: matrix.php-versions != env.code-coverage-version
-      run: composer run-script phpunit -- --no-coverage
+      run: composer run-script phpunit -- --no-coverage --log-junit tmp/junit.xml
 
     - name: Run PHPUnit tests with coverage
       if: matrix.php-versions == env.code-coverage-version
-      run: composer run-script phpunit
+      run: composer run-script phpunit -- --log-junit tmp/junit.xml
 
     # Ensure the next test run fetches the latest test ruleset.
     - name: Cleanup composer cache
@@ -105,10 +105,17 @@ jobs:
         name: code-coverage
         path: tmp/code-coverage
 
-    - name: Upload code coverage to codecov
+    - name: Upload code coverage to Codecov
       if: matrix.php-versions == env.code-coverage-version
       uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./tmp/code-coverage/clover.xml
         flags: phpunit
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/codecov-action@v7
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        report-type: test_results
+        files: ./tmp/junit.xml
