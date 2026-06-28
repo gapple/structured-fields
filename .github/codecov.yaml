@@ -1,0 +1,34 @@
+comment:
+  layout: "condensed_header, condensed_files, components, condensed_footer"
+  
+component_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+  individual_components:
+    - component_id: parser
+      name: Parser
+      paths:
+        - src/Parser.php
+        - src/ParsingInput.php
+        - src/ParseException.php
+    - component_id: serializer
+      name: Serializer
+      paths:
+        - src/Serializer.php
+        - src/SerializeException.php
+    - component_id: types
+      name: Types
+      paths:
+        - src/Bytes.php
+        - src/Date.php
+        - src/Dictionary.php
+        - src/DisplayString.php
+        - src/InnerList.php
+        - src/Item.php
+        - src/OuterList.php
+        - src/Parameters.php
+        - src/Token.php
+        - src/TupleInterface.php
+        - src/TupleTrait.php
