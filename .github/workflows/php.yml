@@ -117,5 +117,5 @@ jobs:
       uses: codecov/codecov-action@v7
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        report-type: test_results
+        report_type: test_results
         files: ./tmp/junit.xml
