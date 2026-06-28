@@ -1,6 +1,12 @@
 comment:
   layout: "condensed_header, condensed_files, components, condensed_footer"
-  
+
+flag_management:
+  default_rules:
+    statuses:
+      - type: project
+        target: auto
+
 component_management:
   default_rules:
     statuses:
