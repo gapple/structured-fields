@@ -118,4 +118,5 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         report_type: test_results
+        flags: ${{ format('php-{0}', matrix.php-versions) }}
         files: ./tmp/junit.xml
