@@ -10,6 +10,10 @@ on:
       - "[0-9]+.[0-9]+.x"
     tags:
       - v[0-9]+.[0-9]+.[0-9]+
+    paths:
+      - "composer.json"
+      - "php*.*.dist"
+      - "**.php"
   pull_request:
   workflow_dispatch:
 
@@ -111,7 +115,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./tmp/code-coverage/clover.xml
-        flags: phpunit
+        flags: ${{ format('phpunit, php-{0}', matrix.php-versions) }}
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
       uses: codecov/codecov-action@v7
