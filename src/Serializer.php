@@ -178,7 +178,7 @@ class Serializer
 
     private static function serializeInteger(int $value): string
     {
-        if ($value > 999999999999999 || $value < -999999999999999) {
+        if ($value > 999_999_999_999_999 || $value < -999_999_999_999_999) {
             throw new SerializeException("Integers are limited to 15 digits");
         }
         return (string) $value;
@@ -186,14 +186,16 @@ class Serializer
 
     private static function serializeDecimal(float $value): string
     {
-        if (abs(floor($value)) > 999999999999) {
-            throw new SerializeException("Integer portion of decimals is limited to 12 digits");
+        $value = round($value, 3, PHP_ROUND_HALF_EVEN);
+
+        if (abs(floor($value)) > 999_999_999_999) {
+            throw new SerializeException("Integer portion of decimals is limited to 12 digits after rounding to three decimal places");
         }
 
         // Casting to a string loses a digit on long numbers, but is preserved
-        // by json_encode (e.g. 111111111111.111).
+        // by json_encode (e.g. 111_111_111_111.111).
         /** @var non-empty-string $result */
-        $result = json_encode(round($value, 3, PHP_ROUND_HALF_EVEN));
+        $result = json_encode($value);
 
         if (!str_contains($result, '.')) {
             $result .= '.0';
