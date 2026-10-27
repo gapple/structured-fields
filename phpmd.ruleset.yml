@@ -1,0 +1,13 @@
+# PHPMD configuration, see https://phpmd.org/documentation/creating-a-ruleset.html
+name: 'PHPMD Ruleset'
+description: 'PHPMD Ruleset'
+paths:
+  - src
+  - tests
+rules:
+  - ref: rulesets/codesize.xml
+    exclude:
+      - CyclomaticComplexity
+      - ExcessiveClassComplexity
+      - TooManyPublicMethods
+  - ref: rulesets/unusedcode.xml

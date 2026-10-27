@@ -26,7 +26,7 @@
         "phpcs": "phpcs",
         "phpstan": "phpstan analyse",
         "phpunit": "phpunit",
-        "phpmd": "phpmd src,tests ansi phpmd.ruleset.xml"
+        "phpmd": "phpmd analyze --ruleset phpmd.ruleset.yml --format ansi"
     },
     "require": {
         "php": "^8.1"
@@ -35,7 +35,7 @@
         "httpwg/structured-field-tests": "*@dev",
         "paragonie/constant_time_encoding": "^3.0.0",
         "phpcompatibility/php-compatibility": "^10@dev",
-        "phpmd/phpmd": "^2.15",
+        "phpmd/phpmd": "^3.0.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "phpunit/phpunit": "^10.5",

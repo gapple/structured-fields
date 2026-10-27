@@ -37,9 +37,11 @@ class ParametersTest extends TestCase
     public function testIterable(): void
     {
         $parameters = new Parameters();
+        $parameters->key = 'value';
 
-        foreach ($parameters as $parameter) {
+        foreach ($parameters as $key => $value) {
+            $this->assertEquals('key', $key);
+            $this->assertEquals('value', $value);
         }
-        $this->addToAssertionCount(1);
     }
 }
