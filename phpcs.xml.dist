@@ -25,7 +25,6 @@
     <rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
     <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
-    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint"/>
