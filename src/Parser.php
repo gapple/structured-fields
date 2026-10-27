@@ -387,7 +387,7 @@ class Parser
         try {
             $value = self::parseNumber($input);
 
-            if (is_int($value)) {
+            if (\is_int($value)) {
                 return new Date($value);
             }
         } catch (ParseException) {

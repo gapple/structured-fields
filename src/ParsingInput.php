@@ -69,7 +69,7 @@ class ParsingInput
 
     public function isNextChar(string $char): bool
     {
-        assert(strlen($char) === 1);
+        assert(\strlen($char) === 1);
 
         return $this->position < $this->length
             && $this->value[$this->position] === $char;
@@ -105,7 +105,7 @@ class ParsingInput
         }
 
         $output = substr($this->value, $this->position, $length);
-        if (!is_null($expected) && $expected !== $output) {
+        if ($expected !== null && $expected !== $output) {
             throw new \RuntimeException('Unexpected character');
         }
         $this->position += $length;
@@ -127,7 +127,7 @@ class ParsingInput
      */
     public function consumeString(string $value): void
     {
-        $this->consume(strlen($value), $value);
+        $this->consume(\strlen($value), $value);
     }
 
     /**

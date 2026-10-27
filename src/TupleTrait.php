@@ -60,7 +60,7 @@ trait TupleTrait
         if ($offset === 0) {
             $this->value = $value;
         } elseif ($offset === 1) {
-            if (!is_object($value)) {
+            if (!\is_object($value)) {
                 throw new \InvalidArgumentException('Tuple parameters must be an object');
             }
             $this->parameters = $value;

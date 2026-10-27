@@ -47,7 +47,7 @@ class InnerList implements TupleInterface
      */
     private static function validateItemType(mixed $value): void
     {
-        if (is_object($value)) {
+        if (\is_object($value)) {
             if (!($value instanceof TupleInterface)) {
                 throw new \InvalidArgumentException(
                     'Objects as list values must implement ' . TupleInterface::class
@@ -56,8 +56,8 @@ class InnerList implements TupleInterface
             if ($value instanceof InnerList) {
                 throw new \InvalidArgumentException('InnerList objects cannot be nested');
             }
-        } elseif (is_array($value)) {
-            if (count($value) !== 2) {
+        } elseif (\is_array($value)) {
+            if (\count($value) !== 2) {
                 throw new \InvalidArgumentException();
             }
         } else {

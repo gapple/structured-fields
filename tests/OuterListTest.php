@@ -90,7 +90,7 @@ class OuterListTest extends TestCase
             $this->assertEquals($listValues[$key], $value);
             $iterated++;
         }
-        $this->assertEquals(count($listValues), $iterated);
+        $this->assertEquals(\count($listValues), $iterated);
     }
 
     /**

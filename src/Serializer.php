@@ -17,7 +17,7 @@ class Serializer
     public static function serializeItem(mixed $value, ?object $parameters = null): string
     {
         if ($value instanceof Item) {
-            if (!is_null($parameters)) {
+            if ($parameters !== null) {
                 throw new \InvalidArgumentException(
                     'Parameters argument is not allowed when serializing an Item object'
                 );
@@ -48,7 +48,7 @@ class Serializer
         }
 
         $returnValue = array_map(function ($item) {
-            if (is_array($item) && count($item) === 2) {
+            if (\is_array($item) && \count($item) === 2) {
                 $itemValue = $item[0];
                 $itemParameters = $item[1];
             } elseif ($item instanceof TupleInterface) {
@@ -58,7 +58,7 @@ class Serializer
                 throw new SerializeException("Invalid item in list");
             }
 
-            if (is_array($itemValue)) {
+            if (\is_array($itemValue)) {
                 /** @var array<TupleInterface|list{mixed, object}> $itemValue */
                 return self::serializeInnerList($itemValue, $itemParameters);
             } else {
@@ -103,7 +103,7 @@ class Serializer
 
             if ($itemValue === true) {
                 $returnValue .= self::serializeParameters($itemParameters);
-            } elseif (is_array($itemValue)) {
+            } elseif (\is_array($itemValue)) {
                 /** @var array<TupleInterface|list{mixed, object}> $itemValue */
                 $returnValue .= '=' . self::serializeInnerList($itemValue, $itemParameters);
             } else {
@@ -128,7 +128,7 @@ class Serializer
                 }
                 $returnValue .= self::serializeItem($item);
             } else {
-                if (is_array($item[0])) {
+                if (\is_array($item[0])) {
                     throw new SerializeException("Inner lists cannot be nested");
                 }
                 $returnValue .= self::serializeItem($item[0], $item[1]);
@@ -150,11 +150,11 @@ class Serializer
 
     private static function serializeBareItem(mixed $value): string
     {
-        if (is_int($value)) {
+        if (\is_int($value)) {
             return self::serializeInteger($value);
-        } elseif (is_float($value)) {
+        } elseif (\is_float($value)) {
             return self::serializeDecimal($value);
-        } elseif (is_bool($value)) {
+        } elseif (\is_bool($value)) {
             return self::serializeBoolean($value);
         } elseif ($value instanceof \DateTimeInterface) {
             return self::serializeDate($value);
@@ -164,7 +164,7 @@ class Serializer
             return self::serializeDisplayString($value);
         } elseif ($value instanceof Token) {
             return self::serializeToken($value);
-        } elseif (is_string($value) || $value instanceof \Stringable) {
+        } elseif (\is_string($value) || $value instanceof \Stringable) {
             return self::serializeString((string) $value);
         }
 

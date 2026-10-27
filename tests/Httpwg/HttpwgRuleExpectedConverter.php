@@ -50,7 +50,7 @@ class HttpwgRuleExpectedConverter
                 throw new \UnexpectedValueException();
             }
 
-            if (is_array($value[1][0])) {
+            if (\is_array($value[1][0])) {
                 $output->{$value[0]} = self::innerList($value[1]);
             } else {
                 $output->{$value[0]} = self::item($value[1]);
@@ -70,7 +70,7 @@ class HttpwgRuleExpectedConverter
         $output = new OuterList();
 
         foreach ($list as $value) {
-            if (is_array($value[0])) {
+            if (\is_array($value[0])) {
                 $output[] = self::innerList($value);
             } else {
                 $output[] = self::item($value);
@@ -126,23 +126,23 @@ class HttpwgRuleExpectedConverter
      */
     private static function value($data): mixed
     {
-        if (!is_object($data)) {
+        if (!\is_object($data)) {
             return $data;
         }
 
         if (property_exists($data, '__type')) {
             switch ($data->__type) {
                 case 'binary':
-                    assert(is_string($data->value));
+                    assert(\is_string($data->value));
                     return new Bytes(Base32::decodeUpper($data->value));
                 case 'date':
-                    assert(is_int($data->value));
+                    assert(\is_int($data->value));
                     return new Date($data->value);
                 case 'displaystring':
-                    assert(is_string($data->value));
+                    assert(\is_string($data->value));
                     return new DisplayString($data->value);
                 case 'token':
-                    assert(is_string($data->value));
+                    assert(\is_string($data->value));
                     return new Token($data->value);
             }
         }

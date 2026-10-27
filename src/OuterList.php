@@ -36,7 +36,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
     {
         array_walk($array, function (&$item): void {
             if (!$item instanceof TupleInterface) {
-                if (is_array($item)) {
+                if (\is_array($item)) {
                     $item = InnerList::fromArray($item);
                 } else {
                     $item = new Item($item);
@@ -53,14 +53,14 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
      */
     private static function validateItemType(mixed $value): void
     {
-        if (is_object($value)) {
+        if (\is_object($value)) {
             if (!($value instanceof TupleInterface)) {
                 throw new \InvalidArgumentException(
                     'Objects as list values must implement ' . TupleInterface::class
                 );
             }
-        } elseif (is_array($value)) {
-            if (count($value) !== 2) {
+        } elseif (\is_array($value)) {
+            if (\count($value) !== 2) {
                 throw new \InvalidArgumentException();
             }
         } else {
@@ -99,7 +99,7 @@ class OuterList implements \IteratorAggregate, \ArrayAccess
     {
         self::validateItemType($value);
 
-        if (is_null($offset)) {
+        if (\is_null($offset)) {
             $this->value[] = $value;
         } else {
             $this->value[$offset] = $value;

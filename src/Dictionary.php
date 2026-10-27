@@ -24,7 +24,7 @@ class Dictionary implements \IteratorAggregate
 
         foreach ($array as $key => $value) {
             if (!$value instanceof TupleInterface) {
-                if (is_array($value)) {
+                if (\is_array($value)) {
                     $value = InnerList::fromArray($value);
                 } else {
                     $value = new Item($value);

@@ -38,7 +38,7 @@ abstract class HttpwgTestBase extends RulesetTestBase
 
         /** @var array<RuleDefinition&\stdClass>|null $rules */
         $rules = json_decode($rulesJson);
-        if (is_null($rules) || json_last_error() !== JSON_ERROR_NONE) {
+        if ($rules === null || json_last_error() !== JSON_ERROR_NONE) {
             throw new \RuntimeException("Unable to parse ruleset JSON file.");
         }
 
